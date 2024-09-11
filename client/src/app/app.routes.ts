@@ -5,6 +5,7 @@ import { AuthGuard } from './auth.guard';
 export const routes: Routes = [
   // TODO: login w/ oauth auth provider (github)
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'user', component: ErrorComponent },
   { path: 'error', component: ErrorComponent },
   {
     path: 'home',

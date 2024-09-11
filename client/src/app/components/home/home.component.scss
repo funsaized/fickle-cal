@@ -1,34 +1,27 @@
-// .wrapper {
-//     display: grid;
-//     grid-template-columns: repeat(12, 1fr);
-//     grid-template-rows: 50px 200px auto auto auto auto auto 50px;
-//     grid-template-areas:
-//         'header    header    header    header    header    header    header    header    header    header    header    header'
-//         'user      user      main      main      main      main      main      main      main      main      main      main'
-//         'sidebar   sidebar   main      main      main      main      main      main      main      main      main      main'
-//         'sidebar   sidebar   main      main      main      main      main      main      main      main      main      main'
-//         'sidebar   sidebar   main      main      main      main      main      main      main      main      main      main'
-//         'sidebar   sidebar   main      main      main      main      main      main      main      main      main      main'
-//         'sidebar   sidebar   main      main      main      main      main      main      main      main      main      main'
-//         'footer    footer    footer    footer    footer    footer    footer    footer    footer    footer    footer    footer';
-//     gap: 10px;
-//     height: 100vh;
-//     overflow: hidden;
-// }
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 120px auto auto auto auto 50px;
+    grid-template-areas:
+        'header    header    header    header    header    header    header    header    header    header    header    header'
+        'main      main      main      main      main      main      main      main      main      main      main      main'
+        'main      main      main      main      main      main      main      main      main      main      main      main'
+        'main      main      main      main      main      main      main      main      main      main      main      main'
+        'main      main      main      main      main      main      main      main      main      main      main      main'
+        'footer    footer    footer    footer    footer    footer    footer    footer    footer    footer    footer    footer';
+    gap: 10px;
+    height: 100vh;
+    overflow: hidden;
+}
 
-// .header {
-//     grid-area: header;
-//     width: 100%;
-//     height: 100%;
-//     background-color: blue;
-// }
+header {
+    grid-area: header;
+}
 
-// .current-user {
-//     grid-area: user;
-//     overflow: scroll;
-//     word-wrap: break-word;
-// }
+main {
+    grid-area: main;
+}
 
-// .users {
-//     grid-area: sidebar;
-// }
+footer {
+    grid-area: footer;
+}

@@ -3,12 +3,20 @@ import { UserService } from '../../services';
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import { catchError, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-
+import { HeaderComponent } from '..';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, AsyncPipe, JsonPipe],
-  template: ` <div>Home Component</div> `,
+  imports: [CommonModule, AsyncPipe, JsonPipe, HeaderComponent],
+  template: `
+    <div class="wrapper">
+      <header>
+        <app-header/>
+      </header>
+      <main>this is the stuff</main>
+      <footer>Put footer stuff here</footer>
+    </div>
+  `,
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
