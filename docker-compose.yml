@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql8-feined
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: feinedapp
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - keycloak-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak-feined
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql:3306/feinedapp
+      DB_DATABASE: keycloak
+      KC_DB_USERNAME: root
+      KC_DB_PASSWORD: password
+    ports:
+      - 8081:8080
+      - 8443:8443
+    depends_on:
+      - mysql
+    networks:
+      - keycloak-network
+    command: ["start-dev"]
+
+volumes:
+  mysql_data:
+
+networks:
+  keycloak-network:

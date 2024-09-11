@@ -1,0 +1,29 @@
+keycloak:
+  server-url: http://localhost:8081/
+  realm: feinedappdev
+  client-id: admin-cli # TODO: property
+  username: admin # TODO: property
+  password: admin # TODO: property
+
+spring:
+  application:
+    name: chatservice
+  datasource:
+    url: jdbc:mysql://localhost:3306/feinedapp # TODO: property
+    username: root
+    password: password
+  jpa:
+    show-sql: true
+    hibernate: 
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8081/realms/feinedappdev/protocol/openid-connect/certs
+logging:
+  level:
+    org.springframework.session.web.http.SessionRepositoryFilter.SESSION_LOGGER: DEBUG
