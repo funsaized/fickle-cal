@@ -1,17 +1,22 @@
 import { Component } from '@angular/core';
 import { Day, ParsedDay } from '../../models';
 import { CommonModule, DatePipe, formatDate } from '@angular/common';
+import { EventComponent } from '../event/event.component';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, EventComponent],
   template: `
     <div class="container">
+      <!-- TODO: day component -->
       <div class="day" *ngFor="let day of parsedDays">
         <div class="header">
-          <div class="date">{{day.monthDigits}}.{{day.dayDigits}}</div>
-          <div class="day">{{day.dayName}}</div>
+          <div class="date">{{ day.monthDigits }}.{{ day.dayDigits }}</div>
+          <div class="day-name">{{ day.dayName }}</div>
+        </div>
+        <div class="events-body">
+          <app-event *ngFor="let event of day.events" />
         </div>
       </div>
     </div>
@@ -38,7 +43,33 @@ export class CalendarComponent {
     {
       date: new Date('2024-09-12'),
       isCurrent: false,
-      events: [],
+      events: [
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 1' },
+        { title: 'Event 2' },
+      ],
     },
     {
       date: new Date('2024-09-13'),

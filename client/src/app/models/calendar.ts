@@ -4,9 +4,9 @@ export interface Day {
     events: Event[];
 }
 export interface ParsedDay extends Day {
-    dayDigits: string;
-    dayName: string;
-    monthDigits: string;
+    dayDigits: string; // e.g '09'
+    dayName: string; // e.g 'Mon;
+    monthDigits: string; // e.g '09'
 }
 
 export interface Event {
