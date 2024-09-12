@@ -4,16 +4,17 @@ import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import { catchError, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { HeaderComponent } from '..';
+import { CalendarComponent } from '../calendar/calendar.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, AsyncPipe, JsonPipe, HeaderComponent],
+  imports: [CommonModule, AsyncPipe, JsonPipe, HeaderComponent, CalendarComponent],
   template: `
     <div class="wrapper">
       <header>
         <app-header/>
       </header>
-      <main>this is the stuff</main>
+      <main><app-calendar/></main>
       <footer>Put footer stuff here</footer>
     </div>
   `,
