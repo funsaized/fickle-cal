@@ -1,37 +1,29 @@
 // bubble-like shadow on focus
 .input-root {
     position: relative;
-    margin-bottom: 5px;
+    height: 40px;
+    border-bottom: 1px solid rgba(0, 0, 0, .3);
 }
 
 .input-root.focus {
-    input {
-        border: none;
-    }
+    border: none;
+    transform: scale(1.08);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;    
+    z-index: 999;
 }
 
-.input-root.focus::before {
-    background-color: #fff;
-    border-radius: 4px;
-    bottom: -2px;
-    box-shadow: 0 1px 4px 1px #0000001c;
-    content: "";
-    left: -8px;
-    position: absolute;
-    right: -8px;
-    top: -2px;
-    z-index: -1000;
+.input-root.hover {
+    border-color: blue;
 }
 
 input {
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
     border: none;
-    border-bottom: 1px solid #000;
-    font-size: 1.2rem;
+    padding: 0;
 
     &:focus {
         outline: none;
     }
 }
-
