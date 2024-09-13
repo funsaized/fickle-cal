@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { HomeComponent, ErrorComponent } from './components';
+import {ErrorComponent } from './components';
 import { AuthGuard } from './auth.guard';
+import { HomeComponent } from './containers';
 
 export const routes: Routes = [
   // TODO: login w/ oauth auth provider (github)

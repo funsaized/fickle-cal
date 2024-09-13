@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -17,17 +17,23 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
       [ngClass]="{ hover: hovered, focus: focused }"
     >
       <input
+        #textInput
         id="name"
         type="text"
         [formControl]="text"
         autocomplete="off"
-        [disabled]="true"
+        (keydown.enter)="onEnter()"
       />
     </div>
   `,
   styleUrl: './event.component.scss',
 })
 export class EventComponent {
+  @ViewChild('textInput', { read: ElementRef })
+  textInput!: ElementRef<HTMLInputElement>;
+
+  @Output() entered = new EventEmitter<void>();
+
   public _isEditable: boolean = false;
 
   // TODO: maybe directive b/c angular: https://netbasal.com/disabling-form-controls-when-working-with-reactive-forms-in-angular-549dd7b42110
@@ -35,7 +41,7 @@ export class EventComponent {
   set isEditable(value: boolean) {
     this._isEditable = value;
     if (!value) {
-      this.text.disable();
+      // this.text.disable();
     } else {
       this.text.enable();
     }
@@ -55,5 +61,10 @@ export class EventComponent {
 
   onMouseOut() {
     this.hovered = false;
+  }
+
+  onEnter() {
+    console.error("RAN")
+    this.entered.emit();
   }
 }

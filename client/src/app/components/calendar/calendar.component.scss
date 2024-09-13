@@ -10,20 +10,3 @@
         gap: 20px;
     }
 }
-
-.day {
-    .header {
-        display: flex;
-        justify-content: space-between;
-        padding-bottom: 14px;
-        border-bottom: 2px solid black;
-    }
-    
-    .day-name {
-        opacity: 0.3;
-    }
-}
-
-.events-body {
-    min-height: 420px;
-}

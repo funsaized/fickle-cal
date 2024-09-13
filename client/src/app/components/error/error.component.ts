@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { AuthService } from '../../services';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-error',
   standalone: true,
-  imports: [FormsModule],
+  imports: [],
   template: `
     <p>ERROR</p>
   `,

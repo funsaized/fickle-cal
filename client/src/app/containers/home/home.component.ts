@@ -3,16 +3,13 @@ import { UserService, WeekService } from '../../services';
 import { AsyncPipe, CommonModule, JsonPipe } from '@angular/common';
 import { catchError, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { HeaderComponent } from '..';
-import { CalendarComponent } from '../calendar/calendar.component';
 import { Day } from '../../models';
+import { CalendarComponent, HeaderComponent } from '../../components';
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
-    AsyncPipe,
-    JsonPipe,
     HeaderComponent,
     CalendarComponent,
   ],
