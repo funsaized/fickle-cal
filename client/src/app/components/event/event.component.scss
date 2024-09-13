@@ -7,6 +7,7 @@
 
 .input-root.focus {
     border: none;
+    border-radius: 5px;
     transform: scale(1.08);
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;    
     z-index: 999;
@@ -21,7 +22,15 @@ input {
     height: 100%;
     box-sizing: border-box;
     border: none;
-    padding: 0;
+    border-radius: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding: 0 8px;
+
+    &:disabled {
+        background-color: #fff;
+    }
 
     &:focus {
         outline: none;
