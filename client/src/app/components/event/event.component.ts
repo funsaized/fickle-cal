@@ -43,12 +43,6 @@ import {
   styleUrl: './event.component.scss',
 })
 export class EventComponent {
-  _eventForm!: FormGroup;
-  @Input()
-  set eventForm(value: FormGroup) {
-    this._eventForm = value;
-  }
-
   constructor(private fb: FormBuilder) {
     this._eventForm = this.fb.group({
       title: ['', [Validators.required]],
@@ -57,9 +51,15 @@ export class EventComponent {
 
   @Output() entered = new EventEmitter<void>();
 
+  _eventForm!: FormGroup;
+  @Input()
+  set eventForm(value: FormGroup) {
+    this._eventForm = value;
+  }
+
   public _isEditable: boolean = false;
   // TODO: maybe directive b/c angular: https://netbasal.com/disabling-form-controls-when-working-with-reactive-forms-in-angular-549dd7b42110
-  @Input() // TOOD: check if this has a value to enable also
+  @Input()
   set isEditable(value: boolean) {
     this._isEditable = value;
     !this._isEditable && this._eventForm.disable();
