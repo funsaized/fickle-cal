@@ -9,12 +9,14 @@ import { DayComponent } from '../day/day.component';
   imports: [CommonModule, DayComponent],
   template: `
     <div class="container">
-       <app-day *ngFor="let day of (weekService.currentDays$ | async)" [day]="day" />
+      <app-day
+        *ngFor="let day of weekService.currentDays$ | async"
+        [day]="day"
+      />
     </div>
   `,
   styleUrl: './calendar.component.scss',
 })
 export class CalendarComponent {
-  constructor(public readonly weekService: WeekService) {
-  }
+  constructor(public readonly weekService: WeekService) {}
 }

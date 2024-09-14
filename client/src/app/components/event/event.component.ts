@@ -1,55 +1,74 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-event',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div
-      class="input-root"
-      (mouseover)="onMouseOver(_isEditable)"
-      (mouseout)="onMouseOut()"
-      (click)="onFocus()"
-      (focusin)="onFocus()"
-      (focusout)="focused = false"
-      [ngClass]="{ hover: hovered, focus: focused }"
-    >
-      <input
-        #textInput
-        id="name"
-        type="text"
-        [formControl]="text"
-        autocomplete="off"
-        (keydown.enter)="onEnter()"
-      />
-    </div>
+    <form [formGroup]="_eventForm">
+      <div
+        class="input-root"
+        (mouseover)="onMouseOver(_isEditable)"
+        (mouseout)="onMouseOut()"
+        (click)="onFocus()"
+        (focusin)="onFocus()"
+        (focusout)="focused = false"
+        [ngClass]="{ hover: hovered, focus: focused }"
+      >
+        <input
+          #textInput
+          id="name"
+          type="text"
+          formControlName="title"
+          autocomplete="off"
+          (keydown.enter)="onEnter()"
+        />
+      </div>
+    </form>
   `,
   styleUrl: './event.component.scss',
 })
 export class EventComponent {
-  @ViewChild('textInput', { read: ElementRef })
-  textInput!: ElementRef<HTMLInputElement>;
+  _eventForm!: FormGroup;
+  @Input()
+  set eventForm(value: FormGroup) {
+    this._eventForm = value;
+  }
+
+  constructor(private fb: FormBuilder) {
+    this._eventForm = this.fb.group({
+      title: ['', [Validators.required]],
+    });
+  }
 
   @Output() entered = new EventEmitter<void>();
 
   public _isEditable: boolean = false;
-
   // TODO: maybe directive b/c angular: https://netbasal.com/disabling-form-controls-when-working-with-reactive-forms-in-angular-549dd7b42110
   @Input() // TOOD: check if this has a value to enable also
   set isEditable(value: boolean) {
     this._isEditable = value;
-    if (!value) {
-      // this.text.disable();
-    } else {
-      this.text.enable();
-    }
+    !this._isEditable && this._eventForm.disable();
   }
 
+  @ViewChild('textInput', { read: ElementRef })
+  textInput!: ElementRef<HTMLInputElement>;
   focused = false;
   hovered = false;
-  text = new FormControl('');
 
   onFocus() {
     this.focused = true;
@@ -64,7 +83,6 @@ export class EventComponent {
   }
 
   onEnter() {
-    console.error("RAN")
     this.entered.emit();
   }
 }

@@ -39,16 +39,16 @@ export class HomeComponent implements OnInit{
     {
       date: new Date('2024-09-11'),
       isCurrent: true,
-      events: [{ title: 'Event 1' }],
+      events: [{ title: 'Event something' }],
     },
     {
       date: new Date('2024-09-12'),
       isCurrent: false,
       events: [
         { title: 'Event 1' },
-        { title: 'Event 1' },
-        { title: 'Event 1' },
-        { title: 'Event 1' },
+        { title: 'Event 2' },
+        { title: 'Event 3' },
+        { title: 'Event 4' },
       ],
     },
     {

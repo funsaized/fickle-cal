@@ -10,7 +10,7 @@ export interface ParsedDay extends Day {
 }
 
 export interface Event {
-    id?: string
-    title: string;
-    color?: string;
+    title: string | null;
 }
+
+export interface EventForm{}
