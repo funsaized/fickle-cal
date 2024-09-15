@@ -12,7 +12,7 @@
     border: none;
     border-radius: 5px;
     transform: scale(1.10);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    box-shadow: rgba(175, 173, 173, 0.16) 0px 1px 4px;
     z-index: 999;
 
     .checkbox{
@@ -64,4 +64,5 @@ span {
 .checkbox {
     height: 20px;
     width: 20px;
+    flex-shrink: 0;
 }
