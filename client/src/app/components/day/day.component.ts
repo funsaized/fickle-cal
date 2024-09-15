@@ -24,7 +24,7 @@ import {
       <div class="events-body">
         <app-event
           *ngFor="let event of events.controls; let i = index"
-          [eventForm]="getControl(i)"
+          [eventForm]="event"
           [isEditable]="i === 0 || event.touched"
           (entered)="onEnter(i)"
         />
@@ -38,9 +38,12 @@ export class DayComponent {
   @Input()
   set day(day: ParsedDay) {
     this._day = day;
+
+    // TODO: abstract form creation to service when hooking up to API
     const events = this._day?.events?.map((event) => {
       return new FormGroup({
-        title: new FormControl(event.title, Validators.required),
+        title: new FormControl(event.title, [Validators.required]),
+        completed: new FormControl(false, [Validators.required]),
       });
     });
     events.forEach((control) => control.markAsTouched());
@@ -57,28 +60,33 @@ export class DayComponent {
     this.events = new FormArray<FormGroup>([]);
   }
 
+  // User presses enter, add event conditions
   onEnter(currentIndex: number) {
     const eventComponentsArray = this.eventComponents.toArray();
+    const currentInputValue = eventComponentsArray[currentIndex].textInput.nativeElement.value;
     const nextIndex = currentIndex + 1;
-    if (nextIndex < eventComponentsArray.length) {
-      const nextEventComponent = eventComponentsArray[nextIndex];
-      nextEventComponent.textInput.nativeElement.focus();
-    } else {
-      this.events.push(
-        new FormGroup({
-          title: new FormControl('new One', Validators.required),
-        })
-      );
+    if (currentInputValue.trim() !== ''){
+      if (nextIndex < eventComponentsArray.length) {
+        const nextEventComponent = eventComponentsArray[nextIndex];
+        this.getControl(nextIndex).enable();
+        nextEventComponent.textInput.nativeElement.focus();
+      } else {
+        const newEvent = this.newControl();
+        newEvent.markAsTouched();
+        this.events.push(newEvent);
+        setTimeout(() => this.onEnter(currentIndex));
+      }
     }
   }
 
-  getControl(i: number) {
-    return this.events.at(i) as FormGroup;
+  getControl(index: number) {
+    return this.events.at(index);
   }
 
   newControl() {
     return new FormGroup({
-      title: new FormControl('', Validators.required),
+      title: new FormControl('', [Validators.required]),
+      completed: new FormControl(false, [Validators.required]),
     });
   }
 }

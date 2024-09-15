@@ -8,25 +8,24 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { CheckBoxComponent } from '../checkbox/checkbox.component';
 
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CheckBoxComponent],
   template: `
     <form [formGroup]="_eventForm">
       <div
         class="input-root"
         (mouseover)="onMouseOver(_isEditable)"
         (mouseout)="onMouseOut()"
-        (click)="onFocus()"
-        (focusin)="onFocus()"
-        (focusout)="focused = false"
         [ngClass]="{ hover: hovered, focus: focused }"
       >
         <input
@@ -35,8 +34,15 @@ import {
           type="text"
           formControlName="title"
           autocomplete="off"
+          (focusout)="focused = false"
+          (click)="onFocus()"
+          (focusin)="onFocus()"
           (keydown.enter)="onEnter()"
+          [class.completed]="completed"
         />
+        <div class="checkbox">
+          <app-checkbox formControlName="completed" />
+        </div>
       </div>
     </form>
   `,
@@ -46,6 +52,7 @@ export class EventComponent {
   constructor(private fb: FormBuilder) {
     this._eventForm = this.fb.group({
       title: ['', [Validators.required]],
+      completed: ['', [Validators.required]],
     });
   }
 
@@ -53,8 +60,8 @@ export class EventComponent {
 
   _eventForm!: FormGroup;
   @Input()
-  set eventForm(value: FormGroup) {
-    this._eventForm = value;
+  set eventForm(value: AbstractControl) {
+    this._eventForm = value as FormGroup;
   }
 
   public _isEditable: boolean = false;
@@ -84,5 +91,9 @@ export class EventComponent {
 
   onEnter() {
     this.entered.emit();
+  }
+
+  get completed() {
+    return this._eventForm.get('completed')?.value;
   }
 }

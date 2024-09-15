@@ -1,0 +1,9 @@
+svg {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+svg.checked {
+    fill: rgba(0, 0, 0, 0.3);
+}

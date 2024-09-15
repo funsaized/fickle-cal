@@ -3,13 +3,16 @@
     position: relative;
     height: 40px;
     border-bottom: 1px solid rgba(0, 0, 0, .3);
+    display: flex;
+    justify-content: space between;
+    align-items: center;
 }
 
 .input-root.focus {
     border: none;
     border-radius: 5px;
-    transform: scale(1.08);
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;    
+    transform: scale(1.10);
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     z-index: 999;
 }
 
@@ -23,6 +26,7 @@ input {
     box-sizing: border-box;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -35,4 +39,14 @@ input {
     &:focus {
         outline: none;
     }
+}
+
+input.completed {
+    text-decoration: line-through;
+    color: rgba(0, 0, 0, .3);
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
 }
