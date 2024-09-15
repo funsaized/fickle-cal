@@ -20,7 +20,7 @@ export class ModalService {
     @Inject(DOCUMENT) private document: Document
   ) {}
 
-  open(content: TemplateRef<any>, options?: { size?: string; title?: string }) {
+  open(content: TemplateRef<any>, options?: any) {
     const modalComponentFactory =
       this.resolver.resolveComponentFactory(ModalComponent);
     const contentViewRef = content.createEmbeddedView(null);
@@ -28,8 +28,6 @@ export class ModalService {
       contentViewRef.rootNodes,
     ]);
 
-    modalComponent.instance.size = options?.size;
-    modalComponent.instance.title = options?.title;
     modalComponent.instance.closeEvent.subscribe(() => this.closeModal());
     modalComponent.instance.submitEvent.subscribe(() => this.submitModal());
 

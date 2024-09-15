@@ -21,16 +21,14 @@
     transform: translate(-50%, -50%);
     width: 500px;
     height: auto;
-    border: olive 1px solid;
-    background-color: white;
-    border-radius: 5px;
+    background-color: #FFC14A;
+    border-radius: 20px;
     padding: 20px;
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
-    font-size: 18px;
     margin-bottom: 20px;
 }
 

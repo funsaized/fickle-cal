@@ -44,8 +44,11 @@ import { ModalService } from '../../services';
           [class.completed]="completed?.value === true"
         />
         <ng-template #placeHolder>
-          <span [class.completed]="completed?.value === true">
-            {{title?.value}}
+          <span
+            [class.completed]="completed?.value === true"
+            (click)="openEditModal(modalTemplate)"
+          >
+            {{ title?.value }}
           </span>
         </ng-template>
         <div class="checkbox">
@@ -105,7 +108,7 @@ export class EventComponent {
 
   openEditModal(template: TemplateRef<any>) {
     this.modalService
-      .open(template, { size: 'lg', title: 'Foo' })
+      .open(template, {}) // TODO: options if needed
       .subscribe((action) => {
         console.log('modalAction', action);
       });
