@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   Output,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import {
@@ -15,6 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CheckBoxComponent } from '../checkbox/checkbox.component';
+import { ModalService } from '../../services';
 
 @Component({
   selector: 'app-event',
@@ -45,11 +47,21 @@ import { CheckBoxComponent } from '../checkbox/checkbox.component';
         </div>
       </div>
     </form>
+
+    <ng-template #modalTemplate>
+      <h2>This is my custom modal content</h2>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
+        voluptatibus facilis eum adipisci neque ipsam sed provident distinctio
+        veniam minima, voluptates quas ex voluptatem quasi vero aliquam iste
+        quaerat illum.
+      </p>
+    </ng-template>
   `,
   styleUrl: './event.component.scss',
 })
 export class EventComponent {
-  constructor(private fb: FormBuilder) {
+  constructor(private modalService: ModalService, private fb: FormBuilder) {
     this._eventForm = this.fb.group({
       title: ['', [Validators.required]],
       completed: ['', [Validators.required]],
@@ -91,6 +103,14 @@ export class EventComponent {
 
   onEnter() {
     this.entered.emit();
+  }
+
+  openEditModal(template: TemplateRef<any>) {
+    this.modalService
+      .open(template, { size: 'lg', title: 'Foo' })
+      .subscribe((action) => {
+        console.log('modalAction', action);
+      });
   }
 
   get completed() {

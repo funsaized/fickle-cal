@@ -4,7 +4,7 @@
     height: 40px;
     border-bottom: 1px solid rgba(0, 0, 0, .3);
     display: flex;
-    justify-content: space between;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -14,6 +14,12 @@
     transform: scale(1.10);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     z-index: 999;
+
+    .checkbox{
+        background-color: #fff;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
 }
 
 .input-root.hover {
@@ -25,7 +31,8 @@ input {
     height: 100%;
     box-sizing: border-box;
     border: none;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     cursor: pointer;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -47,6 +54,5 @@ input.completed {
 }
 
 .checkbox {
-    width: 24px;
-    height: 24px;
+    height: 100%;
 }
