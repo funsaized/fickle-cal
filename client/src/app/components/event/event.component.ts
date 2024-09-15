@@ -26,11 +26,12 @@ import { ModalService } from '../../services';
     <form [formGroup]="_eventForm">
       <div
         class="input-root"
-        (mouseover)="onMouseOver(_isEditable)"
+        (mouseover)="onMouseOver()"
         (mouseout)="onMouseOut()"
         [ngClass]="{ hover: hovered, focus: focused }"
       >
         <input
+          *ngIf="!title?.value || focused; else placeHolder"
           #textInput
           id="name"
           type="text"
@@ -40,8 +41,13 @@ import { ModalService } from '../../services';
           (click)="onFocus()"
           (focusin)="onFocus()"
           (keydown.enter)="onEnter()"
-          [class.completed]="completed"
+          [class.completed]="completed?.value === true"
         />
+        <ng-template #placeHolder>
+          <span [class.completed]="completed?.value === true">
+            {{title?.value}}
+          </span>
+        </ng-template>
         <div class="checkbox">
           <app-checkbox formControlName="completed" />
         </div>
@@ -63,7 +69,7 @@ import { ModalService } from '../../services';
 export class EventComponent {
   constructor(private modalService: ModalService, private fb: FormBuilder) {
     this._eventForm = this.fb.group({
-      title: ['', [Validators.required]],
+      title: [, [Validators.required]],
       completed: ['', [Validators.required]],
     });
   }
@@ -76,14 +82,6 @@ export class EventComponent {
     this._eventForm = value as FormGroup;
   }
 
-  public _isEditable: boolean = false;
-  // TODO: maybe directive b/c angular: https://netbasal.com/disabling-form-controls-when-working-with-reactive-forms-in-angular-549dd7b42110
-  @Input()
-  set isEditable(value: boolean) {
-    this._isEditable = value;
-    !this._isEditable && this._eventForm.disable();
-  }
-
   @ViewChild('textInput', { read: ElementRef })
   textInput!: ElementRef<HTMLInputElement>;
   focused = false;
@@ -93,8 +91,8 @@ export class EventComponent {
     this.focused = true;
   }
 
-  onMouseOver(isEditable: boolean) {
-    this.hovered = isEditable;
+  onMouseOver() {
+    this.hovered = true;
   }
 
   onMouseOut() {
@@ -114,6 +112,10 @@ export class EventComponent {
   }
 
   get completed() {
-    return this._eventForm.get('completed')?.value;
+    return this._eventForm.get('completed');
+  }
+
+  get title() {
+    return this._eventForm.get('title');
   }
 }

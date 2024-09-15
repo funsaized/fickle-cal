@@ -25,7 +25,6 @@ import {
         <app-event
           *ngFor="let event of events.controls; let i = index"
           [eventForm]="event"
-          [isEditable]="i === 0 || event.touched"
           (entered)="onEnter(i)"
         />
       </div>
@@ -85,7 +84,7 @@ export class DayComponent {
 
   newControl() {
     return new FormGroup({
-      title: new FormControl('', [Validators.required]),
+      title: new FormControl<string | null>(null, [Validators.required]),
       completed: new FormControl(false, [Validators.required]),
     });
   }
