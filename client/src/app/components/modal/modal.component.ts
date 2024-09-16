@@ -30,18 +30,18 @@ export class ModalComponent {
   // Can add inputs to pass in data to modal display..
   // @Input() size: string = 'lg';
   
-  @Output() closeEvent = new EventEmitter();
-  @Output() submitEvent = new EventEmitter();
+  @Output() closeOutput = new EventEmitter();
+  @Output() submitOutput = new EventEmitter();
 
   constructor(private elementRef: ElementRef) {}
 
   close(): void {
     this.elementRef.nativeElement.remove();
-    this.closeEvent.emit();
+    this.closeOutput.emit();
   }
 
   submit(): void {
     this.elementRef.nativeElement.remove();
-    this.submitEvent.emit();
+    this.submitOutput.emit();
   }
 }

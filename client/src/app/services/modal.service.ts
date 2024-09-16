@@ -28,8 +28,8 @@ export class ModalService {
       contentViewRef.rootNodes,
     ]);
 
-    modalComponent.instance.closeEvent.subscribe(() => this.closeModal());
-    modalComponent.instance.submitEvent.subscribe(() => this.submitModal());
+    modalComponent.instance.closeOutput.subscribe(() => this.closeModal());
+    modalComponent.instance.submitOutput.subscribe(() => this.submitModal());
 
     modalComponent.hostView.detectChanges();
 
