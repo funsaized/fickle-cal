@@ -17,11 +17,12 @@ import {
 } from '@angular/forms';
 import { CheckBoxComponent } from '../checkbox/checkbox.component';
 import { ModalService } from '../../services';
+import { EditEventComponent } from '../edit-event/edit-event.component';
 
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CheckBoxComponent],
+  imports: [CommonModule, ReactiveFormsModule, CheckBoxComponent, EditEventComponent],
   template: `
     <form [formGroup]="_eventForm">
       <div
@@ -58,13 +59,7 @@ import { ModalService } from '../../services';
     </form>
 
     <ng-template #modalTemplate>
-      <h2>This is my custom modal content</h2>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
-        voluptatibus facilis eum adipisci neque ipsam sed provident distinctio
-        veniam minima, voluptates quas ex voluptatem quasi vero aliquam iste
-        quaerat illum.
-      </p>
+      <app-edit-event/>
     </ng-template>
   `,
   styleUrl: './event.component.scss',
