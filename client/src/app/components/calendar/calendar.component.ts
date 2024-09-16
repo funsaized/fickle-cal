@@ -9,6 +9,7 @@ import { DayComponent } from '../day/day.component';
   imports: [CommonModule, DayComponent],
   template: `
     <div class="container">
+      <!-- TODO: iterate different service containing form, pass input -->
       <app-day
         *ngFor="let day of weekService.currentDays$ | async"
         [day]="day"

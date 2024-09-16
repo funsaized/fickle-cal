@@ -1,0 +1,25 @@
+.header{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea{
+    background-color: transparent;
+    border-style: none;
+    border-color: Transparent;
+    outline: none;
+
+    &.title {
+        border-bottom: 1px solid #000;
+        margin-bottom: 20px;
+        font-size: 2rem;
+    }
+}

@@ -45,7 +45,6 @@ export class DayComponent {
         completed: new FormControl(false, [Validators.required]),
       });
     });
-    events.forEach((control) => control.markAsTouched());
     while (events.length < 4) {
       events.push(this.newControl());
     }
@@ -70,9 +69,7 @@ export class DayComponent {
         this.getControl(nextIndex).enable();
         nextEventComponent.textInput.nativeElement.focus();
       } else {
-        const newEvent = this.newControl();
-        newEvent.markAsTouched();
-        this.events.push(newEvent);
+        this.events.push(this.newControl());
         setTimeout(() => this.onEnter(currentIndex));
       }
     }

@@ -13,4 +13,10 @@ export interface Event {
     title: string | null;
 }
 
-export interface EventForm{}
+export interface EventDetail extends Event {
+    id: number;
+    day: Day;
+    completed: boolean;
+    notes: string | null;
+    color: string;
+}

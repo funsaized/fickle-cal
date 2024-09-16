@@ -2,11 +2,13 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  EmbeddedViewRef,
   EventEmitter,
   Input,
   Output,
   TemplateRef,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -16,13 +18,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { CheckBoxComponent } from '../checkbox/checkbox.component';
-import { ModalService } from '../../services';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CheckBoxComponent, EditEventComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CheckBoxComponent,
+    EditEventComponent,
+  ],
   template: `
     <form [formGroup]="_eventForm">
       <div
@@ -54,18 +60,25 @@ import { EditEventComponent } from '../edit-event/edit-event.component';
         </ng-template>
 
         <app-checkbox formControlName="completed" />
-
       </div>
     </form>
 
     <ng-template #modalTemplate>
-      <app-edit-event/>
+      <div class="modal">
+        <div class="modal-content">
+          <app-edit-event id="1234" />
+        </div>
+      </div>
+      <div class="modal-backdrop" (click)="closeEditModal()"></div>
     </ng-template>
   `,
   styleUrl: './event.component.scss',
 })
 export class EventComponent {
-  constructor(private modalService: ModalService, private fb: FormBuilder) {
+  constructor(
+    private viewContainerRef: ViewContainerRef,
+    private fb: FormBuilder
+  ) {
     this._eventForm = this.fb.group({
       title: [, [Validators.required]],
       completed: ['', [Validators.required]],
@@ -80,8 +93,11 @@ export class EventComponent {
     this._eventForm = value as FormGroup;
   }
 
+  @ViewChild('modalTemplate', { read: TemplateRef })
+  modalTemplate!: TemplateRef<any>;
   @ViewChild('textInput', { read: ElementRef })
   textInput!: ElementRef<HTMLInputElement>;
+  private modalViewRef: EmbeddedViewRef<any> | null = null;
   focused = false;
   hovered = false;
 
@@ -102,11 +118,11 @@ export class EventComponent {
   }
 
   openEditModal(template: TemplateRef<any>) {
-    this.modalService
-      .open(template, {}) // TODO: options if needed
-      .subscribe((action) => {
-        console.log('modalAction', action);
-      });
+    this.modalViewRef = this.viewContainerRef.createEmbeddedView(template);
+  }
+
+  closeEditModal() {
+    this.modalViewRef?.destroy();
   }
 
   get completed() {
