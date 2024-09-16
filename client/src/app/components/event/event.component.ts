@@ -51,9 +51,9 @@ import { ModalService } from '../../services';
             {{ title?.value }}
           </span>
         </ng-template>
-        <div class="checkbox">
-          <app-checkbox formControlName="completed" />
-        </div>
+
+        <app-checkbox formControlName="completed" />
+
       </div>
     </form>
 
