@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import { ParsedDay } from '../../models';
 import { EventComponent } from '../event/event.component';
 import {
@@ -10,6 +17,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { EventService, FormService } from '../../services';
+import { BehaviorSubject, Subscription, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-day',
@@ -17,7 +26,7 @@ import {
   imports: [CommonModule, EventComponent, ReactiveFormsModule],
   template: `
     <form class="day">
-      <div class="header">
+      <div class="header" *ngIf="_day$ | async; let _day">
         <div class="date">{{ _day.monthDigits }}.{{ _day.dayDigits }}</div>
         <div class="day-name">{{ _day.dayName }}</div>
       </div>
@@ -32,38 +41,41 @@ import {
   `,
   styleUrl: './day.component.scss',
 })
-export class DayComponent {
-  public _day!: ParsedDay;
+export class DayComponent implements OnInit, OnDestroy {
+  public _day$ = new BehaviorSubject<ParsedDay | null>(null);
   @Input()
   set day(day: ParsedDay) {
-    this._day = day;
-
-    // TODO: abstract form creation to service when hooking up to API
-    const events = this._day?.events?.map((event) => {
-      return new FormGroup({
-        title: new FormControl(event.title, [Validators.required]),
-        completed: new FormControl(false, [Validators.required]),
-      });
-    });
-    while (events.length < 4) {
-      events.push(this.newControl());
-    }
-    this.events = new FormArray(events);
+    this._day$.next(day);
   }
 
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
   events!: FormArray;
-
-  constructor(private fb: FormBuilder) {
+  subscription = new Subscription();
+  constructor(private fb: FormBuilder, private formService: FormService) {
     this.events = new FormArray<FormGroup>([]);
+  }
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this._day$
+        .pipe(switchMap((day) => this.formService.initFormForDay$(day!.date)))
+        .subscribe((forms) => {
+          console.error("Init form for day ", forms)
+        })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   // User presses enter, add event conditions
   onEnter(currentIndex: number) {
     const eventComponentsArray = this.eventComponents.toArray();
-    const currentInputValue = eventComponentsArray[currentIndex].textInput.nativeElement.value;
+    const currentInputValue =
+      eventComponentsArray[currentIndex].textInput.nativeElement.value;
     const nextIndex = currentIndex + 1;
-    if (currentInputValue.trim() !== ''){
+    if (currentInputValue.trim() !== '') {
       if (nextIndex < eventComponentsArray.length) {
         const nextEventComponent = eventComponentsArray[nextIndex];
         this.getControl(nextIndex).enable();

@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
       <div class="header">
         <i class="bi bi-calendar-event"></i>
         <span class="date">{{
-          event.day.date | date : 'EEE, dd MMM yyyy'
+          event.date | date : 'EEE, dd MMM yyyy'
         }}</span>
       </div>
       <div class="container">
@@ -55,11 +55,7 @@ export class EditEventComponent {
     return {
       id: id,
       title: 'Event title',
-      day: {
-        date: new Date('2024-09-11'),
-        isCurrent: false,
-        events: [],
-      },
+      date: new Date('2024-09-11'),
       completed: false,
       notes: null,
       color: 'Orange',
@@ -67,6 +63,6 @@ export class EditEventComponent {
   }
 
   onSave(input: any) {
-    throw new Error('Method not implemented.');
+    throw new Error('Method not implemented.', input);
   }
 }
