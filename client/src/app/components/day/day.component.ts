@@ -10,30 +10,32 @@ import {
 import { ParsedDay } from '../../models';
 import { EventComponent } from '../event/event.component';
 import {
-  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { EventService, FormService } from '../../services';
-import { BehaviorSubject, Subscription, switchMap } from 'rxjs';
+import { FormService } from '../../services';
+import { BehaviorSubject, Subject, Subscription, switchMap, withLatestFrom } from 'rxjs';
 
 @Component({
   selector: 'app-day',
   standalone: true,
   imports: [CommonModule, EventComponent, ReactiveFormsModule],
   template: `
-    <form class="day">
-      <div class="header" *ngIf="_day$ | async; let _day">
+    <form class="day" *ngIf="_day$ | async; let _day">
+      <div class="header">
         <div class="date">{{ _day.monthDigits }}.{{ _day.dayDigits }}</div>
         <div class="day-name">{{ _day.dayName }}</div>
       </div>
       <div class="events-body">
         <app-event
-          *ngFor="let event of events.controls; let i = index"
-          [eventForm]="event"
+          *ngFor="
+            let form of formService.getForms$(_day) | async;
+            let i = index
+          "
+          [eventForm]="form"
           (entered)="onEnter(i)"
         />
       </div>
@@ -49,18 +51,29 @@ export class DayComponent implements OnInit, OnDestroy {
   }
 
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
-  events!: FormArray;
   subscription = new Subscription();
-  constructor(private fb: FormBuilder, private formService: FormService) {
-    this.events = new FormArray<FormGroup>([]);
-  }
+  private _updateForm$ = new Subject<number | null>();
+
+  constructor(private fb: FormBuilder, public formService: FormService) {}
 
   ngOnInit(): void {
+
+    this.subscription.add(this._updateForm$.pipe(
+      withLatestFrom(this._day$.asObservable()),
+      switchMap(([i, day]) => {
+        if (i=== null) {
+          return this.formService.addControlToDay$(day!);
+        } else {
+          return this.formService.enableControlForDay$(day!, i);
+        }
+      })
+    ).subscribe());
+
     this.subscription.add(
       this._day$
-        .pipe(switchMap((day) => this.formService.initFormForDay$(day!.date)))
+        .pipe(switchMap((day) => this.formService.initFormForDay$(day!)))
         .subscribe((forms) => {
-          console.error("Init form for day ", forms)
+          console.log('Init form for day ', forms);
         })
     );
   }
@@ -78,17 +91,13 @@ export class DayComponent implements OnInit, OnDestroy {
     if (currentInputValue.trim() !== '') {
       if (nextIndex < eventComponentsArray.length) {
         const nextEventComponent = eventComponentsArray[nextIndex];
-        this.getControl(nextIndex).enable();
+        this._updateForm$.next(nextIndex);
         nextEventComponent.textInput.nativeElement.focus();
       } else {
-        this.events.push(this.newControl());
+        this._updateForm$.next(null);
         setTimeout(() => this.onEnter(currentIndex));
       }
     }
-  }
-
-  getControl(index: number) {
-    return this.events.at(index);
   }
 
   newControl() {

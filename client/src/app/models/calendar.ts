@@ -30,3 +30,5 @@ export interface EventDetailFormValue {
   notes: FormControl<string | null>;
   color: FormControl<string | null>;
 }
+
+export type EventFormDay = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";

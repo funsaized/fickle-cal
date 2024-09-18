@@ -1,23 +1,33 @@
 import { Injectable } from '@angular/core';
-import { WeekService } from './week.service';
 import { EventService } from './event.service';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { EventDetail, EventDetailFormValue, ParsedDay } from '../models';
-import { of, switchMap, tap } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
+import {
+  EventDetailFormValue,
+  EventFormDay,
+  ParsedDay,
+} from '../models';
+import { BehaviorSubject, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormService {
-  private _eventsForm!: FormArray;
-  // private _eventsForm = 
+  private _form$ = new BehaviorSubject<
+    Record<EventFormDay, FormGroup<EventDetailFormValue>[]>
+  >({
+    Mon: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
+    Tue: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
+    Wed: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
+    Thu: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
+    Fri: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
+    Sat: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
+    Sun: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
+  });
 
-  constructor(private readonly eventService: EventService) {
-    this._eventsForm = new FormArray<FormGroup<EventDetailFormValue>>([]);
-  }
+  constructor(private readonly eventService: EventService) {}
 
-  public initFormForDay$(date: Date) {
-    return this.eventService.getEventsAt$(date).pipe(
+  public initFormForDay$(day: ParsedDay) {
+    return this.eventService.getEventsAt$(day.date).pipe(
       switchMap((events) => {
         const formControls = events.map((event) => {
           const formValue: EventDetailFormValue = {
@@ -32,7 +42,50 @@ export class FormService {
         });
         return of(formControls);
       }),
-      tap((forms) => forms.forEach((form) => this._eventsForm.push(form)))
+      withLatestFrom(this._form$.asObservable()),
+      filter(([events, formsMap]) => events.length > 0),
+      tap(([formControls, form]) => {
+        form[day.dayName as EventFormDay] = formControls;
+        this._form$.next(form);
+      }),
+      map(([formControls, _]) => formControls)
     );
+  }
+
+  getForms$(day: ParsedDay) {
+    return this._form$.pipe(map((form) => form[day.dayName as EventFormDay]));
+  }
+
+  addControlToDay$(day: ParsedDay) {
+    return this.getForms$(day).pipe(
+      withLatestFrom(this._form$.asObservable()),
+      tap(([forms, formsMap]) => {
+        forms.push(this._newForm());
+        formsMap[day.dayName as EventFormDay] = forms;
+        this._form$.next(formsMap);
+      })
+    );
+  }
+
+  enableControlForDay$(day: ParsedDay, i: number) {
+    return this.getForms$(day).pipe(
+      withLatestFrom(this._form$.asObservable()),
+      tap(([forms, formsMap]) => {
+        forms[i].enable(); // TODO: disable logic so only initial empty is enabled
+        formsMap[day.dayName as EventFormDay] = forms;
+        this._form$.next(formsMap);
+      })
+    );
+  }
+
+  private _newForm() {
+    return new FormGroup<EventDetailFormValue>({
+      id: new FormControl(null),
+      title: new FormControl(null),
+      date: new FormControl(null),
+      completed: new FormControl(false),
+      notes: new FormControl(null),
+      color: new FormControl(null),
+    });
   }
 }
