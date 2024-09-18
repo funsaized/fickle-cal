@@ -6,7 +6,7 @@ import {
   EventFormDay,
   ParsedDay,
 } from '../models';
-import { BehaviorSubject, filter, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, filter, map, of, switchMap, take, tap, withLatestFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -59,6 +59,7 @@ export class FormService {
   addControlToDay$(day: ParsedDay) {
     return this.getForms$(day).pipe(
       withLatestFrom(this._form$.asObservable()),
+      take(1),
       tap(([forms, formsMap]) => {
         forms.push(this._newForm());
         formsMap[day.dayName as EventFormDay] = forms;
@@ -70,6 +71,7 @@ export class FormService {
   enableControlForDay$(day: ParsedDay, i: number) {
     return this.getForms$(day).pipe(
       withLatestFrom(this._form$.asObservable()),
+      take(1),
       tap(([forms, formsMap]) => {
         forms[i].enable(); // TODO: disable logic so only initial empty is enabled
         formsMap[day.dayName as EventFormDay] = forms;
