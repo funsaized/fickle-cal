@@ -73,7 +73,7 @@ import { EditEventComponent } from '../edit-event/edit-event.component';
     </ng-template>
   `,
   styleUrl: './event.component.scss',
-})
+}) // TODO: make CVA component
 export class EventComponent {
   constructor(
     private viewContainerRef: ViewContainerRef,
