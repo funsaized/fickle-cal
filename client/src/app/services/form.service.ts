@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
 import { EventService } from './event.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { EventDetailFormValue, EventFormDay, ParsedDay } from '../models';
 import {
-  EventDetailFormValue,
-  EventFormDay,
-  ParsedDay,
-} from '../models';
-import { BehaviorSubject, filter, map, of, switchMap, take, tap, withLatestFrom } from 'rxjs';
+  BehaviorSubject,
+  filter,
+  map,
+  of,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from 'rxjs';
+import { WeekService } from './week.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,17 +20,59 @@ import { BehaviorSubject, filter, map, of, switchMap, take, tap, withLatestFrom 
 export class FormService {
   private _form$ = new BehaviorSubject<
     Record<EventFormDay, FormGroup<EventDetailFormValue>[]>
-  >({
-    Mon: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
-    Tue: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
-    Wed: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
-    Thu: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
-    Fri: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
-    Sat: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
-    Sun: [this._newForm(), this._newForm(), this._newForm(), this._newForm()],
-  });
+  >({} as Record<EventFormDay, FormGroup<EventDetailFormValue>[]>);
 
-  constructor(private readonly eventService: EventService) {}
+  constructor(
+    private readonly eventService: EventService,
+    private readonly weekService: WeekService
+  ) {
+    this.weekService.dayPage$.subscribe((days) => {
+      this._form$.next({
+        Sun: [
+          this._newForm(days[0].date),
+          this._newForm(days[0].date),
+          this._newForm(days[0].date),
+          this._newForm(days[0].date),
+        ],
+        Mon: [
+          this._newForm(days[1].date),
+          this._newForm(days[1].date),
+          this._newForm(days[1].date),
+          this._newForm(days[1].date),
+        ],
+        Tue: [
+          this._newForm(days[2].date),
+          this._newForm(days[2].date),
+          this._newForm(days[2].date),
+          this._newForm(days[2].date),
+        ],
+        Wed: [
+          this._newForm(days[3].date),
+          this._newForm(days[3].date),
+          this._newForm(days[3].date),
+          this._newForm(days[3].date),
+        ],
+        Thu: [
+          this._newForm(days[4].date),
+          this._newForm(days[4].date),
+          this._newForm(days[4].date),
+          this._newForm(days[4].date),
+        ],
+        Fri: [
+          this._newForm(days[5].date),
+          this._newForm(days[5].date),
+          this._newForm(days[5].date),
+          this._newForm(days[5].date),
+        ],
+        Sat: [
+          this._newForm(days[6].date),
+          this._newForm(days[6].date),
+          this._newForm(days[6].date),
+          this._newForm(days[6].date),
+        ],
+      });
+    });
+  }
 
   public initFormForDay$(day: ParsedDay) {
     return this.eventService.getEventsAt$(day.date).pipe(
@@ -61,7 +109,7 @@ export class FormService {
       withLatestFrom(this._form$.asObservable()),
       take(1),
       tap(([forms, formsMap]) => {
-        forms.push(this._newForm());
+        forms.push(this._newForm(day.date));
         formsMap[day.dayName as EventFormDay] = forms;
         this._form$.next(formsMap);
       })
@@ -80,11 +128,11 @@ export class FormService {
     );
   }
 
-  private _newForm() {
+  private _newForm(date: Date) {
     return new FormGroup<EventDetailFormValue>({
       id: new FormControl(null),
       title: new FormControl(null),
-      date: new FormControl(null),
+      date: new FormControl(date),
       completed: new FormControl(false),
       notes: new FormControl(null),
       color: new FormControl(null),

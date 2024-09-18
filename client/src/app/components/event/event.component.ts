@@ -66,7 +66,7 @@ import { EditEventComponent } from '../edit-event/edit-event.component';
     <ng-template #modalTemplate>
       <div class="modal">
         <div class="modal-content">
-          <app-edit-event id="1234" />
+          <app-edit-event [eventForm]="_eventForm" id="1234" />
         </div>
       </div>
       <div class="modal-backdrop" (click)="closeEditModal()"></div>

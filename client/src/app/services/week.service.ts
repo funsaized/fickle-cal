@@ -29,6 +29,10 @@ export class WeekService {
     this._dayPage$.next(days);
   }
 
+  get dayPage$() {
+    return this._dayPage$.asObservable();
+  }
+
   get currentDays$() {
     return this._currentDays$.asObservable();
   }

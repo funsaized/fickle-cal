@@ -2,24 +2,18 @@ import { Component, Input } from '@angular/core';
 import { EventDetail } from '../../models';
 import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-event',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   // TODO: dynamically resize the textarea rows (height) based on content
   template: `
-    <form
-      *ngIf="_event$ | async as event"
-      #formName="ngForm"
-      (ngSubmit)="onSave(formName.value)"
-    >
+    <form [formGroup]="_eventForm">
       <div class="header">
         <i class="bi bi-calendar-event"></i>
-        <span class="date">{{
-          event.date | date : 'EEE, dd MMM yyyy'
-        }}</span>
+        <span class="date">{{ date.value | date : 'EEE, dd MMM yyyy' }}</span>
       </div>
       <div class="container">
         <textarea
@@ -27,14 +21,14 @@ import { FormsModule } from '@angular/forms';
           name="title"
           id="title"
           rows="1"
-          [ngModel]="event.title"
+          formControlName="title"
         ></textarea>
         <textarea
           class="notes"
           name="notes"
           id="notes"
           placeholder="Some extra notes go here..."
-          [ngModel]="event.notes"
+          formControlName="notes"
         ></textarea>
       </div>
     </form>
@@ -42,27 +36,14 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./edit-event.component.scss'],
 })
 export class EditEventComponent {
-  public _event$ = new BehaviorSubject<EventDetail | null>(null);
-  public test = 'test';
+  
+  _eventForm!: FormGroup;
   @Input()
-  set id(id: string) {
-    // TODO: remove testing stub
-    this._event$.next(this.fetchEvent(+id));
+  set eventForm(value: FormGroup) {
+    this._eventForm = value;
   }
-
-  constructor() {}
-  fetchEvent(id: number): EventDetail {
-    return {
-      id: id,
-      title: 'Event title',
-      date: new Date('2024-09-11'),
-      completed: false,
-      notes: null,
-      color: 'Orange',
-    };
-  }
-
-  onSave(input: any) {
-    throw new Error('Method not implemented.', input);
+  
+  get date(): FormControl {
+    return this._eventForm.get('date') as FormControl;
   }
 }
