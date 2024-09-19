@@ -2,7 +2,7 @@
     position: relative;
     height: 40px;
     font-size: 1rem;
-    border-bottom: 1px solid rgba(0, 0, 0, .3);
+    border-bottom: 1px solid rgba(121, 94, 53, .3);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -23,7 +23,7 @@
 }
 
 .input-root.hover {
-    border-color: blue;
+    border-color: #ADD1DC; // TODO: color scheme vars
 }
 
 input {
@@ -50,7 +50,7 @@ input {
 
 input.completed, span.completed {
     text-decoration: line-through;
-    color: rgba(0, 0, 0, .3);
+    color: #F0DFA0; // TODO: color scheme vars
 }
 
 span {

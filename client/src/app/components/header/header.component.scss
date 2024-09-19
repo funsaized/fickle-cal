@@ -5,9 +5,23 @@
     height: 100%;
 }
 
-h1 {
-    font-weight: 600;
-    margin: 0;
+.day {
+    position: relative;
+    * {
+        display: inline;
+    }
+
+    h1 {
+        font-weight: 600;
+        margin: 0;
+        margin-right: 10px;
+    }
+
+    svg {
+        position: absolute;
+        top: -10px;
+        fill: #795E35; // TODO: color scheme vars
+    }
 }
 
 ul {
