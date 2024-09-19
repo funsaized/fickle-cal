@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { EventService } from './event.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { EventDetailFormValue, EventFormDay, ParsedDay } from '../models';
+import {
+  EventDetailFormValue,
+  EventFormDay,
+  ParsedDay,
+  FormsMap,
+} from '../models';
 import {
   BehaviorSubject,
   filter,
@@ -18,9 +23,15 @@ import { WeekService } from './week.service';
   providedIn: 'root',
 })
 export class FormService {
-  private _form$ = new BehaviorSubject<
-    Record<EventFormDay, FormGroup<EventDetailFormValue>[]>
-  >({} as Record<EventFormDay, FormGroup<EventDetailFormValue>[]>);
+  private _form$ = new BehaviorSubject<FormsMap>({
+    Sun: [],
+    Mon: [],
+    Tue: [],
+    Wed: [],
+    Thu: [],
+    Fri: [],
+    Sat: [],
+  });
 
   constructor(
     private readonly eventService: EventService,
@@ -91,7 +102,7 @@ export class FormService {
         return of(formControls);
       }),
       withLatestFrom(this._form$.asObservable()),
-      filter(([events, formsMap]) => events.length > 0),
+      filter(([events, _]) => events.length > 0),
       tap(([formControls, form]) => {
         form[day.dayName as EventFormDay] = formControls;
         this._form$.next(form);

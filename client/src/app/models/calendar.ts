@@ -1,4 +1,4 @@
-import { Form, FormControl } from "@angular/forms";
+import { Form, FormControl, FormGroup } from "@angular/forms";
 
 export interface Day {
   date: Date;
@@ -32,3 +32,5 @@ export interface EventDetailFormValue {
 }
 
 export type EventFormDay = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+
+export type FormsMap = Record<EventFormDay, FormGroup<EventDetailFormValue>[]>;

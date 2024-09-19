@@ -16,6 +16,9 @@ textarea{
     border-style: none;
     border-color: Transparent;
     outline: none;
+    width: 100%;
+    overflow: hidden;
+    resize: none;
 
     &.title {
         border-bottom: 1px solid #000;
