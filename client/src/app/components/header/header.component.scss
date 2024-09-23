@@ -42,6 +42,21 @@ ul {
 
         &:first-child {
             background-color: #76c0d6;
+            position: relative;
+            &::before {
+                position: absolute;
+                content: "";
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                border: solid 3px #76c0d6;
+                border-radius: 50%
+            }
+        }
+
+        &.isTouched:first-child::before {
+            animation: ripple 2s linear infinite;
         }
 
         &:nth-child(2) {
@@ -58,4 +73,18 @@ ul {
 
 a {
     text-decoration: none;
+}
+
+.micro:before {
+}
+
+.micro:after {
+    animation: ripple 2s 1s linear infinite;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
 }

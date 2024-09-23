@@ -110,7 +110,7 @@ import { RouterLink } from '@angular/router';
       </div>
       <nav>
         <ul>
-          <li>
+          <li [class.isTouched]="isTouched">
             <a routerLink="/user">
               <i class="bi bi-person"></i>
             </a>
@@ -124,4 +124,6 @@ import { RouterLink } from '@angular/router';
   `,
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+	isTouched = true;
+}
