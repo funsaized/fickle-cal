@@ -9,24 +9,26 @@ import { KeycloakService } from 'keycloak-angular';
   template: ` <router-outlet /> `,
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
-  title = 'feined-client';
+// export class AppComponent implements OnInit {
+export class AppComponent {
 
-  constructor(private readonly keycloak: KeycloakService) {}
+title = 'feined-client';
 
-  public async ngOnInit() {
-    const isLoggedIn = await this.keycloak.isLoggedIn();
+  // constructor(private readonly keycloak: KeycloakService) {}
 
-    if (isLoggedIn) {
-      const userProfile = await this.keycloak.loadUserProfile();
-      const user = {
-        authStatus: 'AUTH',
-        name: userProfile.firstName || '',
-        email: userProfile.email || '',
-      };
-      window.sessionStorage.setItem('userdetails', JSON.stringify(user));
-    } else {
-      this.keycloak.login();
-    }
-  }
+  // public async ngOnInit() {
+  //   const isLoggedIn = await this.keycloak.isLoggedIn();
+
+  //   if (isLoggedIn) {
+  //     const userProfile = await this.keycloak.loadUserProfile();
+  //     const user = {
+  //       authStatus: 'AUTH',
+  //       name: userProfile.firstName || '',
+  //       email: userProfile.email || '',
+  //     };
+  //     window.sessionStorage.setItem('userdetails', JSON.stringify(user));
+  //   } else {
+  //     this.keycloak.login();
+  //   }
+  // }
 }

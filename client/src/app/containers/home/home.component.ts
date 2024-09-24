@@ -27,15 +27,15 @@ export class HomeComponent {
   private subscription = new Subscription();
 
   constructor(
-    public readonly userService: UserService,
+    // public readonly userService: UserService,
     private readonly weekService: WeekService,
     private readonly router: Router
   ) {
-    this.subscription.add(
-      this.userService
-        .fetchUser$()
-        .pipe(catchError((err) => this.router.navigate(['/error'])))
-        .subscribe()
-    );
+    // this.subscription.add(
+    //   this.userService
+    //     .fetchUser$()
+    //     .pipe(catchError((err) => this.router.navigate(['/error'])))
+    //     .subscribe()
+    // );
   }
 }

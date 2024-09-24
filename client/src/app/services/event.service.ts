@@ -13,7 +13,6 @@ export class EventService {
     this.weekService.currentDays$.pipe(
       switchMap((days) => this.init(days))
     ).subscribe((events) => {
-      console.error("Init events ", events)
       this._events$.next(events);
     });
   }
