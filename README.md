@@ -1,27 +1,34 @@
-# SocialUi
+<h1 align="center">Welcome to feined-todo 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-blue.svg?cacheSeconds=2592000" />
+</p>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+> A minimalist, calendar-centric todo app
 
-## Development server
+### 🏠 [Homepage](https://kind-glacier-0930e140f.5.azurestaticapps.net/)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Install
 
-## Code scaffolding
+```sh
+npm install
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Usage
 
-## Build
+```sh
+npm run start
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Author
 
-## Running unit tests
+👤 **Sai N. Nimmagadda**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+* Website: https://s11a.com
+* Github: [@snimmagadda1](https://github.com/snimmagadda1)
 
-## Running end-to-end tests
+## Show your support
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Give a ⭐️ if this project helped you!
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
