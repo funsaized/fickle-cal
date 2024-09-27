@@ -5,7 +5,7 @@
 
 > A minimalist, calendar-centric todo app
 
-### 🏠 [Homepage](https://kind-glacier-0930e140f.5.azurestaticapps.net/)
+### 🏠 [Homepage](https://todo.s11a.com/)
 
 ## Install
 
