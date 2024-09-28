@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
@@ -36,9 +36,13 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
   `,
   styleUrls: ['./edit-event.component.scss'],
 })
-export class EditEventComponent {
+export class EditEventComponent implements AfterViewInit {
   @ViewChild('textArea1') textArea1!: ElementRef;
   @ViewChild('textArea2') textArea2!: ElementRef;
+
+  ngAfterViewInit() {
+    this.autoResize();
+  }
 
   _eventForm!: FormGroup;
   @Input()
