@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -110,10 +110,15 @@ import { RouterLink } from '@angular/router';
       </div>
       <nav>
         <ul>
-          <li [class.isTouched]="isTouched">
+          <li
+            [class.isTouched]="isTouched"
+            (mouseover)="onMouseOver()"
+            (mouseleave)="onMouseLeave()"
+          >
             <a routerLink="/user">
               <i class="bi bi-person"></i>
             </a>
+            <span class="tooltip"  [class.visible]="hovered">Log In</span>
           </li>
           <li>
             <a href="#"><i class="bi bi-three-dots-vertical"></i></a>
@@ -125,5 +130,15 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-	isTouched = true;
+
+  isTouched = true;
+	hovered = false;
+
+  onMouseOver() {
+    this.hovered = true;
+  }
+
+  onMouseLeave() {
+    this.hovered = false;
+  }
 }

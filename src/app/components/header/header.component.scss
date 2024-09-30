@@ -71,15 +71,36 @@ ul {
     }
 }
 
+.tooltip {
+    position: absolute;
+    left: 50%;
+    top: 120%;
+    transform: translateX(-50%);
+    text-wrap: nowrap;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition-delay: 0s, .2s;
+    transition-duration: .2s, 0s;
+    transition-property: opacity, visibility;
+    font-size: .8rem;
+    background-color: #222c;
+    color: #fff;
+    padding: 0 6px;
+    border-radius: 5px;
+}
+
+.tooltip.visible {
+    opacity: 100%;
+    visibility: visible;
+}
+
 i {
     color: #F5F3E8;
 }
 
 a {
     text-decoration: none;
-}
-
-.micro:before {
 }
 
 .micro:after {

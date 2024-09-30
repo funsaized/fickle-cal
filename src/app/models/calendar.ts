@@ -1,8 +1,9 @@
-import { Form, FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 
 export interface Day {
   date: Date;
   isCurrent: boolean;
+  show?: boolean;
 }
 export interface ParsedDay extends Day {
   dayDigits: string; // e.g '09'

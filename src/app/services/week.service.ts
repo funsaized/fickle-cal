@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { Day, ParsedDay } from '../models';
 import { formatDate } from '@angular/common';
+import { isToday } from 'date-fns';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,9 @@ export class WeekService {
 
   constructor(private http: HttpClient) {
     this._initializeCurrentWeek();
-    this._dayPage$.asObservable().subscribe((days) => {
+    this._dayPage$.asObservable().pipe(
+      map((days) => this._getWeek(days)),
+    ).subscribe((days) => {
       this._currentDays$.next(
         days.map((day) => ({
           ...day,
@@ -25,16 +28,8 @@ export class WeekService {
     });
   }
 
-  set dayPage(days: Day[]) {
-    this._dayPage$.next(days);
-  }
-
-  get dayPage$() {
-    return this._dayPage$.asObservable();
-  }
-
-  get currentDays$() {
-    return this._currentDays$.asObservable();
+  private _getWeek(days: Day[]): Day[] {
+    return days.filter((day) => day.show);
   }
 
   private _initializeCurrentWeek(): void {
@@ -53,9 +48,17 @@ export class WeekService {
       week.push({
         date: dayDate,
         isCurrent: false,
+        show: true,
       });
     }
-    this.dayPage = week;
+    this._dayPage$.next(week);
   }
-  
+
+  get dayPage$() {
+    return this._dayPage$.asObservable();
+  }
+
+  get currentDays$() {
+    return this._currentDays$.asObservable();
+  }
 }
