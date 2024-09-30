@@ -118,10 +118,16 @@ import { RouterLink } from '@angular/router';
             <a routerLink="/user">
               <i class="bi bi-person"></i>
             </a>
-            <span class="tooltip"  [class.visible]="hovered">Log In</span>
+            <span class="tooltip" [class.visible]="hovered">Log In</span>
           </li>
           <li>
             <a href="#"><i class="bi bi-three-dots-vertical"></i></a>
+          </li>
+          <li>
+            <i class="bi bi-arrow-left"></i>
+          </li>
+          <li>
+            <i class="bi bi-arrow-right"></i>
           </li>
         </ul>
       </nav>
@@ -130,9 +136,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-
   isTouched = true;
-	hovered = false;
+  hovered = false;
 
   onMouseOver() {
     this.hovered = true;
