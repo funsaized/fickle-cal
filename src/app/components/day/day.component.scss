@@ -6,6 +6,15 @@
         border-bottom: 2px solid rgba(0, 0, 0, .5);
     }
 
+    .header.isCurrent {
+        border-bottom: 2px solid blue;
+        color: #0000ff;
+
+        .day-name{
+            color: rgba(0, 0, 255, .6);
+        }
+    }
+
     .day-name {
         color: #CAA171; // TODO: color scheme vars
     }

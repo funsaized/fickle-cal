@@ -25,7 +25,7 @@ import { BehaviorSubject, Subject, Subscription, switchMap, withLatestFrom } fro
   imports: [CommonModule, EventComponent, ReactiveFormsModule],
   template: `
     <form class="day" *ngIf="_day$ | async; let _day">
-      <div class="header">
+      <div class="header" [class.isCurrent]="_day.isCurrent">
         <div class="date">{{ _day.monthDigits }}.{{ _day.dayDigits }}</div>
         <div class="day-name">{{ _day.dayName }}</div>
       </div>
@@ -98,12 +98,5 @@ export class DayComponent implements OnInit, OnDestroy {
         setTimeout(() => this.onEnter(currentIndex));
       }
     }
-  }
-
-  newControl() {
-    return new FormGroup({
-      title: new FormControl<string | null>(null, [Validators.required]),
-      completed: new FormControl(false, [Validators.required]),
-    });
   }
 }

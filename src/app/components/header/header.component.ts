@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -124,10 +124,10 @@ import { RouterLink } from '@angular/router';
             <a href="#"><i class="bi bi-three-dots-vertical"></i></a>
           </li>
           <li>
-            <i class="bi bi-arrow-left"></i>
+            <i class="bi bi-arrow-left" (click)="onArrowClick('left')"></i>
           </li>
           <li>
-            <i class="bi bi-arrow-right"></i>
+            <i class="bi bi-arrow-right" (click)="onArrowClick('right')"></i>
           </li>
         </ul>
       </nav>
@@ -136,6 +136,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+  @Output() arrowClick = new EventEmitter<string>();
+
   isTouched = true;
   hovered = false;
 
@@ -145,5 +147,9 @@ export class HeaderComponent {
 
   onMouseLeave() {
     this.hovered = false;
+  }
+
+  onArrowClick(direction: string) {
+    this.arrowClick.emit(direction);
   }
 }

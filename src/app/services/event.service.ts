@@ -1,27 +1,16 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
-import { WeekService } from './week.service';
-import { EventDetail, ParsedDay } from '../models';
+import { BehaviorSubject, Observable, of, switchMap, takeWhile } from 'rxjs';
+import { Day, EventDetail, ParsedDay } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
 
-  constructor(private readonly weekService: WeekService) {
-    this.weekService.currentDays$.pipe(
-      switchMap((days) => this.init(days))
-    ).subscribe((events) => {
-      this._events$.next(events);
-    });
-  }
-
   private _events$ = new BehaviorSubject<EventDetail[]>([]);
 
-
   // TODO: http events 
-  init(days: ParsedDay[]): Observable<EventDetail[]> {
+  init(days: Day[]): void {
     const defaultEvents: EventDetail[] = [
       {
         id: null,
@@ -49,7 +38,7 @@ export class EventService {
       },
     ];
 
-    return of(defaultEvents);
+    this._events$.next(defaultEvents);
   }
 
   get events$() {
