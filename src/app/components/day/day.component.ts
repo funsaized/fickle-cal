@@ -9,15 +9,15 @@ import {
 } from '@angular/core';
 import { ParsedDay } from '../../models';
 import { EventComponent } from '../event/event.component';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { FormService } from '../../services';
-import { BehaviorSubject, Subject, Subscription, switchMap, withLatestFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  Subscription,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs';
 
 @Component({
   selector: 'app-day',
@@ -57,17 +57,20 @@ export class DayComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder, public formService: FormService) {}
 
   ngOnInit(): void {
-
-    this.subscription.add(this._updateForm$.pipe(
-      withLatestFrom(this._day$.asObservable()),
-      switchMap(([i, day]) => {
-        if (i=== null) {
-          return this.formService.addControlToDay$(day!);
-        } else {
-          return this.formService.enableControlForDay$(day!, i);
-        }
-      })
-    ).subscribe());
+    this.subscription.add(
+      this._updateForm$
+        .pipe(
+          withLatestFrom(this._day$.asObservable()),
+          switchMap(([i, day]) => {
+            if (i === null) {
+              return this.formService.addControlToDay$(day!);
+            } else {
+              return this.formService.enableControlForDay$(day!, i);
+            }
+          })
+        )
+        .subscribe()
+    );
 
     this.subscription.add(
       this._day$
