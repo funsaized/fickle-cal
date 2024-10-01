@@ -26,4 +26,9 @@
 
 .events-body {
     min-height: 420px;
+    background: repeating-linear-gradient(to bottom,
+                rgba(121, 94, 53, .3),
+                rgba(121, 94, 53, .3) 1px,
+                transparent 1px,
+                transparent 40px);
 }

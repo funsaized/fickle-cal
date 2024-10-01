@@ -11,9 +11,9 @@ import { EventService } from './event.service';
 })
 export class WeekService {
   isInitialized = false;
-  private _dayPage$ = new BehaviorSubject<Day[]>([]);
-  private _currentDays$ = new BehaviorSubject<ParsedDay[]>([]);
-  private _direction = new Subject<string>();
+  private _dayPage$ = new BehaviorSubject<Day[]>([]); // Driver for focused week
+  private _currentDays$ = new BehaviorSubject<ParsedDay[]>([]); // UI friendly days
+  private _direction = new Subject<string>(); // Change event
   constructor(private http: HttpClient, private eventService: EventService) {
     this._initializeCurrentWeek();
     this._dayPage$.asObservable().subscribe((days) => {

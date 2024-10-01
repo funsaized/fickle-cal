@@ -13,6 +13,8 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { FormService } from '../../services';
 import {
   BehaviorSubject,
+  filter,
+  map,
   Subject,
   Subscription,
   switchMap,
@@ -61,12 +63,10 @@ export class DayComponent implements OnInit, OnDestroy {
       this._updateForm$
         .pipe(
           withLatestFrom(this._day$.asObservable()),
-          switchMap(([i, day]) => {
-            if (i === null) {
-              return this.formService.addControlToDay$(day!);
-            } else {
-              return this.formService.enableControlForDay$(day!, i);
-            }
+          filter(([i, _]) => i === null),
+          map(([_, day]) => day),
+          switchMap((day) => {
+            return this.formService.addControlToDay$(day!);
           })
         )
         .subscribe()

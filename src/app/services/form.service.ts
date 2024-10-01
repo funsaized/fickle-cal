@@ -37,52 +37,22 @@ export class FormService {
     private readonly eventService: EventService,
     private readonly weekService: WeekService
   ) {
-    this.weekService.dayPage$.subscribe((days) => {
-      this._form$.next({
-        Sun: [
-          this._newForm(days[0].date),
-          this._newForm(days[0].date),
-          this._newForm(days[0].date),
-          this._newForm(days[0].date),
-        ],
-        Mon: [
-          this._newForm(days[1].date),
-          this._newForm(days[1].date),
-          this._newForm(days[1].date),
-          this._newForm(days[1].date),
-        ],
-        Tue: [
-          this._newForm(days[2].date),
-          this._newForm(days[2].date),
-          this._newForm(days[2].date),
-          this._newForm(days[2].date),
-        ],
-        Wed: [
-          this._newForm(days[3].date),
-          this._newForm(days[3].date),
-          this._newForm(days[3].date),
-          this._newForm(days[3].date),
-        ],
-        Thu: [
-          this._newForm(days[4].date),
-          this._newForm(days[4].date),
-          this._newForm(days[4].date),
-          this._newForm(days[4].date),
-        ],
-        Fri: [
-          this._newForm(days[5].date),
-          this._newForm(days[5].date),
-          this._newForm(days[5].date),
-          this._newForm(days[5].date),
-        ],
-        Sat: [
-          this._newForm(days[6].date),
-          this._newForm(days[6].date),
-          this._newForm(days[6].date),
-          this._newForm(days[6].date),
-        ],
+    this.weekService.dayPage$
+      .pipe
+      // TODO: intelligently get events for the focused week
+      // skip(1),
+      ()
+      .subscribe((days) => {
+        this._form$.next({
+          Sun: [this._newForm(days[0].date)],
+          Mon: [this._newForm(days[1].date)],
+          Tue: [this._newForm(days[2].date)],
+          Wed: [this._newForm(days[3].date)],
+          Thu: [this._newForm(days[4].date)],
+          Fri: [this._newForm(days[5].date)],
+          Sat: [this._newForm(days[6].date)],
+        });
       });
-    });
   }
 
   public initFormForDay$(day: ParsedDay) {
@@ -132,7 +102,6 @@ export class FormService {
       withLatestFrom(this._form$.asObservable()),
       take(1),
       tap(([forms, formsMap]) => {
-        forms[i].enable(); // TODO: disable logic so only initial empty is enabled
         formsMap[day.dayName as EventFormDay] = forms;
         this._form$.next(formsMap);
       })

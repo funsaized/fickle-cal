@@ -2,10 +2,13 @@
     position: relative;
     height: 40px;
     font-size: 1rem;
-    border-bottom: 1px solid rgba(121, 94, 53, .3);
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    &:focus-within {
+        background-color: #fff;
+    }
 }
 
 .input-root.focus {
@@ -23,10 +26,11 @@
 }
 
 .input-root.hover {
-    border-color: #ADD1DC; // TODO: color scheme vars
+    border-bottom: 1px solid #ADD1DC; // TODO: color scheme vars
 }
 
 input {
+    background-color: transparent;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
