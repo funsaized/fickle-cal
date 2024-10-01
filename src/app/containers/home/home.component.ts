@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { UserService, WeekService } from '../../services';
+import { WeekService } from '../../services';
 import { CommonModule } from '@angular/common';
-import { catchError, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { CalendarComponent, HeaderComponent } from '../../components';
 @Component({
@@ -11,7 +10,10 @@ import { CalendarComponent, HeaderComponent } from '../../components';
   template: `
     <div class="wrapper">
       <header>
-        <app-header (arrowClick)="handleArrowClick($event)" />
+        <app-header
+          [month]="(weekService.currentDays$ | async)?.[0]?.date"
+          (arrowClick)="handleArrowClick($event)"
+        />
       </header>
       <main>
         <app-calendar />
@@ -23,7 +25,7 @@ import { CalendarComponent, HeaderComponent } from '../../components';
 })
 export class HomeComponent {
   constructor(
-    private readonly weekService: WeekService,
+    public readonly weekService: WeekService,
     private readonly router: Router
   ) {}
 

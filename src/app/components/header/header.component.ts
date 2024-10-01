@@ -1,14 +1,15 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, DatePipe],
   template: `
     <div class="container">
       <div class="day">
-        <h1>September 2024</h1>
+        <h1>{{month | date:'MMMM'}} 2024</h1>
         <svg
           fill="#000000"
           height="50px"
@@ -136,7 +137,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+  @Input() month: Date | undefined;
   @Output() arrowClick = new EventEmitter<string>();
+
 
   isTouched = true;
   hovered = false;
