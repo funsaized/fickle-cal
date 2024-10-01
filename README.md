@@ -3,7 +3,7 @@
   <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-blue.svg?cacheSeconds=2592000" />
 </p>
 
-> A minimalist, calendar-centric todo app
+> A barebones, calendar-centric todo app
 
 ### 🏠 [Homepage](https://todo.s11a.com/)
 
