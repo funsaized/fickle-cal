@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EmbeddedViewRef,
@@ -19,6 +20,8 @@ import {
 } from '@angular/forms';
 import { CheckBoxComponent } from '../checkbox/checkbox.component';
 import { EditEventComponent } from '../edit-event/edit-event.component';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-event',
@@ -53,7 +56,7 @@ import { EditEventComponent } from '../edit-event/edit-event.component';
         <ng-template #placeHolder>
           <span
             [class.completed]="completed?.value === true"
-            (click)="openEditModal(modalTemplate)"
+            (click)="openEditModal()"
           >
             {{ title?.value }}
           </span>
@@ -64,20 +67,16 @@ import { EditEventComponent } from '../edit-event/edit-event.component';
     </form>
 
     <ng-template #modalTemplate>
-      <div class="modal">
-        <div class="modal-content">
-          <app-edit-event [eventForm]="_eventForm" id="1234" />
-        </div>
-      </div>
-      <div class="modal-backdrop" (click)="closeEditModal()"></div>
+      <app-edit-event [eventForm]="_eventForm" id="1234" />
     </ng-template>
   `,
   styleUrl: './event.component.scss',
 }) // TODO: make CVA component
-export class EventComponent {
+export class EventComponent implements AfterViewInit {
   constructor(
     private viewContainerRef: ViewContainerRef,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private overlay: Overlay
   ) {
     this._eventForm = this.fb.group({
       title: [, [Validators.required]],
@@ -94,12 +93,21 @@ export class EventComponent {
   }
 
   @ViewChild('modalTemplate', { read: TemplateRef })
-  modalTemplate!: TemplateRef<any>;
+  modalTemplate!: TemplateRef<unknown>;
+  templatePortal: TemplatePortal<any> | null = null;
+  overlayRef!: OverlayRef;
+
   @ViewChild('textInput', { read: ElementRef })
   textInput!: ElementRef<HTMLInputElement>;
-  private modalViewRef: EmbeddedViewRef<any> | null = null;
   focused = false;
   hovered = false;
+
+  ngAfterViewInit(): void {
+    this.templatePortal = new TemplatePortal(
+      this.modalTemplate,
+      this.viewContainerRef
+    );
+  }
 
   onFocus() {
     this.focused = true;
@@ -117,12 +125,20 @@ export class EventComponent {
     this.entered.emit();
   }
 
-  openEditModal(template: TemplateRef<any>) {
-    this.modalViewRef = this.viewContainerRef.createEmbeddedView(template);
-  }
-
-  closeEditModal() {
-    this.modalViewRef?.destroy();
+  openEditModal() {
+    const config = new OverlayConfig({
+      hasBackdrop: true,
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically(),
+    });
+    this.overlayRef = this.overlay.create(config);
+    this.overlayRef.attach(this.templatePortal);
+    this.overlayRef.backdropClick().subscribe(() => {
+      this.overlayRef.detach();
+    });
   }
 
   get completed() {
