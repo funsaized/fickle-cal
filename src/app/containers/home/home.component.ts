@@ -18,7 +18,7 @@ import { CalendarComponent, HeaderComponent } from '../../components';
       <main>
         <app-calendar />
       </main>
-      <footer>Put footer stuff here</footer>
+      <footer>An exercise on local first apps & syncing data structures</footer>
     </div>
   `,
   styleUrl: './home.component.scss',

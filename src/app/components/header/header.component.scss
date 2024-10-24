@@ -63,9 +63,10 @@ ul {
         border-radius: 50%;
         background-color: #f0f0f0;
         position: relative;
-        
+        cursor: pointer;
         &:first-child {
             background-color: #ADD1DC;
+            color: #fff;
             &::before {
                 position: absolute;
                 content: "";
@@ -82,12 +83,11 @@ ul {
             animation: ripple 2s linear infinite;
         }
 
-        &:nth-child(2) {
-            background-color: #CAA171
-        }
-
-        &:nth-child(3), &:nth-child(4) {
-            cursor: pointer;
+        &:first-child {
+            i {
+                position: absolute;
+                top: 10%;
+            }
         }
     }
 
@@ -134,13 +134,13 @@ a {
     text-decoration: none;
 }
 
-.micro:after {
-    animation: ripple 2s 1s linear infinite;
-}
-
 @keyframes ripple {
     to {
         transform: scale(2);
         opacity: 0;
     }
+}
+
+footer {
+    text-align: center;
 }

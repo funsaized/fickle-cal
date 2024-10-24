@@ -1,5 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -9,7 +16,7 @@ import { RouterLink } from '@angular/router';
   template: `
     <div class="container">
       <div class="day">
-        <h1>{{month | date:'MMMM'}} 2024</h1>
+        <h1>{{ month | date : 'MMMM' }} 2024</h1>
         <svg
           fill="#000000"
           height="50px"
@@ -111,18 +118,8 @@ import { RouterLink } from '@angular/router';
       </div>
       <nav>
         <ul>
-          <li
-            [class.isTouched]="isTouched"
-            (mouseover)="onMouseOver()"
-            (mouseleave)="onMouseLeave()"
-          >
-            <a routerLink="/user">
-              <i class="bi bi-person"></i>
-            </a>
-            <span class="tooltip" [class.visible]="hovered">Log In</span>
-          </li>
-          <li>
-            <a href="#"><i class="bi bi-three-dots-vertical"></i></a>
+          <li [class.isTouched]="isTouched" (click)="sync()">
+            <i class="bi bi-cloud-download"></i>
           </li>
           <li>
             <i class="bi bi-arrow-left" (click)="onArrowClick('left')"></i>
@@ -140,9 +137,12 @@ export class HeaderComponent {
   @Input() month: Date | undefined;
   @Output() arrowClick = new EventEmitter<string>();
 
-
   isTouched = true;
   hovered = false;
+
+	sync(){
+		alert('Not yet implemented!')
+	}
 
   onMouseOver() {
     this.hovered = true;

@@ -26,4 +26,11 @@ main {
 
 footer {
     grid-area: footer;
+    text-align: center;
+}
+
+@media (min-width: 900px) {
+    footer {
+        text-align: left;
+    }
 }

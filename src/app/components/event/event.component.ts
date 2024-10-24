@@ -3,7 +3,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EmbeddedViewRef,
   EventEmitter,
   Input,
   Output,
