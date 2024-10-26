@@ -2,14 +2,16 @@ import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from './services';
 import { inject } from '@angular/core';
 import { catchError, map, of, pipe } from 'rxjs';
+import { DbService } from './services/db.service';
 
 // TODO
 export const AuthGuard: CanActivateFn = (route, state) => {
   const isAuth = true;
   const userService = inject(UserService);
+  const dbService = inject(DbService);
   const router = inject(Router);
   if (isAuth) {
-    return true;
+    return dbService.init$();
     // return userService.fetchUser$().pipe(
     //   map(user => user != null ? true: false),
     //   catchError((err) => {

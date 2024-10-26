@@ -17,32 +17,25 @@ import { switchMap, tap } from 'rxjs';
         />
       </header>
       <main>
-        <app-calendar *ngIf='!loading'/>
+        <app-calendar *ngIf="!loading" />
       </main>
       <footer>An exercise on local first apps & syncing data structures</footer>
     </div>
   `,
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit{
-
+export class HomeComponent implements OnInit {
   loading = true;
 
   constructor(
-    private dbService: DbService,
     public readonly weekService: WeekService,
-    private readonly eventService: EventService,
+    private readonly eventService: EventService
   ) {}
 
-
   ngOnInit(): void {
-      this.dbService.init$().pipe(
-        switchMap(() => this.dbService.getAllEvents$()),
-        tap((events) => this.eventService.events$ = events)
-      ).subscribe(res => {
-        this.loading = false;
-        console.warn('Events:', res);
-      });
+    this.eventService.events$.subscribe((events) => {
+      this.loading = false;
+    });
   }
 
   handleArrowClick(direction: string) {

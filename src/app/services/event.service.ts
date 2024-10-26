@@ -3,19 +3,16 @@ import { BehaviorSubject, map, Observable, of, switchMap, tap } from 'rxjs';
 import { EventDocType } from '../models';
 import { RxDocument } from 'rxdb';
 import { parseISO, startOfDay } from 'date-fns';
+import { DbService } from './db.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
-  private _events$ = new BehaviorSubject<RxDocument<EventDocType>[]>([]);
+  public events$!: Observable<RxDocument<EventDocType, {}>[]>;
 
-  get events$(): Observable<RxDocument<EventDocType>[]> {
-    return this._events$.asObservable();
-  }
-
-  set events$(events: RxDocument<EventDocType>[]) {
-    this._events$.next(events);
+  constructor(private dbService: DbService) {
+    this.events$ = this.dbService.db.events.find().$;
   }
 
   getEventsAt$(date: Date): Observable<RxDocument<EventDocType>[]> {
@@ -26,6 +23,6 @@ export class EventService {
           return eventDate.getTime() === date.getTime();
         })
       )
-    )
+    );
   }
 }
