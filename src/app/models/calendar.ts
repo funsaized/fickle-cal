@@ -6,16 +6,13 @@ export interface Day {
 }
 export interface ParsedDay extends Day {
   dayDigits: string; // e.g '09'
-  dayName: string; // e.g 'Mon;
+  dayName: string; // e.g 'Mon'
   monthDigits: string; // e.g '09'
 }
 
-export interface Event {
-  title: string | null;
-}
-
-export interface EventDetail extends Event {
+export interface EventDetail {
   id: number | null;
+  title: string | null;
   date: Date;
   completed: boolean;
   notes: string | null;
@@ -23,7 +20,7 @@ export interface EventDetail extends Event {
 }
 
 export interface EventDetailFormValue {
-  id: FormControl<number | null>;
+  id: FormControl<string | null>;
   title: FormControl<string | null>;
   date: FormControl<Date | null>;
   completed: FormControl<boolean | null>;

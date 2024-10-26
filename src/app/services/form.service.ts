@@ -18,6 +18,7 @@ import {
   withLatestFrom,
 } from 'rxjs';
 import { WeekService } from './week.service';
+import { parseISO } from 'date-fns';
 
 @Injectable({
   providedIn: 'root',
@@ -62,7 +63,7 @@ export class FormService {
           const formValue: EventDetailFormValue = {
             id: new FormControl(event.id),
             title: new FormControl(event.title),
-            date: new FormControl(event.date),
+            date: new FormControl(parseISO(event.date)),
             completed: new FormControl(event.completed),
             notes: new FormControl(event.notes),
             color: new FormControl(event.color),

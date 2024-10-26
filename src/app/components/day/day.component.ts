@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ParsedDay } from '../../models';
 import { EventComponent } from '../event/event.component';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FormService } from '../../services';
 import {
   BehaviorSubject,
@@ -56,7 +56,7 @@ export class DayComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
   private _updateForm$ = new Subject<number | null>();
 
-  constructor(private fb: FormBuilder, public formService: FormService) {}
+  constructor(public formService: FormService) {}
 
   ngOnInit(): void {
     this.subscription.add(
