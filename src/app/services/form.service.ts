@@ -64,9 +64,9 @@ export class FormService {
             id: new FormControl(event.id),
             title: new FormControl(event.title),
             date: new FormControl(parseISO(event.date)),
-            completed: new FormControl(event.completed),
-            notes: new FormControl(event.notes),
-            color: new FormControl(event.color),
+            completed: new FormControl(event.completed || false),
+            notes: new FormControl(event.notes || null),
+            color: new FormControl(event.color || null),
           };
           return new FormGroup<EventDetailFormValue>(formValue);
         });

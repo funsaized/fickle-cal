@@ -11,15 +11,6 @@ export interface ParsedDay extends Day {
   monthDigits: string; // e.g '09'
 }
 
-export interface EventDetail {
-  id: number | null;
-  title: string | null;
-  date: Date;
-  completed: boolean;
-  notes: string | null;
-  color: string | null;
-}
-
 export interface EventDetailFormValue {
   id: FormControl<string | null>;
   title: FormControl<string | null>;

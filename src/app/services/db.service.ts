@@ -40,9 +40,9 @@ const EVENT_SCHEMA_LITERAL = {
       type: 'string',
     },
   },
-  required: ['id', 'title'],
+  required: ['id', 'title', 'date'],
   indexes: ['date'],
-};
+} as const;
 
 const schemaTyped = toTypedRxJsonSchema(EVENT_SCHEMA_LITERAL);
 
@@ -58,14 +58,6 @@ const collectionSettings = {
   } as RxCollectionCreator<any>,
 };
 
-export type EventDocType = {
-  id: string;
-  title: string;
-  date: string;
-  completed: boolean;
-  notes: string;
-  color: string;
-};
 let DB_INSTANCE: RxEventsDatabase;
 
 type RxEventMethods = {
