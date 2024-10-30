@@ -5,13 +5,13 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnInit,
   Output,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -21,6 +21,12 @@ import { CheckBoxComponent } from '../checkbox/checkbox.component';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { FormService } from '../../services';
+import { DbService, RxEventDocumentType } from '../../services/db.service';
+import { RxDocument } from 'rxdb';
+import { formatISO, parseISO } from 'date-fns';
+import { filter, switchMap } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-event',
@@ -46,7 +52,7 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
           type="text"
           formControlName="title"
           autocomplete="off"
-          (focusout)="focused = false"
+          (focusout)="onFocusOut()"
           (click)="onFocus()"
           (focusin)="onFocus()"
           (keydown.enter)="onEnter()"
@@ -71,8 +77,10 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
   `,
   styleUrl: './event.component.scss',
 }) // TODO: make CVA component
-export class EventComponent implements AfterViewInit {
+export class EventComponent implements OnInit, AfterViewInit {
   constructor(
+    private readonly formService: FormService,
+    private readonly dbService: DbService,
     private viewContainerRef: ViewContainerRef,
     private fb: FormBuilder,
     private overlay: Overlay
@@ -83,12 +91,29 @@ export class EventComponent implements AfterViewInit {
     });
   }
 
-  @Output() entered = new EventEmitter<void>();
+  @Output() updateForm = new EventEmitter<void>();
 
   _eventForm!: FormGroup;
+
+  private _event!: RxDocument<RxEventDocumentType>;
   @Input()
-  set eventForm(value: AbstractControl) {
-    this._eventForm = value as FormGroup;
+  set event(value: RxDocument<RxEventDocumentType>) {
+    this._event = value;
+    this._eventForm = this.formService.newForm(parseISO(this._event.date), {
+      id: this._event.id,
+      title: this._event.title,
+      date: this._event.date,
+      completed: this._event.completed,
+      notes: this._event.notes,
+      color: this._event.color,
+    });
+  }
+
+  private _date!: Date;
+  @Input()
+  set date(value: Date) {
+    this._date = value;
+    this._eventForm = this.formService.newForm(this._date);
   }
 
   @ViewChild('modalTemplate', { read: TemplateRef })
@@ -101,6 +126,39 @@ export class EventComponent implements AfterViewInit {
   focused = false;
   hovered = false;
 
+  ngOnInit() {
+    // Greedily subscribe to all changes and persist immediately
+    this.title?.valueChanges
+      .pipe(
+        filter(() => this._event != null),
+        switchMap((value: string) => {
+          return this._event.incrementalPatch({ title: value });
+        })
+      )
+      .subscribe();
+
+    this.completed?.valueChanges
+      .pipe(
+        filter(() => this._event != null),
+        switchMap((value) => this._event.incrementalPatch({ completed: value }))
+      )
+      .subscribe();
+
+    this.notes?.valueChanges
+      .pipe(
+        filter(() => this._event != null),
+        switchMap((value) => this._event.incrementalPatch({ notes: value }))
+      )
+      .subscribe();
+
+    this.color?.valueChanges
+      .pipe(
+        filter(() => this._event != null),
+        switchMap((value) => this._event.incrementalPatch({ color: value }))
+      )
+      .subscribe();
+  }
+
   ngAfterViewInit(): void {
     this.templatePortal = new TemplatePortal(
       this.modalTemplate,
@@ -112,6 +170,24 @@ export class EventComponent implements AfterViewInit {
     this.focused = true;
   }
 
+  async onFocusOut() {
+    if (!this._event && this.title?.value) {
+      this._event = await this.dbService.db.events.insert({
+        id: 'event-' + uuidv4(),
+        title: this.title?.value || '',
+        date: formatISO(this._date),
+        completed: false,
+        notes: '',
+        color: '',
+        timestamp: formatISO(new Date()),
+      });
+      this.focused = false;
+      this.updateForm.emit();
+    } else {
+      this.focused = false;
+    }
+  }
+
   onMouseOver() {
     this.hovered = true;
   }
@@ -120,8 +196,8 @@ export class EventComponent implements AfterViewInit {
     this.hovered = false;
   }
 
-  onEnter() {
-    this.entered.emit();
+  async onEnter() {
+    await this.onFocusOut();
   }
 
   openEditModal() {
@@ -140,11 +216,27 @@ export class EventComponent implements AfterViewInit {
     });
   }
 
-  get completed() {
-    return this._eventForm.get('completed');
+  get id() {
+    return this._eventForm.get('id');
   }
 
   get title() {
     return this._eventForm.get('title');
+  }
+
+  get dateForm() {
+    return this._eventForm.get('date');
+  }
+
+  get completed() {
+    return this._eventForm.get('completed');
+  }
+
+  get notes() {
+    return this._eventForm.get('notes');
+  }
+
+  get color() {
+    return this._eventForm.get('color');
   }
 }

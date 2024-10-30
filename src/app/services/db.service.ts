@@ -39,6 +39,10 @@ const EVENT_SCHEMA_LITERAL = {
     color: {
       type: 'string',
     },
+    timestamp: {
+      type: 'string',
+      format: 'date-time',
+    },
   },
   required: ['id', 'title', 'date'],
   indexes: ['date'],
@@ -121,6 +125,7 @@ export async function _createDb(): Promise<RxEventsDatabase> {
       completed: false,
       notes: '',
       color: '',
+      timestamp: formatISO(new Date()),
     } as RxEventDocumentType))
   );
   console.log('DatabaseService: bulk insert');

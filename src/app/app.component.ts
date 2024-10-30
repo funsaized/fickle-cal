@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
-
+import 'zone.js/plugins/zone-patch-rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,

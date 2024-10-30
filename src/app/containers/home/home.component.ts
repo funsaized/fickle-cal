@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { EventService, WeekService } from '../../services';
 import { CommonModule } from '@angular/common';
 import { CalendarComponent, HeaderComponent } from '../../components';
-import { DbService } from '../../services/db.service';
-import { switchMap, tap } from 'rxjs';
 @Component({
   selector: 'app-home',
   standalone: true,
