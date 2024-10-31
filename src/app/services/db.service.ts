@@ -3,6 +3,7 @@ import {
   addRxPlugin,
   createRxDatabase,
   ExtractDocumentTypeFromTypedRxJsonSchema,
+  removeRxDatabase,
   RxCollection,
   RxCollectionCreator,
   RxDatabase,
@@ -98,6 +99,8 @@ export async function _createDb(): Promise<RxEventsDatabase> {
     //   storage = module.wrappedValidateAjvStorage({ storage });
     // });
   }
+
+  await removeRxDatabase('feineddb', getRxStorageDexie());
 
   const db = await createRxDatabase<RxEventsCollections>({
     name: 'feineddb',
