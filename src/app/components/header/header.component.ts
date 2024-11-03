@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DbService } from '../../services';
 
 @Component({
   selector: 'app-header',
@@ -140,8 +141,10 @@ export class HeaderComponent {
   isTouched = true;
   hovered = false;
 
+  constructor(private readonly dbService: DbService) {}
+
 	sync(){
-		alert('Not yet implemented!')
+    this.dbService.replicationState.reSync();
 	}
 
   onMouseOver() {

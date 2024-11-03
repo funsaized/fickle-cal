@@ -47,7 +47,7 @@ import { RxDocument } from 'rxdb';
         <div class="day-name">{{ _day.dayName }}</div>
       </div>
       <div class="events-body">
-        <ng-container *ngIf="events$ | async as events">
+        <ng-container *ngIf="eventService.getEventsAt$(_day.date) | async as events">
           <app-event
             *ngFor="let event of events; let i = index"
             [event]="event"
@@ -67,18 +67,9 @@ import { RxDocument } from 'rxdb';
 })
 export class DayComponent implements OnInit, AfterViewInit, OnDestroy {
   public _day$ = new BehaviorSubject<ParsedDay | null>(null);
-  public _events$: ReplaySubject<RxDocument<RxEventDocumentType>[] | null> =
-    new ReplaySubject(1);
   @Input()
   set day(day: ParsedDay) {
     this._day$.next(day);
-    this.eventService
-      .getEventsAt$(day.date)
-      .pipe(
-        first(),
-        tap((events) => this._events$.next(events))
-      )
-      .subscribe();
   }
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
   @ViewChild('newEvent', { read: ViewContainerRef })
@@ -100,7 +91,6 @@ export class DayComponent implements OnInit, AfterViewInit, OnDestroy {
           switchMap(() =>
             this.eventService.getEventsAt$(this._day$.value!.date).pipe(
               first(),
-              tap((events) => this._events$.next(events)),
               tap((_) => this.createEventComponent()),
               tap(() => console.log("RUNNING")),
               tap((_) => this._componentRef?.instance.textInput.nativeElement.focus())
@@ -132,7 +122,4 @@ export class DayComponent implements OnInit, AfterViewInit, OnDestroy {
     this._updateForm$.next(null);
   }
 
-  get events$() {
-    return this._events$.asObservable();
-  }
 }

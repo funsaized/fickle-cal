@@ -1,4 +1,5 @@
 import { Injectable, Injector, isDevMode, Signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import {
   addRxPlugin,
   createRxDatabase,
@@ -8,11 +9,17 @@ import {
   RxCollectionCreator,
   RxDatabase,
   RxJsonSchema,
+  RxReplicationPullStreamItem,
   toTypedRxJsonSchema,
 } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { initWeek } from '../models';
 import { formatISO, startOfDay } from 'date-fns';
+import {
+  replicateRxCollection,
+  RxReplicationState,
+} from 'rxdb/plugins/replication';
+import { Subject } from 'rxjs';
 
 const EVENT_SCHEMA_LITERAL = {
   version: 0,
@@ -41,8 +48,10 @@ const EVENT_SCHEMA_LITERAL = {
       type: 'string',
     },
     timestamp: {
-      type: 'string',
-      format: 'date-time',
+      type: 'number',
+    },
+    _deleted: {
+      type: 'boolean',
     },
   },
   required: ['id', 'title', 'date'],
@@ -55,7 +64,8 @@ export type RxEventDocumentType = ExtractDocumentTypeFromTypedRxJsonSchema<
   typeof schemaTyped
 >;
 
-export const EVENTS_SCHEMA: RxJsonSchema<RxEventDocumentType> = EVENT_SCHEMA_LITERAL;
+export const EVENTS_SCHEMA: RxJsonSchema<RxEventDocumentType> =
+  EVENT_SCHEMA_LITERAL;
 
 const collectionSettings = {
   ['events']: {
@@ -65,22 +75,21 @@ const collectionSettings = {
 
 let DB_INSTANCE: RxEventsDatabase;
 
-type RxEventMethods = {
+let REPLICATION_STATE: RxReplicationState<unknown, any>;
 
-}
+type RxEventMethods = {};
 
 export type RxEventsCollection = RxCollection<
   RxEventDocumentType,
   RxEventMethods,
-  unknown,
-  unknown,
+  {},
+  {},
   unknown
 >;
 
-
 export type RxEventsCollections = {
   events: RxEventsCollection;
-}
+};
 
 export type RxEventsDatabase = RxDatabase<
   RxEventsCollections,
@@ -100,7 +109,7 @@ export async function _createDb(): Promise<RxEventsDatabase> {
     // });
   }
 
-  await removeRxDatabase('feineddb', getRxStorageDexie());
+  // await removeRxDatabase('feineddb', getRxStorageDexie());
 
   const db = await createRxDatabase<RxEventsCollections>({
     name: 'feineddb',
@@ -110,28 +119,31 @@ export async function _createDb(): Promise<RxEventsDatabase> {
 
   await db.addCollections(collectionSettings);
 
-  console.log('DatabaseService: create collections');
+  // console.log('DatabaseService: create collections');
 
-  // TODO: function get current week in helper, import here and WeekService
-  const week = initWeek();
-  await db.events.bulkInsert(
-    [
-      'A demo event',
-      'Hover me to mark as complete',
-      'This one has a color',
-    ].map((title, idx) => ({
-      id: 'event-' + idx,
-      title,
-      date: formatISO(startOfDay(week[idx].date), {
-        representation: 'complete',
-      }),
-      completed: false,
-      notes: '',
-      color: '',
-      timestamp: formatISO(new Date()),
-    } as RxEventDocumentType))
-  );
-  console.log('DatabaseService: bulk insert');
+  // // TODO: function get current week in helper, import here and WeekService
+  // const week = initWeek();
+  // await db.events.bulkInsert(
+  //   [
+  //     'A demo event',
+  //     'Hover me to mark as complete',
+  //     'This one has a color',
+  //   ].map(
+  //     (title, idx) =>
+  //       ({
+  //         id: 'event-' + idx,
+  //         title,
+  //         date: formatISO(startOfDay(week[idx].date), {
+  //           representation: 'complete',
+  //         }),
+  //         completed: false,
+  //         notes: '',
+  //         color: '',
+  //         timestamp: new Date().getTime(),
+  //       } as RxEventDocumentType)
+  //   )
+  // );
+  // console.log('DatabaseService: bulk insert');
 
   return db;
 }
@@ -140,21 +152,93 @@ export async function _createDb(): Promise<RxEventsDatabase> {
  * This is run via APP_INITIALIZER in app.module.ts
  */
 export async function initDatabase(injector: Injector) {
-    if (!injector) {
-        throw new Error('initDatabase() injector missing');
-    }
+  if (!injector) {
+    throw new Error('initDatabase() injector missing');
+  }
 
-    await _createDb().then((db) => (DB_INSTANCE = db));;
+  const httpClient = injector.get(HttpClient);
+
+  await _createDb().then((db) => (DB_INSTANCE = db));
+
+  const replicationState = await replicateRxCollection({
+    collection: DB_INSTANCE.events,
+    replicationIdentifier: 'feined-http-replication',
+    live: true,
+    push: {
+      async handler(changeRows): Promise<{ _deleted: boolean }[]> {
+        const rawResponse = await httpClient
+          .post('http://localhost:3000/events-rpl/0/push', changeRows, {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          })
+          .toPromise();
+        return rawResponse as { _deleted: boolean }[];
+      },
+    },
+    pull: {
+      // TODO: types
+      /*
+        rxdb server format
+        "checkpoint": {
+            "id": "event-2",
+            "lwt": 1730498389296.01
+        }
+      */
+      async handler(checkpointOrNull: any, batchSize) {
+        const updatedAt = checkpointOrNull ? checkpointOrNull.lwt : 0;
+        const id = checkpointOrNull ? checkpointOrNull.id : '';
+        const response = await httpClient
+          .get(
+            `http://localhost:3000/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`
+          )
+          .toPromise();
+        const data = response as any;
+        return {
+          documents: data.documents,
+          checkpoint: data.checkpoint,
+        };
+      },
+    },
+    // TODO: pullstream
+  });
+
+  REPLICATION_STATE = replicationState;
+
+  // TODO: block clients that havent synced in X time
+  // https://rxdb.info/replication.html#awaitinitialreplication-and-awaitinsync-should-not-be-used-to-block-the-application
+  // await replicationState.awaitInitialReplication();
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class DbService {
+  constructor() {
+    // emits each document that was received from the remote
+    this.replicationState.received$.subscribe((doc) =>
+      console.log('**** Rpl receieved ****', doc)
+    );
 
-  constructor() {}
+    // emits each document that was send to the remote
+    this.replicationState.sent$.subscribe((doc) => console.log(`**** Rpl sent ****`, doc));
+
+    // emits all errors that happen when running the push- & pull-handlers.
+    this.replicationState.error$.subscribe((error) => console.error(`**** Rpl error ****`, error));
+
+    // emits true when the replication was canceled, false when not.
+    this.replicationState.canceled$.subscribe((bool) => console.error(`**** Rpl canceled ${bool} ****`));
+
+    // emits true when a replication cycle is running, false when not.
+    this.replicationState.active$.subscribe((bool) => console.log(`**** Rpl cycle running ${bool} ****`));
+  }
 
   get db() {
     return DB_INSTANCE;
+  }
+
+  get replicationState() {
+    return REPLICATION_STATE;
   }
 }

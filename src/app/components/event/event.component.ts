@@ -126,38 +126,7 @@ export class EventComponent implements OnInit, AfterViewInit {
   focused = false;
   hovered = false;
 
-  ngOnInit() {
-    // Greedily subscribe to all changes and persist immediately
-    this.title?.valueChanges
-      .pipe(
-        filter(() => this._event != null),
-        switchMap((value: string) => {
-          return this._event.incrementalPatch({ title: value });
-        })
-      )
-      .subscribe();
-
-    this.completed?.valueChanges
-      .pipe(
-        filter(() => this._event != null),
-        switchMap((value) => this._event.incrementalPatch({ completed: value }))
-      )
-      .subscribe();
-
-    this.notes?.valueChanges
-      .pipe(
-        filter(() => this._event != null),
-        switchMap((value) => this._event.incrementalPatch({ notes: value }))
-      )
-      .subscribe();
-
-    this.color?.valueChanges
-      .pipe(
-        filter(() => this._event != null),
-        switchMap((value) => this._event.incrementalPatch({ color: value }))
-      )
-      .subscribe();
-  }
+  ngOnInit() {}
 
   ngAfterViewInit(): void {
     this.templatePortal = new TemplatePortal(
@@ -179,7 +148,7 @@ export class EventComponent implements OnInit, AfterViewInit {
         completed: false,
         notes: '',
         color: '',
-        timestamp: formatISO(new Date()),
+        timestamp: new Date().getTime(),
       });
       this.focused = false;
       this.updateForm.emit();
@@ -211,9 +180,17 @@ export class EventComponent implements OnInit, AfterViewInit {
     });
     this.overlayRef = this.overlay.create(config);
     this.overlayRef.attach(this.templatePortal);
-    this.overlayRef.backdropClick().subscribe(() => {
-      this.overlayRef.detach();
-    });
+    this.overlayRef
+      .backdropClick()
+      .pipe(
+        switchMap(() => this._event.incrementalPatch({ title: this.title?.value })),
+        switchMap(() => this._event.incrementalPatch({ completed: this.completed?.value })),
+        switchMap(() => this._event.incrementalPatch({ notes: this.notes?.value })),
+        switchMap(() => this._event.incrementalPatch({ color: this.color?.value })) 
+      )
+      .subscribe(() => {
+        this.overlayRef.detach();
+      });
   }
 
   get id() {
