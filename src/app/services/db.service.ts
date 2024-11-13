@@ -167,7 +167,7 @@ export async function initDatabase(injector: Injector) {
     push: {
       async handler(changeRows): Promise<{ _deleted: boolean }[]> {
         const rawResponse = await httpClient
-          .post('http://localhost:3000/events-rpl/0/push', changeRows, {
+          .post('https://feined-server.s11a.com/events-rpl/0/push', changeRows, {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
@@ -191,7 +191,7 @@ export async function initDatabase(injector: Injector) {
         const id = checkpointOrNull ? checkpointOrNull.id : '';
         const response = await httpClient
           .get(
-            `http://localhost:3000/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`
+            `https://feined-server.s11a.com/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`
           )
           .toPromise();
         const data = response as any;
