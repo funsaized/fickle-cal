@@ -21,6 +21,11 @@ npm install
 npm run start
 ```
 
+## Built with
+- [angular](https://github.com/angular/angular)
+- [rxdb](https://github.com/pubkey/rxdb)
+- [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/overview)
+
 ## Author
 
 👤 **Sai N. Nimmagadda**
