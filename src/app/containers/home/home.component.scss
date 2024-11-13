@@ -11,6 +11,8 @@
         'footer    footer    footer    footer    footer    footer    footer    footer    footer    footer    footer    footer';
     gap: 10px;
     height: 100vh;
+    width: 100vw;
+    overflow: hidden;
     padding: 0 20px;
     color: #795E35; // TODO: color scheme vars
 }
