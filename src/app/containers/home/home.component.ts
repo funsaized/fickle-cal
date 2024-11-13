@@ -17,7 +17,7 @@ import { CalendarComponent, HeaderComponent } from '../../components';
       <main>
         <app-calendar *ngIf="!loading" />
       </main>
-      <footer>** Currently in dev mode. Items may not persist ** | An exercise on local first apps & syncing data structures</footer>
+      <footer>** Currently in POC mode -> items persist only as long as the server does! ** | An exercise on local first apps & syncing data structures</footer>
     </div>
   `,
   styleUrl: './home.component.scss',
