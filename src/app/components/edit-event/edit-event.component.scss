@@ -12,6 +12,16 @@ form {
     align-items: center;
     gap: 10px;
     margin-bottom: 40px;
+
+    .actions {
+        margin-left: auto;
+        display: flex;
+        gap: 1rem;
+    }
+
+    i {
+        cursor: pointer;
+    }
 }
 
 .container {
@@ -33,6 +43,16 @@ textarea{
         margin-bottom: 20px;
         font-size: 2rem;
     }
+}
+
+.color-picker {
+    border-radius: 12px;
+    outline: 1px solid;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (min-width: 900px) {

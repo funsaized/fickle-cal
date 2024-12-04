@@ -54,12 +54,28 @@ input {
 
 input.completed, span.completed {
     text-decoration: line-through;
-    color: #F0DFA0; // TODO: color scheme vars
+    opacity: .3;
 }
 
-span {
+i.bi-stickies {
+    margin-left: 4px;
+    font-size: .8rem;
+}
+
+.title-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+span.title {
     cursor: pointer;
-    text-wrap: nowrap;
+    border-radius: 11px;
+    padding: 0 6px;
+    // background-color: blue;
+    // color: #fff;
+    display: inline-block;
+    max-width: calc(100% - 14px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

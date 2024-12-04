@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -56,15 +57,20 @@ import { v4 as uuidv4 } from 'uuid';
           (click)="onFocus()"
           (focusin)="onFocus()"
           (keydown.enter)="onEnter()"
-          [class.completed]="completed?.value === true"
+          [class.completed]="completed.value === true"
         />
         <ng-template #placeHolder>
-          <span
-            [class.completed]="completed?.value === true"
-            (click)="openEditModal()"
-          >
-            {{ title?.value }}
-          </span>
+          <div class="title-container" style="width: 100%">
+            <i *ngIf="notes.value" class="bi bi-stickies"></i>
+            <span
+              class="title"
+              [class.completed]="completed.value === true"
+              [style.backgroundColor]="color.value"
+              (click)="openEditModal()"
+            >
+              {{ title.value }}
+            </span>
+          </div>
         </ng-template>
 
         <app-checkbox formControlName="completed" />
@@ -183,10 +189,18 @@ export class EventComponent implements OnInit, AfterViewInit {
     this.overlayRef
       .backdropClick()
       .pipe(
-        switchMap(() => this._event.incrementalPatch({ title: this.title?.value })),
-        switchMap(() => this._event.incrementalPatch({ completed: this.completed?.value })),
-        switchMap(() => this._event.incrementalPatch({ notes: this.notes?.value })),
-        switchMap(() => this._event.incrementalPatch({ color: this.color?.value })) 
+        switchMap(() =>
+          this._event.incrementalPatch({ title: this.title?.value })
+        ),
+        switchMap(() =>
+          this._event.incrementalPatch({ completed: this.completed?.value })
+        ),
+        switchMap(() =>
+          this._event.incrementalPatch({ notes: this.notes?.value })
+        ),
+        switchMap(() =>
+          this._event.incrementalPatch({ color: this.color?.value })
+        )
       )
       .subscribe(() => {
         this.overlayRef.detach();
@@ -194,26 +208,26 @@ export class EventComponent implements OnInit, AfterViewInit {
   }
 
   get id() {
-    return this._eventForm.get('id');
+    return this._eventForm.get('id') as FormControl;
   }
 
   get title() {
-    return this._eventForm.get('title');
+    return this._eventForm.get('title') as FormControl;
   }
 
   get dateForm() {
-    return this._eventForm.get('date');
+    return this._eventForm.get('date') as FormControl;
   }
 
   get completed() {
-    return this._eventForm.get('completed');
+    return this._eventForm.get('completed') as FormControl;
   }
 
   get notes() {
-    return this._eventForm.get('notes');
+    return this._eventForm.get('notes') as FormControl;
   }
 
   get color() {
-    return this._eventForm.get('color');
+    return this._eventForm.get('color') as FormControl;
   }
 }
