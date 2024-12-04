@@ -18,6 +18,7 @@ export interface EventDetailFormValue {
   completed: FormControl<boolean | null>;
   notes: FormControl<string | null>;
   color: FormControl<string | null>;
+  deleted: FormControl<boolean | null>;
 }
 
 export type EventFormDay = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";

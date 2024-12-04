@@ -21,6 +21,7 @@ export class FormService {
       completed: new FormControl(defaults?.completed || false),
       notes: new FormControl(defaults?.notes || null),
       color: new FormControl(defaults?.color || null),
+      deleted: new FormControl(defaults?._deleted || false),
     });
   }
 

@@ -25,7 +25,7 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { FormService } from '../../services';
 import { DbService, RxEventDocumentType } from '../../services/db.service';
 import { RxDocument } from 'rxdb';
-import { formatISO, parseISO } from 'date-fns';
+import { formatISO, parseISO, startOfDay, subDays } from 'date-fns';
 import { filter, switchMap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -66,6 +66,7 @@ import { v4 as uuidv4 } from 'uuid';
               class="title"
               [class.completed]="completed.value === true"
               [style.backgroundColor]="color.value"
+              [style.color]="color.value === 'red' ? 'white' : 'inherit'"
               (click)="openEditModal()"
             >
               {{ title.value }}
@@ -78,7 +79,11 @@ import { v4 as uuidv4 } from 'uuid';
     </form>
 
     <ng-template #modalTemplate>
-      <app-edit-event [eventForm]="_eventForm" id="1234" />
+      <app-edit-event
+        [eventForm]="_eventForm"
+        (greedyUpdate)="onGreedyUpdate()"
+        (doCopy)="onCopy()"
+      />
     </ng-template>
   `,
   styleUrl: './event.component.scss',
@@ -150,7 +155,7 @@ export class EventComponent implements OnInit, AfterViewInit {
       this._event = await this.dbService.db.events.insert({
         id: 'event-' + uuidv4(),
         title: this.title?.value || '',
-        date: formatISO(this._date),
+        date: formatISO(startOfDay(this._date)),
         completed: false,
         notes: '',
         color: '',
@@ -190,21 +195,49 @@ export class EventComponent implements OnInit, AfterViewInit {
       .backdropClick()
       .pipe(
         switchMap(() =>
+          this._event.incrementalPatch({ color: this.color?.value })
+        ),
+        switchMap(() =>
+          this._event.incrementalPatch({ notes: this.notes?.value })
+        ),
+        switchMap(() =>
           this._event.incrementalPatch({ title: this.title?.value })
         ),
         switchMap(() =>
           this._event.incrementalPatch({ completed: this.completed?.value })
         ),
         switchMap(() =>
-          this._event.incrementalPatch({ notes: this.notes?.value })
+          this._event.incrementalPatch({
+            date: formatISO(startOfDay(this.dateForm?.value)),
+          })
         ),
         switchMap(() =>
-          this._event.incrementalPatch({ color: this.color?.value })
+          this._event.incrementalPatch({ _deleted: this.deleted?.value })
         )
       )
       .subscribe(() => {
         this.overlayRef.detach();
       });
+  }
+
+  onGreedyUpdate() {
+    this.overlayRef.detach();
+    this._event.incrementalPatch({
+      date: formatISO(startOfDay(this.dateForm?.value)),
+      _deleted: this.deleted?.value,
+    });
+  }
+
+  onCopy() {
+    this.overlayRef.detach();
+    this.dbService.db.events.insert({
+      id: 'event-' + uuidv4(),
+      title: this.title?.value || '',
+      date: formatISO(startOfDay(subDays(this.dateForm?.value, 1))),
+      completed: this.completed?.value || false,
+      notes: this.notes?.value || '',
+      color: this.color?.value || '',
+    });
   }
 
   get id() {
@@ -229,5 +262,9 @@ export class EventComponent implements OnInit, AfterViewInit {
 
   get color() {
     return this._eventForm.get('color') as FormControl;
+  }
+
+  get deleted() {
+    return this._eventForm.get('deleted') as FormControl;
   }
 }

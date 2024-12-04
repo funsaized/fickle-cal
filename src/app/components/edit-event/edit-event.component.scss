@@ -44,15 +44,47 @@ textarea{
         font-size: 2rem;
     }
 }
-
-.color-picker {
+.menu{
     border-radius: 12px;
     outline: 1px solid;
     padding: 12px;
     display: flex;
     gap: 10px;
+}
+
+.color-picker {
     align-items: center;
     justify-content: center;
+}
+
+.settings {
+    padding: 0;
+    flex-direction: column;
+    gap: 0;
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        background-color: #FFC14A;
+        border: none;
+        gap: 20px;
+
+        &:first-child {
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+            }
+        
+            &:last-child {
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+            }
+
+        &:hover {
+            background-color: #FFD383;
+        }
+    }
 }
 
 @media (min-width: 900px) {

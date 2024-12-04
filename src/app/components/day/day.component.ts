@@ -55,11 +55,6 @@ import { RxDocument } from 'rxdb';
           ></app-event>
         </ng-container>
         <ng-container #newEvent></ng-container>
-        <!-- <app-event
-          [date]="_day.date"
-          [newForm]="true"
-          (updateForm)="updateForm()"
-        ></app-event> -->
       </div>
     </form>
   `,
@@ -92,7 +87,6 @@ export class DayComponent implements OnInit, AfterViewInit, OnDestroy {
             this.eventService.getEventsAt$(this._day$.value!.date).pipe(
               first(),
               tap((_) => this.createEventComponent()),
-              tap(() => console.log("RUNNING")),
               tap((_) => this._componentRef?.instance.textInput.nativeElement.focus())
             )
           )
