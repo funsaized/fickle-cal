@@ -60,7 +60,7 @@ import { v4 as uuidv4 } from 'uuid';
           [class.completed]="completed.value === true"
         />
         <ng-template #placeHolder>
-          <div class="title-container" style="width: 100%">
+          <div class="title-container" style="width: 90%">
             <i *ngIf="notes.value" class="bi bi-stickies"></i>
             <span
               class="title"
