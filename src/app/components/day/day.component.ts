@@ -3,7 +3,6 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ComponentFactoryResolver,
   ComponentRef,
   Input,
   OnDestroy,
@@ -19,22 +18,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { EventService } from '../../services';
 import {
   BehaviorSubject,
-  delay,
-  filter,
   first,
-  map,
-  Observable,
-  of,
-  ReplaySubject,
   Subject,
   Subscription,
   switchMap,
-  take,
   tap,
   withLatestFrom,
 } from 'rxjs';
-import { RxEventDocumentType } from '../../services/db.service';
-import { RxDocument } from 'rxdb';
 
 @Component({
   selector: 'app-day',
