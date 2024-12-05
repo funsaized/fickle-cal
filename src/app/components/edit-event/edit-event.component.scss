@@ -38,6 +38,10 @@ textarea{
     overflow: hidden;
     resize: none;
 
+    &.notes {
+        font-size: 1rem;
+    }
+
     &.title {
         border-bottom: 1px solid #000;
         margin-bottom: 20px;
