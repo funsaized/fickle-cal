@@ -26,7 +26,7 @@ import { FormService } from '../../services';
 import { DbService, RxEventDocumentType } from '../../services/db.service';
 import { RxDocument } from 'rxdb';
 import { formatISO, parseISO, startOfDay, subDays } from 'date-fns';
-import { filter, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({

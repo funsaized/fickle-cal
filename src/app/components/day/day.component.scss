@@ -1,34 +1,25 @@
 .day {
-    .header {
-        display: flex;
-        justify-content: space-between;
-        padding-bottom: 14px;
-        border-bottom: 2px solid rgba(0, 0, 0, .5);
-    }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+  }
 
-    .header.isCurrent {
-        border-bottom: 2px solid blue;
-        color: #0000ff;
-
-        .day-name{
-            color: rgba(0, 0, 255, .6);
-        }
-    }
-
-    .date {
-        font-weight: bold;
-    }
+  .header.isCurrent {
+    border-bottom: 2px solid blue;
+    color: #0000ff;
 
     .day-name {
-        color: #CAA171; // TODO: color scheme vars
+      color: rgba(0, 0, 255, 0.6);
     }
-}
+  }
 
-.events-body {
-    min-height: 420px;
-    background: repeating-linear-gradient(to bottom,
-                rgba(121, 94, 53, .3),
-                rgba(121, 94, 53, .3) 1px,
-                transparent 1px,
-                transparent 40px);
+  .date {
+    font-weight: bold;
+  }
+
+  .day-name {
+    color: #caa171; // TODO: color scheme vars
+  }
 }

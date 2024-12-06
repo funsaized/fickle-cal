@@ -1,0 +1,10 @@
+.events-body {
+  min-height: 160px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(121, 94, 53, 0.3),
+    rgba(121, 94, 53, 0.3) 1px,
+    transparent 1px,
+    transparent 40px
+  );
+}

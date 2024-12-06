@@ -10,17 +10,22 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { addDays, formatISO, startOfDay } from 'date-fns';
+import { addDays } from 'date-fns';
+import { After1971Pipe } from '../../pipes/after-1971.pipe';
 
 @Component({
   selector: 'app-edit-event',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OverlayModule],
+  imports: [CommonModule, ReactiveFormsModule, OverlayModule, After1971Pipe],
   template: `
     <form [formGroup]="_eventForm">
       <div class="header">
-        <i class="bi bi-calendar-event"></i>
-        <span class="date">{{ date.value | date : 'EEE, dd MMM yyyy' }}</span>
+        <ng-container *ngIf="date.value | after1971">
+          <i class="bi bi-calendar-event"></i>
+          <span class="date">
+            {{ date.value | date : 'EEE, dd MMM yyyy' }}
+          </span>
+        </ng-container>
         <div class="actions">
           <i class="bi bi-trash" (click)="delete()"></i>
           <i
@@ -107,15 +112,15 @@ import { addDays, formatISO, startOfDay } from 'date-fns';
       ]"
     >
       <div class="menu settings">
-        <button>
+        <button *ngIf="date.value | after1971">
           <span class="text" (click)="moveToTomorrow()">Tomorrow</span>
           <i class="bi bi-arrow-right"></i>
         </button>
-        <button>
+        <button *ngIf="date.value | after1971">
           <span class="text" (click)="moveToNextWeek()">Next Week</span>
           <i class="bi bi-calendar-week"></i>
         </button>
-        <button>
+        <button *ngIf="date.value | after1971">
           <span class="text">Backlog</span>
           <i class="bi bi-list-task"></i>
         </button>
