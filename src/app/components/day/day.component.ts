@@ -4,23 +4,24 @@ import {
   Component,
   Input,
   OnDestroy,
-  AfterViewInit,
   OnInit,
 } from '@angular/core';
-import { ParsedDay } from '../../models';
+import { ParsedDay, ReOrderEvent } from '../../models';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
+  debounceTime,
   filter,
-  firstValueFrom,
   Observable,
   Subscription,
   switchMap,
   take,
+  tap,
 } from 'rxjs';
 import { ListComponent } from '../list/list.component';
 import { EventService, RxEventDocumentType } from '../../services';
 import { RxDocument } from 'rxdb';
+import { formatISO, startOfDay } from 'date-fns';
 
 @Component({
   selector: 'app-day',
@@ -32,7 +33,12 @@ import { RxDocument } from 'rxdb';
         <div class="date">{{ _day.monthDigits }}.{{ _day.dayDigits }}</div>
         <div class="day-name">{{ _day.dayName }}</div>
       </div>
-      <app-list [day]="_day" [list]="events" (reorder)="reorder($event)" [large]="true" />
+      <app-list
+        [day]="_day"
+        [list]="events$ | async"
+        (reorder)="reorder($event)"
+        [large]="true"
+      />
     </form>
   `,
   styleUrl: './day.component.scss',
@@ -44,24 +50,21 @@ export class DayComponent implements OnInit, OnDestroy {
     this._day$.next(day);
   }
   subscription = new Subscription();
-  events: RxDocument<RxEventDocumentType>[] | null = null;
-
+  events$ = new Observable<RxDocument<RxEventDocumentType>[] | null>();
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly eventService: EventService
   ) {}
 
   async ngOnInit() {
-    this.subscription.add(
-      this._day$
-        .pipe(
-          filter((day) => !!day),
-          switchMap((day) => this.eventService.getEventsAt$(day?.date)),
-          take(1)
-        )
-        .subscribe((events) => {
-          this.events = events;
-        })
+    this.events$ = this._day$.pipe(
+      filter((day) => !!day),
+      switchMap((day) => this.eventService.getEventsAt$(day?.date)),
+      debounceTime(100),
+      take(1), // FIXME: should fire less. either change Observable getEventsAt$ to fire less or use debounceTime 
+      tap((day) =>
+        console.log('** Refreshing events for day', this._day$?.value?.date)
+      )
     );
   }
 
@@ -69,12 +72,44 @@ export class DayComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  reorder(event: { prev: number; curr: number }) {
-    if (!this.events) return;
-    
-    const events = [...this.events];
-    const [removed] = events.splice(event.prev, 1);
-    events.splice(event.curr, 0, removed);
-    this.events = events;
+  async reorder(event: ReOrderEvent) {
+    console.log('REORDER EVENT', event);
+    let updateDate = false;
+    if (event.prev.container !== event.curr.container) {
+      updateDate = true;
+      await event.dragged?.incrementalPatch({
+        date: formatISO(startOfDay(event.curr.context.date)),
+      });
+      if (event.list) {
+        const list = [...event.list];
+        list.splice(event.curr.index, 0, event.dragged);
+        await Promise.all(
+          list.map((doc, index) => doc.incrementalPatch({ index }))
+        );
+      }
+    } else {
+      // within container drag
+      const list = [...event.list];
+      const [removed] = list.splice(event.prev.index, 1);
+      list.splice(event.curr.index, 0, removed);
+      await Promise.all(
+        list.map((doc, index) => doc.incrementalPatch({ index }))
+      );
+    }
+
+    // if (event.prev.container === event.curr.container) {
+    //   const list = [...event.list];
+    //   const [removed] = list.splice(event.prev.index, 1);
+    //   list.splice(event.curr.index, 0, removed);
+    //   await Promise.all(
+    //     list.map((event, index) => event.incrementalPatch({ index }))
+    //   );
+    // } else {
+    //   // update date case
+    //   await event.dragged?.incrementalPatch({
+    //     date: formatISO(startOfDay(event.curr.context.date)),
+    //     // TODO: update index
+    //   });
+    // }
   }
 }

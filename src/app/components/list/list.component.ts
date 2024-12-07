@@ -14,20 +14,12 @@ import {
   ViewChildren,
   ViewContainerRef,
 } from '@angular/core';
-import { ParsedDay } from '../../models';
+import { ParsedDay, ReOrderEvent } from '../../models';
 import { EventComponent } from '../event/event.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { EventService, RxEventDocumentType } from '../../services';
-import {
-  BehaviorSubject,
-  first,
-  Subject,
-  Subscription,
-  switchMap,
-  tap,
-  withLatestFrom,
-} from 'rxjs';
-import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { RxDocument } from 'rxdb';
 
 @Component({
@@ -44,16 +36,22 @@ import { RxDocument } from 'rxdb';
     <div
       cdkDropList
       (cdkDropListDropped)="drop($event)"
+      [cdkDropListData]="{date: _day.date, list: list}"
       class="list events-body"
       *ngIf="_day$ | async; let _day"
       [style.min-height]="large ? '420px' : '160px'"
     >
-      <!-- <ng-container
-        *ngIf="eventService.getEventsAt$(_day.date) | async as events"
-      > -->
       <ng-container *ngIf="list">
-        <span cdkDrag *ngFor="let event of list; let i = index">
-          <app-event [event]="event" (updateForm)="updateForm()"></app-event>
+        <span
+          cdkDrag
+          [cdkDragData]="event"
+          *ngFor="let event of list; let ind = index"
+        >
+          <app-event
+            [event]="event"
+            (updateForm)="addNew()"
+            [index]="ind"
+          ></app-event>
         </span>
       </ng-container>
       <ng-container #newEvent></ng-container>
@@ -61,7 +59,7 @@ import { RxDocument } from 'rxdb';
   `,
   styleUrl: './list.component.scss',
 })
-export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ListComponent implements AfterViewInit, OnDestroy {
   public _day$ = new BehaviorSubject<ParsedDay | null>(null);
   @Input() large = false;
   @Input()
@@ -69,15 +67,11 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
     this._day$.next(day);
   }
   @Input() list: RxDocument<RxEventDocumentType>[] | null = null;
-  @Output() reorder = new EventEmitter<{
-    prev: number;
-    curr: number;
-  }>();
+  @Output() reorder = new EventEmitter<ReOrderEvent>();
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
   @ViewChild('newEvent', { read: ViewContainerRef })
   newEvent!: ViewContainerRef;
   subscription = new Subscription();
-  private _updateForm$ = new Subject<string | null>();
   private _componentRef: ComponentRef<EventComponent> | null = null;
 
   constructor(
@@ -85,28 +79,13 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    this.subscription.add(
-      this._updateForm$
-        .pipe(
-          withLatestFrom(this._day$.asObservable()),
-          switchMap(() =>
-            this.eventService.getEventsAt$(this._day$.value!.date).pipe(
-              first(),
-              tap((_) => this.createEventComponent()),
-              tap((_) =>
-                this._componentRef?.instance.textInput.nativeElement.focus()
-              )
-            )
-          )
-        )
-        .subscribe()
-    );
-  }
-
   ngAfterViewInit(): void {
+    // Handle new event component metadata
     this.createEventComponent();
-    this.eventComponents.changes.subscribe((change) => {});
+    this.eventComponents.changes.subscribe((_) => {
+      if (!this._componentRef) return;
+      this._componentRef.instance.index = this.eventComponents.length;
+    });
   }
 
   ngOnDestroy(): void {
@@ -118,19 +97,40 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
       this.newEvent.clear();
       this._componentRef = this.newEvent.createComponent(EventComponent);
       this._componentRef.instance.date = this._day$.value?.date!;
-      this._componentRef.instance.updateForm.subscribe(() => this.updateForm());
+      this._componentRef.instance.index = this.list?.length || 0;
+      this._componentRef.instance.updateForm.subscribe(() => this.addNew());
       this.cdr.detectChanges();
     }
   }
 
-  updateForm() {
-    this._updateForm$.next(null);
+  addNew() {
+    this.createEventComponent();
+    setTimeout(() => {
+      this._componentRef?.instance.textInput.nativeElement.focus();
+    }, 0);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  // Template errors w/ type...
+  // TODO: update data to send entire list of RxDocs
+  drop(event: any) {
+    if (!event) return;
     this.reorder.emit({
-      prev: event.previousIndex,
-      curr: event.currentIndex,
+      dragged: event.item.data,
+      list: event.container.data.list,
+      prev: {
+        container: event.previousContainer.id,
+        index: event.previousIndex,
+        context: {
+          date: event.previousContainer.data.date,
+        },
+      },
+      curr: {
+        container: event.container.id,
+        index: event.currentIndex,
+        context: {
+          date: event.container.data.date,
+        },
+      },
     });
   }
 }

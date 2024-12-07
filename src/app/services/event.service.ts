@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, of } from 'rxjs';
+import { filter, map, Observable, of } from 'rxjs';
 import { RxDocument } from 'rxdb';
 import { parseISO, startOfDay } from 'date-fns';
 import { DbService, RxEventDocumentType } from './db.service';
@@ -12,7 +12,7 @@ export class EventService {
 
   constructor(private dbService: DbService) {
     this.events$ = this.dbService.db.events.find({
-      sort: [{ timestamp: 'asc'}]
+      sort: [{ index: 'asc' }],
     }).$;
   }
 
@@ -26,7 +26,8 @@ export class EventService {
           return eventDate.getTime() === date.getTime();
         });
         return res.length === 0 ? null : res;
-      })
+      }),
+      filter((events) => !!events)
     );
   }
 
