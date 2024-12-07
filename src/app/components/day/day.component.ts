@@ -96,20 +96,5 @@ export class DayComponent implements OnInit, OnDestroy {
         list.map((doc, index) => doc.incrementalPatch({ index }))
       );
     }
-
-    // if (event.prev.container === event.curr.container) {
-    //   const list = [...event.list];
-    //   const [removed] = list.splice(event.prev.index, 1);
-    //   list.splice(event.curr.index, 0, removed);
-    //   await Promise.all(
-    //     list.map((event, index) => event.incrementalPatch({ index }))
-    //   );
-    // } else {
-    //   // update date case
-    //   await event.dragged?.incrementalPatch({
-    //     date: formatISO(startOfDay(event.curr.context.date)),
-    //     // TODO: update index
-    //   });
-    // }
   }
 }
