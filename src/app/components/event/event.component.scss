@@ -66,14 +66,12 @@ i.bi-stickies {
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: grab;
 }
 
 span.title {
-    cursor: pointer;
     border-radius: 11px;
     padding: 0 6px;
-    // background-color: blue;
-    // color: #fff;
     display: inline-block;
     max-width: calc(100% - 14px);
     white-space: nowrap;

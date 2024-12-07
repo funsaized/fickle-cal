@@ -24,9 +24,9 @@ import { addDays, startOfDay } from 'date-fns';
         <app-calendar *ngIf="!loading" />
         <h2 style="opacity: 0.5">Backlog</h2>
         <div class="someday">
-          <app-list [day]="someDay0" />
+          <!-- <app-list [day]="someDay0" />
           <app-list [day]="someDay1" />
-          <app-list [day]="someDay2" />
+          <app-list [day]="someDay2" /> -->
         </div>
       </main>
       <footer>An exercise on local first apps & syncing data structures</footer>

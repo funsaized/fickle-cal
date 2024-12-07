@@ -4,9 +4,11 @@ import {
   ChangeDetectorRef,
   Component,
   ComponentRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
+  Output,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -15,7 +17,7 @@ import {
 import { ParsedDay } from '../../models';
 import { EventComponent } from '../event/event.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { EventService } from '../../services';
+import { EventService, RxEventDocumentType } from '../../services';
 import {
   BehaviorSubject,
   first,
@@ -25,25 +27,34 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { RxDocument } from 'rxdb';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule, EventComponent, ReactiveFormsModule],
+  imports: [
+    CdkDropList,
+    CdkDrag,
+    CommonModule,
+    EventComponent,
+    ReactiveFormsModule,
+  ],
   template: `
     <div
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
       class="list events-body"
       *ngIf="_day$ | async; let _day"
       [style.min-height]="large ? '420px' : '160px'"
     >
-      <ng-container
+      <!-- <ng-container
         *ngIf="eventService.getEventsAt$(_day.date) | async as events"
-      >
-        <app-event
-          *ngFor="let event of events; let i = index"
-          [event]="event"
-          (updateForm)="updateForm()"
-        ></app-event>
+      > -->
+      <ng-container *ngIf="list">
+        <span cdkDrag *ngFor="let event of list; let i = index">
+          <app-event [event]="event" (updateForm)="updateForm()"></app-event>
+        </span>
       </ng-container>
       <ng-container #newEvent></ng-container>
     </div>
@@ -57,6 +68,11 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
   set day(day: ParsedDay) {
     this._day$.next(day);
   }
+  @Input() list: RxDocument<RxEventDocumentType>[] | null = null;
+  @Output() reorder = new EventEmitter<{
+    prev: number;
+    curr: number;
+  }>();
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
   @ViewChild('newEvent', { read: ViewContainerRef })
   newEvent!: ViewContainerRef;
@@ -109,5 +125,12 @@ export class ListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   updateForm() {
     this._updateForm$.next(null);
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    this.reorder.emit({
+      prev: event.previousIndex,
+      curr: event.currentIndex,
+    });
   }
 }
