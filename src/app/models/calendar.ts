@@ -56,15 +56,16 @@ export const initWeek = () => {
 
 export interface ReOrderEvent {
   dragged: RxDocument<RxEventDocumentType>;
-  list: RxDocument<RxEventDocumentType>[];
   prev: {
     container: string;
     index: number;
+    list: RxDocument<RxEventDocumentType>[];
     context: ReOrderEventData;
   };
   curr: {
     container: string;
     index: number;
+    list: RxDocument<RxEventDocumentType>[];
     context: ReOrderEventData;
   };
 }

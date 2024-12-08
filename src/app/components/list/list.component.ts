@@ -7,7 +7,6 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
-  OnInit,
   Output,
   QueryList,
   ViewChild,
@@ -36,7 +35,7 @@ import { RxDocument } from 'rxdb';
     <div
       cdkDropList
       (cdkDropListDropped)="drop($event)"
-      [cdkDropListData]="{date: _day.date, list: list}"
+      [cdkDropListData]="{ date: _day.date, list: list }"
       class="list events-body"
       *ngIf="_day$ | async; let _day"
       [style.min-height]="large ? '420px' : '160px'"
@@ -60,12 +59,14 @@ import { RxDocument } from 'rxdb';
   styleUrl: './list.component.scss',
 })
 export class ListComponent implements AfterViewInit, OnDestroy {
-  public _day$ = new BehaviorSubject<ParsedDay | null>(null);
   @Input() large = false;
+
+  public _day$ = new BehaviorSubject<ParsedDay | null>(null);
   @Input()
   set day(day: ParsedDay) {
     this._day$.next(day);
   }
+
   @Input() list: RxDocument<RxEventDocumentType>[] | null = null;
   @Output() reorder = new EventEmitter<ReOrderEvent>();
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
@@ -73,7 +74,6 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   newEvent!: ViewContainerRef;
   subscription = new Subscription();
   private _componentRef: ComponentRef<EventComponent> | null = null;
-
   constructor(
     public readonly eventService: EventService,
     private readonly cdr: ChangeDetectorRef
@@ -111,15 +111,14 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   }
 
   // Template errors w/ type...
-  // TODO: update data to send entire list of RxDocs
   drop(event: any) {
     if (!event) return;
     this.reorder.emit({
       dragged: event.item.data,
-      list: event.container.data.list,
       prev: {
         container: event.previousContainer.id,
         index: event.previousIndex,
+        list: event.previousContainer.data.list,
         context: {
           date: event.previousContainer.data.date,
         },
@@ -127,6 +126,7 @@ export class ListComponent implements AfterViewInit, OnDestroy {
       curr: {
         container: event.container.id,
         index: event.currentIndex,
+        list: event.container.data.list,
         context: {
           date: event.container.data.date,
         },

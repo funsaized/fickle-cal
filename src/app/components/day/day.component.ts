@@ -10,9 +10,10 @@ import { ParsedDay, ReOrderEvent } from '../../models';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
-  debounceTime,
+  combineLatest,
   filter,
   Observable,
+  Subject,
   Subscription,
   switchMap,
   take,
@@ -35,7 +36,7 @@ import { formatISO, startOfDay } from 'date-fns';
       </div>
       <app-list
         [day]="_day"
-        [list]="events$ | async"
+        [list]="list$ | async"
         (reorder)="reorder($event)"
         [large]="true"
       />
@@ -51,20 +52,55 @@ export class DayComponent implements OnInit, OnDestroy {
   }
   subscription = new Subscription();
   events$ = new Observable<RxDocument<RxEventDocumentType>[] | null>();
+  _list$ = new BehaviorSubject<RxDocument<RxEventDocumentType>[]>([]);
+  list$ = this._list$.asObservable(); // set debounce during init to avoid flicker
+  _refresh$ = new Subject<void>();
   constructor(
     private readonly cdr: ChangeDetectorRef,
     private readonly eventService: EventService
   ) {}
 
   async ngOnInit() {
-    this.events$ = this._day$.pipe(
-      filter((day) => !!day),
-      switchMap((day) => this.eventService.getEventsAt$(day?.date)),
-      debounceTime(100),
-      take(1), // FIXME: should fire less. either change Observable getEventsAt$ to fire less or use debounceTime 
-      tap((day) =>
-        console.log('** Refreshing events for day', this._day$?.value?.date)
+    // Initial load
+    this.day$
+      .pipe(
+        switchMap((day) => this.eventService.getDayStream$(day?.date)),
+        tap((events) =>
+          console.log(
+            'Events loaded for day',
+            this._day$.value?.date,
+            events
+          )
+        ),
+        take(1),
+        tap((events) => this._list$.next(events || []))
       )
+      .subscribe();
+
+    // Refresh from moveTo/moveFrom
+    this.subscription.add(
+      combineLatest([
+        this.eventService.prevDayRefresh$,
+        this.eventService.dayRefresh$,
+      ])
+        .pipe(
+          filter(
+            ([prev, curr]) =>
+              prev === this._day$.value?.date || curr === this._day$.value?.date
+          ),
+          switchMap((day) =>
+            this.eventService.getDayStream$(this._day$.value!.date)
+          ),
+          tap((events) =>
+            console.log(
+              'Events refreshed for day',
+              this._day$.value?.date,
+              events
+            )
+          ),
+          tap((events) => this._list$.next(events || []))
+        )
+        .subscribe()
     );
   }
 
@@ -73,28 +109,45 @@ export class DayComponent implements OnInit, OnDestroy {
   }
 
   async reorder(event: ReOrderEvent) {
-    console.log('REORDER EVENT', event);
-    let updateDate = false;
     if (event.prev.container !== event.curr.container) {
-      updateDate = true;
       await event.dragged?.incrementalPatch({
         date: formatISO(startOfDay(event.curr.context.date)),
       });
-      if (event.list) {
-        const list = [...event.list];
-        list.splice(event.curr.index, 0, event.dragged);
-        await Promise.all(
-          list.map((doc, index) => doc.incrementalPatch({ index }))
+      // If no list, then add event and update index
+      if (!event.curr.list) {
+        await event.dragged?.incrementalPatch({ index: event.curr.index }); // TODO: maybe explicit 0
+      } else {
+        // Remove from previous, put in new, update both indices
+        const previousList = [...event.prev.list];
+        previousList.splice(event.prev.index, 1);
+        const currentList = [...event.curr.list];
+        currentList.splice(event.curr.index, 0, event.dragged);
+        const prevUpdates = previousList.map((doc, index) =>
+          doc.incrementalPatch({ index })
         );
+        const currUpdates = currentList.map((doc, index) =>
+          doc.incrementalPatch({ index })
+        );
+        await Promise.all([...prevUpdates, ...currUpdates]);
+        this.eventService.prevDayRefresh$ = event.prev.context.date;
       }
     } else {
       // within container drag
-      const list = [...event.list];
+      const list = [...event.curr.list];
       const [removed] = list.splice(event.prev.index, 1);
       list.splice(event.curr.index, 0, removed);
       await Promise.all(
         list.map((doc, index) => doc.incrementalPatch({ index }))
       );
     }
+    this.eventService.dayRefresh$ = this._day$.value!.date;
+  }
+
+  get day$() {
+    return this._day$.asObservable().pipe(filter((day) => !!day));
+  }
+
+  get refresh$() {
+    return this._refresh$.asObservable();
   }
 }
