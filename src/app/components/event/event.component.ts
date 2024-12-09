@@ -164,7 +164,6 @@ export class EventComponent implements OnInit, AfterViewInit {
         timestamp: new Date().getTime(),
         index: this.index
       };
-      console.log('** Inserting event', toInsert);
       this._event = await this.dbService.db.events.insert(toInsert);
       this.focused = false;
       this.updateForm.emit();
