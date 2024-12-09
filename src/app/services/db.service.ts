@@ -50,6 +50,9 @@ const EVENT_SCHEMA_LITERAL = {
     timestamp: {
       type: 'number',
     },
+    index: {
+      type: 'number',
+    },
     _deleted: {
       type: 'boolean',
     },
@@ -231,7 +234,7 @@ export class DbService {
     this.replicationState.canceled$.subscribe((bool) => console.error(`**** Rpl canceled ${bool} ****`));
 
     // emits true when a replication cycle is running, false when not.
-    this.replicationState.active$.subscribe((bool) => console.log(`**** Rpl cycle running ${bool} ****`));
+    this.replicationState?.active$.subscribe((bool) => console.log(`**** Rpl cycle running ${bool} ****`));
   }
 
   get db() {
