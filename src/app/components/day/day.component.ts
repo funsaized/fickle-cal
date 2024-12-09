@@ -38,6 +38,7 @@ import { formatDate } from '@angular/common';
         [day]="_day"
         [list]="eventService.getEventsMap(_day.dayName)"
         (reorder)="reorder($event)"
+        (refresh)="eventService.dayRefresh$ = _day.date"
         [large]="true"
       />
     </form>
@@ -52,16 +53,12 @@ export class DayComponent implements OnInit, OnDestroy {
   }
   subscription = new Subscription();
   events$ = new Observable<RxDocument<RxEventDocumentType>[] | null>();
-  private _list$ = new BehaviorSubject<RxDocument<RxEventDocumentType>[]>([]);
-  list$ = this._list$.asObservable(); // set debounce during init to avoid flicker
-  list: RxDocument<RxEventDocumentType>[] = [];
-  _refresh$ = new Subject<void>();
   constructor(
     private readonly cdr: ChangeDetectorRef,
     readonly eventService: EventService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     // Initial load
     this.day$
       .pipe(
@@ -73,7 +70,6 @@ export class DayComponent implements OnInit, OnDestroy {
             this._day$.value?.dayName as CalendarKeys,
             events || []
           );
-          // this._list$.next(events || []);
         })
       )
       .subscribe();
@@ -127,9 +123,9 @@ export class DayComponent implements OnInit, OnDestroy {
     if (event.prev.container !== event.curr.container) {
       // If no list, then add event and update index
       if (!event.curr.list) {
-        await event.dragged?.incrementalPatch({ index: event.curr.index }); // TODO: maybe explicit 0
+        await event.dragged?.incrementalPatch({ index: event.curr.index });
       } else {
-        // Remove from previous, put in new, update both indices
+        // Remove from previous, put in new, immediately update UI
         const previousList = [...event.prev.list];
         previousList.splice(event.prev.index, 1);
         this.eventService.setEventsMap(
@@ -138,7 +134,6 @@ export class DayComponent implements OnInit, OnDestroy {
         );
         await event.dragged?.incrementalPatch({
           date: formatISO(startOfDay(event.curr.context.date)),
-          // index: event.curr.index,
         });
         const currentList = [...event.curr.list];
         currentList.splice(event.curr.index, 0, event.dragged);
@@ -146,7 +141,8 @@ export class DayComponent implements OnInit, OnDestroy {
           this._day$.value?.dayName as CalendarKeys,
           currentList
         );
-        // this._list$.next(currentList);
+
+        // Update indices
         const prevUpdates = previousList.map((doc, index) =>
           doc.incrementalPatch({ index })
         );
@@ -157,7 +153,6 @@ export class DayComponent implements OnInit, OnDestroy {
         this.eventService.prevDayRefresh$ = event.prev.context.date;
       }
     } else {
-      // within container drag
       const list = [...event.curr.list];
       const [removed] = list.splice(event.prev.index, 1);
       list.splice(event.curr.index, 0, removed);
@@ -168,7 +163,7 @@ export class DayComponent implements OnInit, OnDestroy {
         list
       );
 
-      // Update the database in the background
+      // Update indices
       await Promise.all(
         list.map((doc, index) => doc.incrementalPatch({ index }))
       );
@@ -179,9 +174,5 @@ export class DayComponent implements OnInit, OnDestroy {
 
   get day$() {
     return this._day$.asObservable().pipe(filter((day) => !!day));
-  }
-
-  get refresh$() {
-    return this._refresh$.asObservable();
   }
 }

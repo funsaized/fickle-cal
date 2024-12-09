@@ -34,7 +34,6 @@ import { RxDocument } from 'rxdb';
   template: `
     <div
       cdkDropList
-      (cdkDropListExited)="drag($event)"
       (cdkDropListDropped)="drop($event)"
       [cdkDropListData]="{ date: _day.date, list: list }"
       class="list events-body"
@@ -70,6 +69,7 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 
   @Input() list: RxDocument<RxEventDocumentType>[] | null = null;
   @Output() reorder = new EventEmitter<ReOrderEvent>();
+  @Output() refresh = new EventEmitter<void>();
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
   @ViewChild('newEvent', { read: ViewContainerRef })
   newEvent!: ViewContainerRef;
@@ -108,19 +108,12 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       this._componentRef?.instance.textInput.nativeElement.focus();
     }, 0);
+    this.refresh.emit();
   }
-
-  drag(event: any) {}
 
   // Template errors w/ type...
   drop(event: any) {
     if (!event) return;
-    // Eager updates for CD 
-    if (event.previousContainer.id !== event.container.id) {
-      const documentId = (event.item.data as RxDocument<RxEventDocumentType>)
-        .id;
-      this.list = this.list!.filter((event) => event.id !== documentId);
-    }
     this.reorder.emit({
       dragged: event.item.data,
       prev: {
