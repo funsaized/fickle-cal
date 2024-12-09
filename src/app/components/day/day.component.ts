@@ -6,11 +6,10 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { ParsedDay, ReOrderEvent } from '../../models';
+import { CalendarKeys, ParsedDay, ReOrderEvent } from '../../models';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
-  combineLatest,
   filter,
   Observable,
   Subject,
@@ -23,6 +22,7 @@ import { ListComponent } from '../list/list.component';
 import { EventService, RxEventDocumentType } from '../../services';
 import { RxDocument } from 'rxdb';
 import { formatISO, startOfDay } from 'date-fns';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-day',
@@ -36,7 +36,7 @@ import { formatISO, startOfDay } from 'date-fns';
       </div>
       <app-list
         [day]="_day"
-        [list]="list$ | async"
+        [list]="eventService.getEventsMap(_day.dayName)"
         (reorder)="reorder($event)"
         [large]="true"
       />
@@ -52,12 +52,13 @@ export class DayComponent implements OnInit, OnDestroy {
   }
   subscription = new Subscription();
   events$ = new Observable<RxDocument<RxEventDocumentType>[] | null>();
-  _list$ = new BehaviorSubject<RxDocument<RxEventDocumentType>[]>([]);
+  private _list$ = new BehaviorSubject<RxDocument<RxEventDocumentType>[]>([]);
   list$ = this._list$.asObservable(); // set debounce during init to avoid flicker
+  list: RxDocument<RxEventDocumentType>[] = [];
   _refresh$ = new Subject<void>();
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    private readonly eventService: EventService
+    readonly eventService: EventService
   ) {}
 
   async ngOnInit() {
@@ -65,40 +66,54 @@ export class DayComponent implements OnInit, OnDestroy {
     this.day$
       .pipe(
         switchMap((day) => this.eventService.getDayStream$(day?.date)),
-        tap((events) =>
-          console.log(
-            'Events loaded for day',
-            this._day$.value?.date,
-            events
-          )
-        ),
         take(1),
-        tap((events) => this._list$.next(events || []))
+        tap((events) => {
+          console.log('Events loaded for day', this._day$.value?.date, events);
+          this.eventService.setEventsMap(
+            this._day$.value?.dayName as CalendarKeys,
+            events || []
+          );
+          // this._list$.next(events || []);
+        })
       )
       .subscribe();
 
-    // Refresh from moveTo/moveFrom
+    // Previous day refresh subscription
     this.subscription.add(
-      combineLatest([
-        this.eventService.prevDayRefresh$,
-        this.eventService.dayRefresh$,
-      ])
+      this.eventService.prevDayRefresh$
         .pipe(
-          filter(
-            ([prev, curr]) =>
-              prev === this._day$.value?.date || curr === this._day$.value?.date
+          filter((prevDay) => prevDay === this._day$.value?.date),
+          switchMap(() =>
+            this.eventService
+              .getDayStream$(this._day$.value!.date)
+              .pipe(take(1))
           ),
-          switchMap((day) =>
-            this.eventService.getDayStream$(this._day$.value!.date)
+          tap((events) => {
+            this.eventService.setEventsMap(
+              this._day$.value?.dayName as CalendarKeys,
+              events || []
+            );
+          })
+        )
+        .subscribe()
+    );
+
+    // Current day refresh subscription
+    this.subscription.add(
+      this.eventService.dayRefresh$
+        .pipe(
+          filter((currDay) => currDay === this._day$.value?.date),
+          switchMap(() =>
+            this.eventService
+              .getDayStream$(this._day$.value!.date)
+              .pipe(take(1))
           ),
-          tap((events) =>
-            console.log(
-              'Events refreshed for day',
-              this._day$.value?.date,
-              events
-            )
-          ),
-          tap((events) => this._list$.next(events || []))
+          tap((events) => {
+            this.eventService.setEventsMap(
+              this._day$.value?.dayName as CalendarKeys,
+              events || []
+            );
+          })
         )
         .subscribe()
     );
@@ -110,9 +125,6 @@ export class DayComponent implements OnInit, OnDestroy {
 
   async reorder(event: ReOrderEvent) {
     if (event.prev.container !== event.curr.container) {
-      await event.dragged?.incrementalPatch({
-        date: formatISO(startOfDay(event.curr.context.date)),
-      });
       // If no list, then add event and update index
       if (!event.curr.list) {
         await event.dragged?.incrementalPatch({ index: event.curr.index }); // TODO: maybe explicit 0
@@ -120,8 +132,21 @@ export class DayComponent implements OnInit, OnDestroy {
         // Remove from previous, put in new, update both indices
         const previousList = [...event.prev.list];
         previousList.splice(event.prev.index, 1);
+        this.eventService.setEventsMap(
+          formatDate(event.prev.context.date, 'EEE', 'en-US') as CalendarKeys,
+          previousList
+        );
+        await event.dragged?.incrementalPatch({
+          date: formatISO(startOfDay(event.curr.context.date)),
+          // index: event.curr.index,
+        });
         const currentList = [...event.curr.list];
         currentList.splice(event.curr.index, 0, event.dragged);
+        this.eventService.setEventsMap(
+          this._day$.value?.dayName as CalendarKeys,
+          currentList
+        );
+        // this._list$.next(currentList);
         const prevUpdates = previousList.map((doc, index) =>
           doc.incrementalPatch({ index })
         );
@@ -136,11 +161,20 @@ export class DayComponent implements OnInit, OnDestroy {
       const list = [...event.curr.list];
       const [removed] = list.splice(event.prev.index, 1);
       list.splice(event.curr.index, 0, removed);
+
+      // Immediately update the UI
+      this.eventService.setEventsMap(
+        this._day$.value?.dayName as CalendarKeys,
+        list
+      );
+
+      // Update the database in the background
       await Promise.all(
         list.map((doc, index) => doc.incrementalPatch({ index }))
       );
+
+      this.eventService.dayRefresh$ = this._day$.value!.date;
     }
-    this.eventService.dayRefresh$ = this._day$.value!.date;
   }
 
   get day$() {

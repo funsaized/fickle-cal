@@ -73,9 +73,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = false;
-    this.eventService.events$.subscribe((events) => {
-      this.loading = false;
-    });
   }
 
   handleArrowClick(direction: string) {

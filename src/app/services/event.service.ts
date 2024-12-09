@@ -3,20 +3,18 @@ import { filter, map, Observable, of, Subject } from 'rxjs';
 import { RxDocument } from 'rxdb';
 import { formatISO, parseISO, startOfDay } from 'date-fns';
 import { DbService, RxEventDocumentType } from './db.service';
+import { CalendarKeys } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
-  public events$: Observable<RxDocument<RxEventDocumentType, {}>[]> = of([]);
 
   private _dayRefresh$ = new Subject<Date>();
   private _prevDayRefresh$ = new Subject<Date>();
+  private eventsMap = new Map<CalendarKeys, RxDocument<RxEventDocumentType>[]>();
 
   constructor(private dbService: DbService) {
-    this.events$ = this.dbService.db.events.find({
-      sort: [{ index: 'asc' }],
-    }).$;
   }
 
   getDayStream$(
@@ -32,20 +30,6 @@ export class EventService {
     }).$;
   }
 
-  getEventsAt$(
-    date: Date
-  ): Observable<RxDocument<RxEventDocumentType>[] | null> {
-    return this.events$.pipe(
-      map((events) => {
-        const res = events.filter((event) => {
-          const eventDate = startOfDay(parseISO(event.date));
-          return eventDate.getTime() === date.getTime();
-        });
-        return res.length === 0 ? null : res;
-      }),
-      filter((events) => !!events)
-    );
-  }
   get dayRefresh$(): Observable<Date> {
     return this._dayRefresh$.asObservable();
   }
@@ -60,5 +44,13 @@ export class EventService {
 
   set prevDayRefresh$(date: Date) {
     this._prevDayRefresh$.next(date);
+  }
+
+  setEventsMap(key: CalendarKeys, events: RxDocument<RxEventDocumentType>[]) {
+    this.eventsMap.set(key, events);
+  }
+
+  getEventsMap(key: CalendarKeys | string) {
+    return this.eventsMap.get(key as CalendarKeys) || [];
   }
 }

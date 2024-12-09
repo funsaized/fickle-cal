@@ -16,7 +16,7 @@ import {
 import { ParsedDay, ReOrderEvent } from '../../models';
 import { EventComponent } from '../event/event.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { EventService, RxEventDocumentType } from '../../services';
+import { RxEventDocumentType } from '../../services';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { RxDocument } from 'rxdb';
@@ -34,6 +34,7 @@ import { RxDocument } from 'rxdb';
   template: `
     <div
       cdkDropList
+      (cdkDropListExited)="drag($event)"
       (cdkDropListDropped)="drop($event)"
       [cdkDropListData]="{ date: _day.date, list: list }"
       class="list events-body"
@@ -75,7 +76,6 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   subscription = new Subscription();
   private _componentRef: ComponentRef<EventComponent> | null = null;
   constructor(
-    public readonly eventService: EventService,
     private readonly cdr: ChangeDetectorRef
   ) {}
 
@@ -110,9 +110,17 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     }, 0);
   }
 
+  drag(event: any) {}
+
   // Template errors w/ type...
   drop(event: any) {
     if (!event) return;
+    // Eager updates for CD 
+    if (event.previousContainer.id !== event.container.id) {
+      const documentId = (event.item.data as RxDocument<RxEventDocumentType>)
+        .id;
+      this.list = this.list!.filter((event) => event.id !== documentId);
+    }
     this.reorder.emit({
       dragged: event.item.data,
       prev: {

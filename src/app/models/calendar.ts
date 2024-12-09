@@ -27,9 +27,7 @@ export const SOME_DAY_0 = startOfDay(new Date(0));
 export const SOME_DAY_1 = startOfDay(addDays(SOME_DAY_0, 1));
 export const SOME_DAY_2 = startOfDay(addDays(SOME_DAY_0, 2));
 
-export type EventFormDay = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
-
-export type FormsMap = Record<EventFormDay, FormGroup<EventDetailFormValue>[]>;
+export type CalendarKeys = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
 
 // TODO: move to helper
 export const initWeek = () => {
