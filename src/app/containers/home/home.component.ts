@@ -23,10 +23,10 @@ import { addDays, startOfDay } from 'date-fns';
       <main>
         <app-calendar *ngIf="!loading" />
         <h2 style="opacity: 0.5">Backlog</h2>
-        <div class="someday">
-          <!-- <app-list [day]="someDay0" />
-          <app-list [day]="someDay1" />
-          <app-list [day]="someDay2" /> -->
+        <div class="under-construction">
+          <i class="bi bi-cone-striped"></i>
+          <p>Backlog feature coming soon!</p>
+          <small>Fiddling with the data model to make it more flexible...</small>
         </div>
       </main>
       <footer>An exercise on local first apps & syncing data structures</footer>
@@ -73,9 +73,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = false;
-    this.eventService.events$.subscribe((events) => {
-      this.loading = false;
-    });
   }
 
   handleArrowClick(direction: string) {
