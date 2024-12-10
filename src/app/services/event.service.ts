@@ -39,7 +39,7 @@ export class EventService {
     this.getOrCreateDaySubject(key).next(events);
   }
 
-  getEventsStream$(key: CalendarKeys | string): Observable<RxDocument<RxEventDocumentType>[]> {
+  getEventsStream$(key: CalendarKeys): Observable<RxDocument<RxEventDocumentType>[]> {
     return this.getOrCreateDaySubject(key as CalendarKeys).asObservable();
   }
 }

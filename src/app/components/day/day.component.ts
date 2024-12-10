@@ -12,11 +12,8 @@ import {
   BehaviorSubject,
   debounceTime,
   filter,
-  Observable,
-  Subject,
   Subscription,
   switchMap,
-  take,
   tap,
 } from 'rxjs';
 import { ListComponent } from '../list/list.component';
@@ -36,7 +33,7 @@ import { formatDate } from '@angular/common';
       </div>
       <app-list
         [day]="_day"
-        [list]="eventService.getEventsStream$(_day.dayName) | async"
+        [list]="eventService.getEventsStream$(dateKey) | async"
         (reorder)="reorder($event)"
         [large]="true"
       />
@@ -57,22 +54,15 @@ export class DayComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Load(s)
     this.subscription.add(
       this.day$
         .pipe(
           switchMap((day) => this.eventService.getDayStream$(day?.date)),
-          debounceTime(100), // Allows for eager updating UI
+          debounceTime(100),
           tap((events) => {
-            console.log(
-              'Events loaded for day',
-              this._day$.value?.date,
-              events
-            );
-            this.eventService.setEventsMap(
-              this._day$.value?.dayName as CalendarKeys,
-              events || []
-            );
+            const dateKey = this.dateKey;
+            console.log('Events loaded for day', dateKey, events);
+            this.eventService.setEventsMap(dateKey, events || []);
           })
         )
         .subscribe()
@@ -94,16 +84,14 @@ export class DayComponent implements OnInit, OnDestroy {
         previousList.splice(event.prev.index, 1);
 
         // Eagerly update the models driving UI
-        this.eventService.setEventsMap(
-          formatDate(event.prev.context.date, 'EEE', 'en-US') as CalendarKeys,
-          previousList
-        );
+        const prevDateKey = formatISO(startOfDay(event.prev.context.date));
+        this.eventService.setEventsMap(prevDateKey, previousList);
+
+        const currDateKey = formatISO(startOfDay(event.curr.context.date));
         const currentList = [...event.curr.list];
         currentList.splice(event.curr.index, 0, event.dragged);
-        this.eventService.setEventsMap(
-          this._day$.value?.dayName as CalendarKeys,
-          currentList
-        );
+        this.eventService.setEventsMap(currDateKey, currentList);
+
         await event.dragged?.incrementalPatch({
           date: formatISO(startOfDay(event.curr.context.date)),
         });
@@ -123,10 +111,9 @@ export class DayComponent implements OnInit, OnDestroy {
       list.splice(event.curr.index, 0, removed);
 
       // Eagerly update the models driving UI
-      this.eventService.setEventsMap(
-        this._day$.value?.dayName as CalendarKeys,
-        list
-      );
+      const currDateKey = formatISO(startOfDay(event.curr.context.date));
+
+      this.eventService.setEventsMap(currDateKey, list);
 
       // Update indices
       await Promise.all(
@@ -137,5 +124,9 @@ export class DayComponent implements OnInit, OnDestroy {
 
   get day$() {
     return this._day$.asObservable().pipe(filter((day) => !!day));
+  }
+
+  get dateKey(): string {
+    return formatISO(startOfDay(this._day$.value!.date));
   }
 }

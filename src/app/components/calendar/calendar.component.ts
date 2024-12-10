@@ -2,14 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WeekService } from '../../services';
 import { DayComponent } from '../day/day.component';
-import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CdkDropListGroup, CdkDrag, CommonModule, DayComponent],
+  imports: [CommonModule, DayComponent],
   template: `
-    <div class="container" cdkDropListGroup>
+    <div class="container" >
       <app-day
         *ngFor="let day of weekService.currentDays$ | async"
         [day]="day"
