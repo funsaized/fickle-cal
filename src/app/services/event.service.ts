@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { filter, map, Observable, of, Subject } from 'rxjs';
+import { filter, map, Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { RxDocument } from 'rxdb';
 import { formatISO, parseISO, startOfDay } from 'date-fns';
 import { DbService, RxEventDocumentType } from './db.service';
@@ -10,9 +10,7 @@ import { CalendarKeys } from '../models';
 })
 export class EventService {
 
-  private _dayRefresh$ = new Subject<Date>();
-  private _prevDayRefresh$ = new Subject<Date>();
-  private eventsMap = new Map<CalendarKeys, RxDocument<RxEventDocumentType>[]>();
+  private _eventsMap = new Map<CalendarKeys, BehaviorSubject<RxDocument<RxEventDocumentType>[]>>();
 
   constructor(private dbService: DbService) {
   }
@@ -30,27 +28,18 @@ export class EventService {
     }).$;
   }
 
-  get dayRefresh$(): Observable<Date> {
-    return this._dayRefresh$.asObservable();
-  }
-
-  set dayRefresh$(date: Date) {
-    this._dayRefresh$.next(date);
-  }
-
-  get prevDayRefresh$(): Observable<Date> {
-    return this._prevDayRefresh$.asObservable();
-  }
-
-  set prevDayRefresh$(date: Date) {
-    this._prevDayRefresh$.next(date);
+  private getOrCreateDaySubject(key: CalendarKeys): BehaviorSubject<RxDocument<RxEventDocumentType>[]> {
+    if (!this._eventsMap.has(key)) {
+      this._eventsMap.set(key, new BehaviorSubject<RxDocument<RxEventDocumentType>[]>([]));
+    }
+    return this._eventsMap.get(key)!;
   }
 
   setEventsMap(key: CalendarKeys, events: RxDocument<RxEventDocumentType>[]) {
-    this.eventsMap.set(key, events);
+    this.getOrCreateDaySubject(key).next(events);
   }
 
-  getEventsMap(key: CalendarKeys | string) {
-    return this.eventsMap.get(key as CalendarKeys) || [];
+  getEventsStream$(key: CalendarKeys): Observable<RxDocument<RxEventDocumentType>[]> {
+    return this.getOrCreateDaySubject(key as CalendarKeys).asObservable();
   }
 }
