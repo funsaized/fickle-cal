@@ -69,7 +69,6 @@ export class ListComponent implements AfterViewInit, OnDestroy {
 
   @Input() list: RxDocument<RxEventDocumentType>[] | null = null;
   @Output() reorder = new EventEmitter<ReOrderEvent>();
-  @Output() refresh = new EventEmitter<void>();
   @ViewChildren(EventComponent) eventComponents!: QueryList<EventComponent>;
   @ViewChild('newEvent', { read: ViewContainerRef })
   newEvent!: ViewContainerRef;
@@ -108,7 +107,6 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       this._componentRef?.instance.textInput.nativeElement.focus();
     }, 0);
-    this.refresh.emit();
   }
 
   // Template errors w/ type...
