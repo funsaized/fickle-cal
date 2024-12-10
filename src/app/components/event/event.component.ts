@@ -54,8 +54,8 @@ import { v4 as uuidv4 } from 'uuid';
           formControlName="title"
           autocomplete="off"
           (focusout)="onFocusOut()"
-          (click)="onFocus()"
-          (focusin)="onFocus()"
+          (click)="focused = true"
+          (focusin)="focused = true"
           (keydown.enter)="onEnter()"
           [class.completed]="completed.value === true"
         />
@@ -146,10 +146,6 @@ export class EventComponent implements OnInit, AfterViewInit {
       this.modalTemplate,
       this.viewContainerRef
     );
-  }
-
-  onFocus() {
-    this.focused = true;
   }
 
   async onFocusOut() {
