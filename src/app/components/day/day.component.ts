@@ -19,7 +19,6 @@ import {
 import { ListComponent } from '../list/list.component';
 import { EventService, RxEventDocumentType } from '../../services';
 import { formatISO, startOfDay } from 'date-fns';
-import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-day',
@@ -74,52 +73,7 @@ export class DayComponent implements OnInit, OnDestroy {
   }
 
   async reorder(event: ReOrderEvent) {
-    if (event.prev.container !== event.curr.container) {
-      // If no list, then add event and update index
-      if (!event.curr.list) {
-        await event.dragged?.incrementalPatch({ index: event.curr.index });
-      } else {
-        // Remove from previous, put in new, immediately update UI
-        const previousList = [...event.prev.list];
-        previousList.splice(event.prev.index, 1);
-
-        // Eagerly update the models driving UI
-        const prevDateKey = formatISO(startOfDay(event.prev.context.date));
-        this.eventService.setEventsMap(prevDateKey, previousList);
-
-        const currDateKey = formatISO(startOfDay(event.curr.context.date));
-        const currentList = [...event.curr.list];
-        currentList.splice(event.curr.index, 0, event.dragged);
-        this.eventService.setEventsMap(currDateKey, currentList);
-
-        await event.dragged?.incrementalPatch({
-          date: formatISO(startOfDay(event.curr.context.date)),
-        });
-
-        // Update indices
-        const prevUpdates = previousList.map((doc, index) =>
-          doc.incrementalPatch({ index })
-        );
-        const currUpdates = currentList.map((doc, index) =>
-          doc.incrementalPatch({ index })
-        );
-        await Promise.all([...prevUpdates, ...currUpdates]);
-      }
-    } else {
-      const list = [...event.curr.list];
-      const [removed] = list.splice(event.prev.index, 1);
-      list.splice(event.curr.index, 0, removed);
-
-      // Eagerly update the models driving UI
-      const currDateKey = formatISO(startOfDay(event.curr.context.date));
-
-      this.eventService.setEventsMap(currDateKey, list);
-
-      // Update indices
-      await Promise.all(
-        list.map((doc, index) => doc.incrementalPatch({ index }))
-      );
-    }
+    await this.eventService.reorder(event);
   }
 
   get day$() {

@@ -6,7 +6,13 @@ import {
   HeaderComponent,
   ListComponent,
 } from '../../components';
-import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
+import {
+  ParsedDay,
+  ReOrderEvent,
+  SOME_DAY_0,
+  SOME_DAY_1,
+  SOME_DAY_2,
+} from '../../models';
 import { formatISO, startOfDay } from 'date-fns';
 import { debounceTime, Subscription, tap } from 'rxjs';
 import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
@@ -14,7 +20,14 @@ import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CdkDropListGroup, CdkDrag, CommonModule, HeaderComponent, CalendarComponent, ListComponent],
+  imports: [
+    CdkDropListGroup,
+    CdkDrag,
+    CommonModule,
+    HeaderComponent,
+    CalendarComponent,
+    ListComponent,
+  ],
   template: `
     <div class="wrapper">
       <header>
@@ -29,18 +42,27 @@ import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
         <div class="someday">
           <app-list
             [day]="someDay0"
-            [list]="eventService.getEventsStream$(formatDateKey(someDay0.date)) | async"
-            (reorder)="reorder($event, formatDateKey(someDay0.date))"
+            [list]="
+              eventService.getEventsStream$(formatDateKey(someDay0.date))
+                | async
+            "
+            (reorder)="reorder($event)"
           />
           <app-list
             [day]="someDay1"
-            [list]="eventService.getEventsStream$(formatDateKey(someDay1.date)) | async"
-            (reorder)="reorder($event, formatDateKey(someDay1.date))"
+            [list]="
+              eventService.getEventsStream$(formatDateKey(someDay1.date))
+                | async
+            "
+            (reorder)="reorder($event)"
           />
           <app-list
             [day]="someDay2"
-            [list]="eventService.getEventsStream$(formatDateKey(someDay2.date)) | async"
-            (reorder)="reorder($event, formatDateKey(someDay2.date))"
+            [list]="
+              eventService.getEventsStream$(formatDateKey(someDay2.date))
+                | async
+            "
+            (reorder)="reorder($event)"
           />
         </div>
       </main>
@@ -90,7 +112,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = false;
     // Load(s)
-    [this.someDay0, this.someDay1, this.someDay2].forEach(day => {
+    [this.someDay0, this.someDay1, this.someDay2].forEach((day) => {
       const dateKey = formatISO(startOfDay(day.date));
       this.subscription.add(
         this.eventService
@@ -115,50 +137,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.weekService.changeWeek(direction);
   }
 
-  async reorder(event: ReOrderEvent, withinKey: string) {
-    if (event.prev.container !== event.curr.container) {
-      // If no list, then add event and update index
-      if (!event.curr.list) {
-        await event.dragged?.incrementalPatch({ index: event.curr.index });
-      } else { // Backlog can only drag to calendar
-        // Remove from previous, put in new, immediately update UI
-        const previousList = [...event.prev.list];
-        previousList.splice(event.prev.index, 1);
-
-        // Eagerly update the models driving UI
-        this.eventService.setEventsMap(withinKey, previousList);
-        
-        const currentDateKey = formatISO(startOfDay(event.curr.context.date));
-        const currentList = [...event.curr.list];
-        currentList.splice(event.curr.index, 0, event.dragged);
-        this.eventService.setEventsMap(currentDateKey, currentList);
-
-        await event.dragged?.incrementalPatch({
-          date: formatISO(startOfDay(event.curr.context.date)),
-        });
-
-        // Update indices
-        const prevUpdates = previousList.map((doc, index) =>
-          doc.incrementalPatch({ index })
-        );
-        const currUpdates = currentList.map((doc, index) =>
-          doc.incrementalPatch({ index })
-        );
-        await Promise.all([...prevUpdates, ...currUpdates]);
-      }
-    } else {
-      const list = [...event.curr.list];
-      const [removed] = list.splice(event.prev.index, 1);
-      list.splice(event.curr.index, 0, removed);
-
-      // Eagerly update the models driving UI
-      this.eventService.setEventsMap(withinKey, list);
-
-      // Update indices
-      await Promise.all(
-        list.map((doc, index) => doc.incrementalPatch({ index }))
-      );
-    }
+  async reorder(event: ReOrderEvent) {
+    await this.eventService.reorder(event);
   }
 
   formatDateKey(date: Date): string {
