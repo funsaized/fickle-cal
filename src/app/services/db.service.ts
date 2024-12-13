@@ -1,25 +1,18 @@
-import { Injectable, Injector, isDevMode, Signal } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Injectable, Injector, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   addRxPlugin,
   createRxDatabase,
   ExtractDocumentTypeFromTypedRxJsonSchema,
-  removeRxDatabase,
   RxCollection,
   RxCollectionCreator,
   RxDatabase,
   RxJsonSchema,
-  RxReplicationPullStreamItem,
   toTypedRxJsonSchema,
 } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
-import { initWeek } from '../models';
-import { formatISO, startOfDay } from 'date-fns';
-import {
-  replicateRxCollection,
-  RxReplicationState,
-} from 'rxdb/plugins/replication';
-import { Subject } from 'rxjs';
+import { replicateRxCollection, RxReplicationState } from 'rxdb/plugins/replication';
 
 const EVENT_SCHEMA_LITERAL = {
   version: 0,
@@ -61,14 +54,12 @@ const EVENT_SCHEMA_LITERAL = {
   indexes: ['date'],
 } as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const schemaTyped = toTypedRxJsonSchema(EVENT_SCHEMA_LITERAL);
 
-export type RxEventDocumentType = ExtractDocumentTypeFromTypedRxJsonSchema<
-  typeof schemaTyped
->;
+export type RxEventDocumentType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTyped>;
 
-export const EVENTS_SCHEMA: RxJsonSchema<RxEventDocumentType> =
-  EVENT_SCHEMA_LITERAL;
+export const EVENTS_SCHEMA: RxJsonSchema<RxEventDocumentType> = EVENT_SCHEMA_LITERAL;
 
 const collectionSettings = {
   ['events']: {
@@ -80,33 +71,22 @@ let DB_INSTANCE: RxEventsDatabase;
 
 let REPLICATION_STATE: RxReplicationState<unknown, any>;
 
-type RxEventMethods = {};
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface RxEventMethods {}
 
-export type RxEventsCollection = RxCollection<
-  RxEventDocumentType,
-  RxEventMethods,
-  {},
-  {},
-  unknown
->;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type RxEventsCollection = RxCollection<RxEventDocumentType, RxEventMethods, {}, {}, unknown>;
 
-export type RxEventsCollections = {
+export interface RxEventsCollections {
   events: RxEventsCollection;
-};
+}
 
-export type RxEventsDatabase = RxDatabase<
-  RxEventsCollections,
-  any,
-  any,
-  unknown
->;
+export type RxEventsDatabase = RxDatabase<RxEventsCollections, any, any, unknown>;
 
 export async function _createDb(): Promise<RxEventsDatabase> {
   // import dev-mode plugins
   if (isDevMode()) {
-    await import('rxdb/plugins/dev-mode').then((module) =>
-      addRxPlugin(module.RxDBDevModePlugin)
-    );
+    await import('rxdb/plugins/dev-mode').then(module => addRxPlugin(module.RxDBDevModePlugin));
     // await import('rxdb/plugins/validate-ajv').then((module) => {
     //   storage = module.wrappedValidateAjvStorage({ storage });
     // });
@@ -161,7 +141,7 @@ export async function initDatabase(injector: Injector) {
 
   const httpClient = injector.get(HttpClient);
 
-  await _createDb().then((db) => (DB_INSTANCE = db));
+  await _createDb().then(db => (DB_INSTANCE = db));
 
   const replicationState = await replicateRxCollection({
     collection: DB_INSTANCE.events,
@@ -194,7 +174,7 @@ export async function initDatabase(injector: Injector) {
         const id = checkpointOrNull ? checkpointOrNull.id : '';
         const response = await httpClient
           .get(
-            `https://feined-server.s11a.com/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`
+            `https://feined-server.s11a.com/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`,
           )
           .toPromise();
         const data = response as any;
@@ -220,21 +200,23 @@ export async function initDatabase(injector: Injector) {
 export class DbService {
   constructor() {
     // emits each document that was received from the remote
-    this.replicationState.received$.subscribe((doc) =>
-      console.log('**** Rpl receieved ****', doc)
-    );
+    this.replicationState.received$.subscribe(doc => console.log('**** Rpl receieved ****', doc));
 
     // emits each document that was send to the remote
-    this.replicationState.sent$.subscribe((doc) => console.log(`**** Rpl sent ****`, doc));
+    this.replicationState.sent$.subscribe(doc => console.log(`**** Rpl sent ****`, doc));
 
     // emits all errors that happen when running the push- & pull-handlers.
-    this.replicationState.error$.subscribe((error) => console.error(`**** Rpl error ****`, error));
+    this.replicationState.error$.subscribe(error => console.error(`**** Rpl error ****`, error));
 
     // emits true when the replication was canceled, false when not.
-    this.replicationState.canceled$.subscribe((bool) => console.error(`**** Rpl canceled ${bool} ****`));
+    this.replicationState.canceled$.subscribe(bool =>
+      console.error(`**** Rpl canceled ${bool} ****`),
+    );
 
     // emits true when a replication cycle is running, false when not.
-    this.replicationState?.active$.subscribe((bool) => console.log(`**** Rpl cycle running ${bool} ****`));
+    this.replicationState?.active$.subscribe(bool =>
+      console.log(`**** Rpl cycle running ${bool} ****`),
+    );
   }
 
   get db() {

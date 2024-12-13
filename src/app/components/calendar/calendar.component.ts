@@ -8,11 +8,8 @@ import { DayComponent } from '../day/day.component';
   standalone: true,
   imports: [CommonModule, DayComponent],
   template: `
-    <div class="container" >
-      <app-day
-        *ngFor="let day of weekService.currentDays$ | async"
-        [day]="day"
-      />
+    <div class="container">
+      <app-day *ngFor="let day of weekService.currentDays$ | async" [day]="day" />
     </div>
   `,
   styleUrl: './calendar.component.scss',

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { isAfter, parseISO } from 'date-fns';
+import { isAfter } from 'date-fns';
 
 // Lazy backlog implementation..
 @Pipe({

@@ -24,13 +24,7 @@ import { RxDocument } from 'rxdb';
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [
-    CdkDropList,
-    CdkDrag,
-    CommonModule,
-    EventComponent,
-    ReactiveFormsModule,
-  ],
+  imports: [CdkDropList, CdkDrag, CommonModule, EventComponent, ReactiveFormsModule],
   template: `
     <div
       cdkDropList
@@ -41,16 +35,8 @@ import { RxDocument } from 'rxdb';
       [style.min-height]="large ? '420px' : '160px'"
     >
       <ng-container *ngIf="list">
-        <span
-          cdkDrag
-          [cdkDragData]="event"
-          *ngFor="let event of list; let ind = index"
-        >
-          <app-event
-            [event]="event"
-            (updateForm)="addNew()"
-            [index]="ind"
-          ></app-event>
+        <span cdkDrag [cdkDragData]="event" *ngFor="let event of list; let ind = index">
+          <app-event [event]="event" (updateForm)="addNew()" [index]="ind"></app-event>
         </span>
       </ng-container>
       <ng-container #newEvent></ng-container>
@@ -74,14 +60,12 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   newEvent!: ViewContainerRef;
   subscription = new Subscription();
   private _componentRef: ComponentRef<EventComponent> | null = null;
-  constructor(
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     // Handle new event component metadata
     this.createEventComponent();
-    this.eventComponents.changes.subscribe((_) => {
+    this.eventComponents.changes.subscribe(() => {
       if (!this._componentRef) return;
       this._componentRef.instance.index = this.eventComponents.length;
     });
@@ -95,7 +79,10 @@ export class ListComponent implements AfterViewInit, OnDestroy {
     if (this.newEvent) {
       this.newEvent.clear();
       this._componentRef = this.newEvent.createComponent(EventComponent);
-      this._componentRef.instance.date = this._day$.value?.date!;
+      if (!this._day$.value?.date) {
+        throw new Error('Unable to create new event component. THIS SHOULD NEVER HAPPEN!');
+      }
+      this._componentRef.instance.date = this._day$.value?.date;
       this._componentRef.instance.index = this.list?.length || 0;
       this._componentRef.instance.updateForm.subscribe(() => this.addNew());
       this.cdr.detectChanges();
@@ -110,6 +97,7 @@ export class ListComponent implements AfterViewInit, OnDestroy {
   }
 
   // Template errors w/ type...
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   drop(event: any) {
     if (!event) return;
     this.reorder.emit({

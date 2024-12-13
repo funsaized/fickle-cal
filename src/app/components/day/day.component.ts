@@ -1,23 +1,10 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { CalendarKeys, ParsedDay, ReOrderEvent } from '../../models';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ParsedDay, ReOrderEvent } from '../../models';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  BehaviorSubject,
-  debounceTime,
-  filter,
-  Subscription,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, debounceTime, filter, Subscription, switchMap, tap } from 'rxjs';
 import { ListComponent } from '../list/list.component';
-import { EventService, RxEventDocumentType } from '../../services';
+import { EventService } from '../../services';
 import { formatISO, startOfDay } from 'date-fns';
 
 @Component({
@@ -49,22 +36,22 @@ export class DayComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
   constructor(
     private readonly cdr: ChangeDetectorRef,
-    readonly eventService: EventService
+    readonly eventService: EventService,
   ) {}
 
   ngOnInit() {
     this.subscription.add(
       this.day$
         .pipe(
-          switchMap((day) => this.eventService.getDayStream$(day?.date)),
+          switchMap(day => this.eventService.getDayStream$(day?.date)),
           debounceTime(100),
-          tap((events) => {
+          tap(events => {
             const dateKey = this.dateKey;
             console.log('Events loaded for day', dateKey, events);
             this.eventService.setEventsMap(dateKey, events || []);
-          })
+          }),
         )
-        .subscribe()
+        .subscribe(),
     );
   }
 
@@ -77,7 +64,7 @@ export class DayComponent implements OnInit, OnDestroy {
   }
 
   get day$() {
-    return this._day$.asObservable().pipe(filter((day) => !!day));
+    return this._day$.asObservable().pipe(filter(day => !!day));
   }
 
   get dateKey(): string {

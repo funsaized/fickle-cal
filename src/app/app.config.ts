@@ -2,11 +2,10 @@ import {
   APP_INITIALIZER,
   ApplicationConfig,
   Injector,
-  Provider,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { initDatabase } from './services/db.service';
@@ -15,7 +14,6 @@ import { initDatabase } from './services/db.service';
 //   KeycloakBearerInterceptor,
 //   KeycloakService,
 // } from 'keycloak-angular';
-
 
 //   function initializeKeycloak(keycloak: KeycloakService) {
 //     return () =>

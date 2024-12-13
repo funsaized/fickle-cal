@@ -1,7 +1,7 @@
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl } from '@angular/forms';
 import { addDays, isToday, startOfDay } from 'date-fns';
-import { RxEventDocumentType } from "../services";
-import { RxDocument } from "rxdb";
+import { RxEventDocumentType } from '../services';
+import { RxDocument } from 'rxdb';
 
 export interface Day {
   date: Date;
@@ -27,7 +27,7 @@ export const SOME_DAY_0 = startOfDay(new Date(0));
 export const SOME_DAY_1 = startOfDay(addDays(SOME_DAY_0, 1));
 export const SOME_DAY_2 = startOfDay(addDays(SOME_DAY_0, 2));
 
-export type BacklogKeys = "SOMEDAY0" | "SOMEDAY1" | "SOMEDAY2";
+export type BacklogKeys = 'SOMEDAY0' | 'SOMEDAY1' | 'SOMEDAY2';
 export type CalendarKeys = string; // Will use ISO date strings as keys
 
 // TODO: move to helper

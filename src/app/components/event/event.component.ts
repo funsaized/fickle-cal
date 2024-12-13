@@ -5,7 +5,6 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnInit,
   Output,
   TemplateRef,
   ViewChild,
@@ -32,18 +31,15 @@ import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    CheckBoxComponent,
-    EditEventComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, CheckBoxComponent, EditEventComponent],
   template: `
     <form [formGroup]="_eventForm">
       <div
         class="input-root"
         (mouseover)="onMouseOver()"
         (mouseout)="onMouseOut()"
+        (blur)="onMouseOver()"
+        (focus)="onMouseOver()"
         [ngClass]="{ hover: hovered, focus: focused }"
       >
         <input
@@ -60,9 +56,9 @@ import { v4 as uuidv4 } from 'uuid';
           [class.completed]="completed.value === true"
         />
         <ng-template #placeHolder>
-          <div class="title-container" style="width: 90%">
+          <div class="title-container" style="width: 95%; height: 100%">
             <i *ngIf="notes.value" class="bi bi-stickies"></i>
-            <span
+            <button
               class="title"
               [class.completed]="completed.value === true"
               [style.backgroundColor]="color.value"
@@ -70,7 +66,7 @@ import { v4 as uuidv4 } from 'uuid';
               (click)="openEditModal()"
             >
               {{ title.value }}
-            </span>
+            </button>
           </div>
         </ng-template>
 
@@ -88,16 +84,16 @@ import { v4 as uuidv4 } from 'uuid';
   `,
   styleUrl: './event.component.scss',
 }) // TODO: make CVA component
-export class EventComponent implements OnInit, AfterViewInit {
+export class EventComponent implements AfterViewInit {
   constructor(
     private readonly formService: FormService,
     private readonly dbService: DbService,
     private viewContainerRef: ViewContainerRef,
     private fb: FormBuilder,
-    private overlay: Overlay
+    private overlay: Overlay,
   ) {
     this._eventForm = this.fb.group({
-      title: [, [Validators.required]],
+      title: ['', [Validators.required]],
       completed: ['', [Validators.required]],
     });
   }
@@ -131,7 +127,8 @@ export class EventComponent implements OnInit, AfterViewInit {
 
   @ViewChild('modalTemplate', { read: TemplateRef })
   modalTemplate!: TemplateRef<unknown>;
-  templatePortal: TemplatePortal<any> | null = null;
+
+  templatePortal: TemplatePortal<unknown> | null = null;
   overlayRef!: OverlayRef;
 
   @ViewChild('textInput', { read: ElementRef })
@@ -139,13 +136,8 @@ export class EventComponent implements OnInit, AfterViewInit {
   focused = false;
   hovered = false;
 
-  ngOnInit() {}
-
   ngAfterViewInit(): void {
-    this.templatePortal = new TemplatePortal(
-      this.modalTemplate,
-      this.viewContainerRef
-    );
+    this.templatePortal = new TemplatePortal(this.modalTemplate, this.viewContainerRef);
   }
 
   async onFocusOut() {
@@ -158,7 +150,7 @@ export class EventComponent implements OnInit, AfterViewInit {
         notes: '',
         color: '',
         timestamp: new Date().getTime(),
-        index: this.index
+        index: this.index,
       };
       this._event = await this.dbService.db.events.insert(toInsert);
       this.focused = false;
@@ -183,37 +175,23 @@ export class EventComponent implements OnInit, AfterViewInit {
   openEditModal() {
     const config = new OverlayConfig({
       hasBackdrop: true,
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .centerHorizontally()
-        .centerVertically(),
+      positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically(),
     });
     this.overlayRef = this.overlay.create(config);
     this.overlayRef.attach(this.templatePortal);
     this.overlayRef
       .backdropClick()
       .pipe(
-        switchMap(() =>
-          this._event.incrementalPatch({ color: this.color?.value })
-        ),
-        switchMap(() =>
-          this._event.incrementalPatch({ notes: this.notes?.value })
-        ),
-        switchMap(() =>
-          this._event.incrementalPatch({ title: this.title?.value })
-        ),
-        switchMap(() =>
-          this._event.incrementalPatch({ completed: this.completed?.value })
-        ),
+        switchMap(() => this._event.incrementalPatch({ color: this.color?.value })),
+        switchMap(() => this._event.incrementalPatch({ notes: this.notes?.value })),
+        switchMap(() => this._event.incrementalPatch({ title: this.title?.value })),
+        switchMap(() => this._event.incrementalPatch({ completed: this.completed?.value })),
         switchMap(() =>
           this._event.incrementalPatch({
             date: formatISO(startOfDay(this.dateForm?.value)),
-          })
+          }),
         ),
-        switchMap(() =>
-          this._event.incrementalPatch({ _deleted: this.deleted?.value })
-        )
+        switchMap(() => this._event.incrementalPatch({ _deleted: this.deleted?.value })),
       )
       .subscribe(() => {
         this.overlayRef.detach();

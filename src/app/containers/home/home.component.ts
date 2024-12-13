@@ -1,18 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EventService, WeekService } from '../../services';
-import { CommonModule, formatDate } from '@angular/common';
-import {
-  CalendarComponent,
-  HeaderComponent,
-  ListComponent,
-} from '../../components';
-import {
-  ParsedDay,
-  ReOrderEvent,
-  SOME_DAY_0,
-  SOME_DAY_1,
-  SOME_DAY_2,
-} from '../../models';
+import { CommonModule } from '@angular/common';
+import { CalendarComponent, HeaderComponent, ListComponent } from '../../components';
+import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
 import { formatISO, startOfDay } from 'date-fns';
 import { debounceTime, Subscription, tap } from 'rxjs';
 import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
@@ -42,26 +32,17 @@ import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
         <div class="someday">
           <app-list
             [day]="someDay0"
-            [list]="
-              eventService.getEventsStream$(formatDateKey(someDay0.date))
-                | async
-            "
+            [list]="eventService.getEventsStream$(formatDateKey(someDay0.date)) | async"
             (reorder)="reorder($event)"
           />
           <app-list
             [day]="someDay1"
-            [list]="
-              eventService.getEventsStream$(formatDateKey(someDay1.date))
-                | async
-            "
+            [list]="eventService.getEventsStream$(formatDateKey(someDay1.date)) | async"
             (reorder)="reorder($event)"
           />
           <app-list
             [day]="someDay2"
-            [list]="
-              eventService.getEventsStream$(formatDateKey(someDay2.date))
-                | async
-            "
+            [list]="eventService.getEventsStream$(formatDateKey(someDay2.date)) | async"
             (reorder)="reorder($event)"
           />
         </div>
@@ -82,7 +63,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly weekService: WeekService,
-    readonly eventService: EventService
+    readonly eventService: EventService,
   ) {
     this.someDay0 = {
       date: SOME_DAY_0,
@@ -112,19 +93,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = false;
     // Load(s)
-    [this.someDay0, this.someDay1, this.someDay2].forEach((day) => {
+    [this.someDay0, this.someDay1, this.someDay2].forEach(day => {
       const dateKey = formatISO(startOfDay(day.date));
       this.subscription.add(
         this.eventService
           .getDayStream$(day.date)
           .pipe(
             debounceTime(100),
-            tap((events) => {
+            tap(events => {
               console.log('Events loaded for day', dateKey, events);
               this.eventService.setEventsMap(dateKey, events || []);
-            })
+            }),
           )
-          .subscribe()
+          .subscribe(),
       );
     });
   }
