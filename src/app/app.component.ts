@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { KeycloakService } from 'keycloak-angular';
 import 'zone.js/plugins/zone-patch-rxjs';
 @Component({
   selector: 'app-root',
@@ -11,8 +10,7 @@ import 'zone.js/plugins/zone-patch-rxjs';
 })
 // export class AppComponent implements OnInit {
 export class AppComponent {
-
-title = 'feined-client';
+  title = 'feined-client';
 
   // constructor(private readonly keycloak: KeycloakService) {}
 

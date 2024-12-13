@@ -23,23 +23,23 @@ import { After1971Pipe } from '../../pipes/after-1971.pipe';
         <ng-container *ngIf="date.value | after1971">
           <i class="bi bi-calendar-event"></i>
           <span class="date">
-            {{ date.value | date : 'EEE, dd MMM yyyy' }}
+            {{ date.value | date: 'EEE, dd MMM yyyy' }}
           </span>
         </ng-container>
         <div class="actions">
-          <i class="bi bi-trash" (click)="delete()"></i>
-          <i
-            (click)="isColorPickerOpen = !isColorPickerOpen"
-            class="bi bi-circle"
-            cdkOverlayOrigin
-            #colorTrigger="cdkOverlayOrigin"
-          ></i>
-          <i
-            class="bi bi-gear-wide-connected"
-            (click)="isGearOpen = !isGearOpen"
-            cdkOverlayOrigin
-            #gearTrigger="cdkOverlayOrigin"
-          ></i>
+          <button (click)="delete()">
+            <i class="bi bi-trash"></i>
+          </button>
+          <button (click)="isColorPickerOpen = !isColorPickerOpen">
+            <i class="bi bi-circle" cdkOverlayOrigin #colorTrigger="cdkOverlayOrigin"></i>
+          </button>
+          <button (click)="isGearOpen = !isGearOpen">
+            <i
+              class="bi bi-gear-wide-connected"
+              cdkOverlayOrigin
+              #gearTrigger="cdkOverlayOrigin"
+            ></i>
+          </button>
         </div>
       </div>
       <div class="container">
@@ -81,17 +81,13 @@ import { After1971Pipe } from '../../pipes/after-1971.pipe';
       ]"
     >
       <div class="menu color-picker">
-        <i class="bi bi-circle" (click)="onColorClick('transparent')"></i>
-        <i
-          class="bi bi-circle-fill"
-          (click)="onColorClick('red')"
-          style="color: red"
-        ></i>
-        <i
-          class="bi bi-circle-fill"
-          (click)="onColorClick('yellow')"
-          style="color: yellow"
-        ></i>
+        <button (click)="onColorClick('transparent')"><i class="bi bi-circle"></i></button>
+        <button (click)="onColorClick('red')">
+          <i class="bi bi-circle-fill" style="color: red"></i>
+        </button>
+        <button (click)="onColorClick('yellow')">
+          <i class="bi bi-circle-fill" style="color: yellow"></i>
+        </button>
       </div>
     </ng-template>
 
@@ -112,20 +108,20 @@ import { After1971Pipe } from '../../pipes/after-1971.pipe';
       ]"
     >
       <div class="menu settings">
-        <button *ngIf="date.value | after1971">
-          <span class="text" (click)="moveToTomorrow()">Tomorrow</span>
+        <button *ngIf="date.value | after1971" (click)="moveToTomorrow()">
+          <span class="text">Tomorrow</span>
           <i class="bi bi-arrow-right"></i>
         </button>
-        <button *ngIf="date.value | after1971">
-          <span class="text" (click)="moveToNextWeek()">Next Week</span>
+        <button *ngIf="date.value | after1971" (click)="moveToNextWeek()">
+          <span class="text">Next Week</span>
           <i class="bi bi-calendar-week"></i>
         </button>
         <button *ngIf="date.value | after1971">
           <span class="text">Backlog</span>
           <i class="bi bi-list-task"></i>
         </button>
-        <button>
-          <span class="text" (click)="copy()">Copy</span>
+        <button (click)="copy()">
+          <span class="text">Copy</span>
           <i class="bi bi-copy"></i>
         </button>
       </div>

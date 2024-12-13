@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { EventService, WeekService } from '../../services';
-import { CommonModule, formatDate } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { CalendarComponent, HeaderComponent, ListComponent } from '../../components';
 import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
 import { formatISO, startOfDay } from 'date-fns';

@@ -1,12 +1,5 @@
 import { DatePipe } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DbService } from '../../services';
 
@@ -17,7 +10,7 @@ import { DbService } from '../../services';
   template: `
     <div class="container">
       <div class="day">
-        <h1>{{ month | date : 'MMMM' }} 2024</h1>
+        <h1>{{ month | date: 'MMMM' }} 2024</h1>
         <svg
           fill="#000000"
           height="50px"
@@ -119,14 +112,30 @@ import { DbService } from '../../services';
       </div>
       <nav>
         <ul>
-          <li [class.isTouched]="isTouched" (click)="sync()">
+          <li
+            [class.isTouched]="isTouched"
+            (click)="sync()"
+            (keydown.enter)="sync()"
+            tabindex="0"
+            role="button"
+          >
             <i class="bi bi-cloud-download"></i>
           </li>
-          <li>
-            <i class="bi bi-arrow-left" (click)="onArrowClick('left')"></i>
+          <li
+            tabindex="0"
+            role="button"
+            (click)="onArrowClick('left')"
+            (keydown.enter)="onArrowClick('left')"
+          >
+            <i class="bi bi-arrow-left"></i>
           </li>
-          <li>
-            <i class="bi bi-arrow-right" (click)="onArrowClick('right')"></i>
+          <li
+            tabindex="0"
+            role="button"
+            (click)="onArrowClick('right')"
+            (keydown.enter)="onArrowClick('right')"
+          >
+            <i class="bi bi-arrow-right"></i>
           </li>
         </ul>
       </nav>
@@ -143,9 +152,9 @@ export class HeaderComponent {
 
   constructor(private readonly dbService: DbService) {}
 
-	sync(){
+  sync() {
     this.dbService.replicationState.reSync();
-	}
+  }
 
   onMouseOver() {
     this.hovered = true;

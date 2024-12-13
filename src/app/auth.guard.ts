@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from './services';
 import { inject } from '@angular/core';
-import { catchError, map, of, pipe } from 'rxjs';
 
 // TODO
 export const AuthGuard: CanActivateFn = (route, state) => {

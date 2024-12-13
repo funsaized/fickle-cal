@@ -1,18 +1,18 @@
 :host {
-    &:hover {
-        i {
-            visibility: visible;
-        }
+  &:hover {
+    i {
+      visibility: visible;
     }
+  }
 }
 
 i {
-    cursor: pointer;
-    width: 1em;
-    height: 1em;
-    visibility: hidden;
+  cursor: pointer;
+  width: 1em;
+  height: 1em;
+  visibility: hidden;
 }
 
 i.checked {
-    color: #F0DFA0; // TODO: color scheme vars
+  color: #f0dfa0; // TODO: color scheme vars
 }

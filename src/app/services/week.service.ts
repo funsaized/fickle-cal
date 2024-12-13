@@ -15,14 +15,14 @@ export class WeekService {
 
   constructor() {
     this._initializeCurrentWeek();
-    this._dayPage$.asObservable().subscribe((days) => {
+    this._dayPage$.asObservable().subscribe(days => {
       this._currentDays$.next(
-        days.map((day) => ({
+        days.map(day => ({
           ...day,
           dayDigits: formatDate(day.date, 'dd', 'en-US'),
           dayName: formatDate(day.date, 'EEE', 'en-US'),
           monthDigits: formatDate(day.date, 'MM', 'en-US'),
-        }))
+        })),
       );
     });
 
@@ -34,7 +34,7 @@ export class WeekService {
         map(([direction, days]) => {
           let newWeek = days;
           switch (direction) {
-            case 'left':
+            case 'left': {
               const lastDayPlusOne = days[0].date;
               const endDate = startOfDay(subDays(lastDayPlusOne, 1));
               newWeek = days
@@ -47,7 +47,8 @@ export class WeekService {
                 })
                 .sort((a, b) => a.date.getTime() - b.date.getTime());
               return newWeek;
-            case 'right':
+            }
+            case 'right': {
               const lastDayMinusOne = days[6].date;
               const startDate = startOfDay(addDays(lastDayMinusOne, 1));
               newWeek = days
@@ -60,10 +61,11 @@ export class WeekService {
                 })
                 .sort((a, b) => a.date.getTime() - b.date.getTime());
               return newWeek;
+            }
             default:
               return days;
           }
-        })
+        }),
       )
       .subscribe((page: Day[]) => {
         this._dayPage$.next(page);

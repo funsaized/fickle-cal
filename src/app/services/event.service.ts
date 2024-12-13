@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { filter, map, Observable, of, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { RxDocument } from 'rxdb';
-import { formatISO, parseISO, startOfDay } from 'date-fns';
+import { formatISO, startOfDay } from 'date-fns';
 import { DbService, RxEventDocumentType } from './db.service';
 import { CalendarKeys, ReOrderEvent } from '../models';
 
@@ -9,16 +9,11 @@ import { CalendarKeys, ReOrderEvent } from '../models';
   providedIn: 'root',
 })
 export class EventService {
-  private _eventsMap = new Map<
-    CalendarKeys,
-    BehaviorSubject<RxDocument<RxEventDocumentType>[]>
-  >();
+  private _eventsMap = new Map<CalendarKeys, BehaviorSubject<RxDocument<RxEventDocumentType>[]>>();
 
   constructor(private dbService: DbService) {}
 
-  getDayStream$(
-    date: Date
-  ): Observable<RxDocument<RxEventDocumentType>[] | null> {
+  getDayStream$(date: Date): Observable<RxDocument<RxEventDocumentType>[] | null> {
     return this.dbService.db.events.find({
       selector: {
         date: {
@@ -53,12 +48,8 @@ export class EventService {
         });
 
         // Update indices
-        const prevUpdates = previousList.map((doc, index) =>
-          doc.incrementalPatch({ index })
-        );
-        const currUpdates = currentList.map((doc, index) =>
-          doc.incrementalPatch({ index })
-        );
+        const prevUpdates = previousList.map((doc, index) => doc.incrementalPatch({ index }));
+        const currUpdates = currentList.map((doc, index) => doc.incrementalPatch({ index }));
         await Promise.all([...prevUpdates, ...currUpdates]);
       }
     } else {
@@ -72,20 +63,15 @@ export class EventService {
       this.setEventsMap(currDateKey, list);
 
       // Update indices
-      await Promise.all(
-        list.map((doc, index) => doc.incrementalPatch({ index }))
-      );
+      await Promise.all(list.map((doc, index) => doc.incrementalPatch({ index })));
     }
   }
 
   private getOrCreateDaySubject(
-    key: CalendarKeys
+    key: CalendarKeys,
   ): BehaviorSubject<RxDocument<RxEventDocumentType>[]> {
     if (!this._eventsMap.has(key)) {
-      this._eventsMap.set(
-        key,
-        new BehaviorSubject<RxDocument<RxEventDocumentType>[]>([])
-      );
+      this._eventsMap.set(key, new BehaviorSubject<RxDocument<RxEventDocumentType>[]>([]));
     }
     return this._eventsMap.get(key)!;
   }
@@ -94,9 +80,7 @@ export class EventService {
     this.getOrCreateDaySubject(key).next(events);
   }
 
-  getEventsStream$(
-    key: CalendarKeys
-  ): Observable<RxDocument<RxEventDocumentType>[]> {
+  getEventsStream$(key: CalendarKeys): Observable<RxDocument<RxEventDocumentType>[]> {
     return this.getOrCreateDaySubject(key as CalendarKeys).asObservable();
   }
 }
