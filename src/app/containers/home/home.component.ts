@@ -47,7 +47,6 @@ import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
           />
         </div>
       </main>
-      <footer>An exercise on local first apps & syncing data structures</footer>
     </div>
   `,
   styleUrl: './home.component.scss',
