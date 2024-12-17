@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DbService } from '../../services';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -150,10 +150,10 @@ export class HeaderComponent {
   isTouched = true;
   hovered = false;
 
-  constructor(private readonly dbService: DbService) {}
+  constructor(private readonly authService: AuthService) {}
 
   sync() {
-    this.dbService.replicationState.reSync();
+    this.authService.initiateGithubAuth();
   }
 
   onMouseOver() {
