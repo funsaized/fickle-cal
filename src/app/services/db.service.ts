@@ -12,6 +12,8 @@ import {
 } from 'rxdb';
 import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { RxReplicationState } from 'rxdb/plugins/replication';
+import { initWeek } from '../models';
+import { formatISO, startOfDay } from 'date-fns';
 
 const EVENT_SCHEMA_LITERAL = {
   version: 0,
@@ -101,31 +103,33 @@ export async function _createDb(): Promise<RxEventsDatabase> {
 
   await db.addCollections(collectionSettings);
 
-  // console.log('DatabaseService: create collections');
+  console.log('DatabaseService: create collections');
 
-  // // TODO: function get current week in helper, import here and WeekService
-  // const week = initWeek();
-  // await db.events.bulkInsert(
-  //   [
-  //     'A demo event',
-  //     'Hover me to mark as complete',
-  //     'This one has a color',
-  //   ].map(
-  //     (title, idx) =>
-  //       ({
-  //         id: 'event-' + idx,
-  //         title,
-  //         date: formatISO(startOfDay(week[idx].date), {
-  //           representation: 'complete',
-  //         }),
-  //         completed: false,
-  //         notes: '',
-  //         color: '',
-  //         timestamp: new Date().getTime(),
-  //       } as RxEventDocumentType)
-  //   )
-  // );
-  // console.log('DatabaseService: bulk insert');
+  // TODO: function get current week in helper, import here and WeekService
+  const week = initWeek();
+  await db.events.bulkInsert(
+    [
+      'A demo event',
+      'Hover the corner to complete',
+      'This one has a color',
+      '👉 Drag & drop me 👉',
+    ].map(
+      (title, idx) =>
+        ({
+          id: 'event-' + idx,
+          title,
+          date: formatISO(startOfDay(week[idx].date), {
+            representation: 'complete',
+          }),
+          completed: false,
+          notes: '',
+          color: '',
+          index: 0,
+          timestamp: new Date().getTime(),
+        }) as RxEventDocumentType,
+    ),
+  );
+  console.log('DatabaseService: bulk insert');
 
   return db;
 }

@@ -17,7 +17,7 @@ import { AuthService } from '../../services/auth.service';
         <button (click)="loginWithGithub()">
           <img src="/github-mark.svg" alt="Github" /> Login with Github
         </button>
-        <button (click)="alert()">Alternate options coming soon...</button>
+        <p class="coming-soon">Alternate options coming soon...</p>
       </div>
     </div>
   `,

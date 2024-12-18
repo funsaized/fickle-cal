@@ -10,6 +10,10 @@
   grid-template-areas:
     'header'
     'main';
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .header {
@@ -18,36 +22,62 @@
 
   h3 {
     margin-bottom: 0;
+    color: hsl(39, 90%, 25%); // Darker, complementary color
+    font-size: 1.8rem;
   }
 
   h4 {
     margin-top: 0;
+    color: hsl(39, 50%, 35%); // Softer subtitle color
+    font-weight: 400;
   }
 }
-
 .login-options {
-  grid-area: main;
+  align-items: center;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
   gap: 10px;
+  grid-area: main;
+  justify-content: center;
 
   button {
-    max-height: 50px;
+    align-items: center;
+    background-color: white;
+    border: 1px solid hsl(39, 100%, 65%);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    font-weight: 500;
+    gap: 10px;
     height: 100%;
     margin-bottom: 10px;
-    border: 1px solid #000;
-    border-radius: 10px;
+    max-height: 50px;
     padding: 10px;
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    gap: 10px;
-    img {
-      width: 30px;
-      height: 30px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: hsl(39, 100%, 97%);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
     }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    img {
+      height: 30px;
+      width: 30px;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .coming-soon {
+    color: hsl(39, 50%, 35%);
+    font-weight: 400;
   }
 }
 
