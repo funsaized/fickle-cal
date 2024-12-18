@@ -92,15 +92,18 @@ a {
   text-decoration: none;
 }
 
+.menu {
+  background-color: #add1dc;
+  width: 220px;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
 @keyframes ripple {
   to {
     transform: scale(2);
     opacity: 0;
   }
-}
-
-footer {
-  text-align: center;
 }
 
 @media (min-width: 900px) {

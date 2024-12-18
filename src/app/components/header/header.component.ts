@@ -11,14 +11,14 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { Overlay, OverlayConfig, OverlayModule, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, DatePipe, CommonModule, LoginComponent],
+  imports: [RouterLink, DatePipe, CommonModule, OverlayModule, LoginComponent],
   template: `
     <div class="container">
       <div class="day">
@@ -37,15 +37,42 @@ import { LoginComponent } from '../login/login.component';
         <ul>
           <ng-container *ngIf="authService.isAuthenticated$ | async; else notAuthenticated">
             <li
-              [class.isTouched]="isTouched"
-              (click)="sync()"
-              (keydown.enter)="sync()"
               tabindex="0"
               role="button"
+              (click)="isUserMenuOpen = !isUserMenuOpen"
+              (keydown.enter)="isUserMenuOpen = !isUserMenuOpen"
             >
+              <i
+                [style.color]="isUserMenuOpen ? 'black' : 'white'"
+                class="bi bi-person"
+                cdkOverlayOrigin
+                #userTrigger="cdkOverlayOrigin"
+              ></i>
+            </li>
+            <li (click)="sync()" (keydown.enter)="sync()" tabindex="0" role="button">
               <i class="bi bi-cloud-download"></i>
             </li>
+
+            <ng-template
+              cdkConnectedOverlay
+              [cdkConnectedOverlayOrigin]="userTrigger"
+              [cdkConnectedOverlayOpen]="isUserMenuOpen"
+              (backdropClick)="isUserMenuOpen = false"
+              [cdkConnectedOverlayHasBackdrop]="true"
+              cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+              [cdkConnectedOverlayPositions]="[
+                {
+                  originX: 'center',
+                  originY: 'bottom',
+                  overlayX: 'center',
+                  overlayY: 'top',
+                },
+              ]"
+            >
+              <div class="menu">Stuff goes here</div>
+            </ng-template>
           </ng-container>
+
           <ng-template #notAuthenticated>
             <li
               tabindex="0"
@@ -94,6 +121,7 @@ export class HeaderComponent implements AfterViewInit {
   overlayRef!: OverlayRef;
 
   isTouched = true; // TODO: hook up to some global state
+  isUserMenuOpen = false;
   hovered = false;
 
   pagedCount = 0;
@@ -121,7 +149,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   sync() {
-    this.authService.initiateGithubAuth();
+    alert('Cloud sync is coming soon ...');
   }
 
   onMouseOver() {

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ErrorComponent } from './components';
 import { AuthGuard } from './auth.guard';
 import { HomeComponent } from './containers';
+import { CheckAuthGuard } from './check-auth-guard';
 
 export const routes: Routes = [
   // TODO: login w/ oauth auth provider (github)
@@ -11,7 +12,7 @@ export const routes: Routes = [
   {
     path: 'init',
     component: HomeComponent,
-    canActivate: [],
+    canActivate: [CheckAuthGuard],
   },
   {
     path: 'home',
