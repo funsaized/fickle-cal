@@ -1,12 +1,24 @@
-import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, CommonModule, LoginComponent],
   template: `
     <div class="container">
       <div class="day">
@@ -112,17 +124,30 @@ import { AuthService } from '../../services/auth.service';
       </div>
       <nav>
         <ul>
+          <ng-container *ngIf="authService.isAuthenticated$ | async; else notAuthenticated">
+            <li
+              [class.isTouched]="isTouched"
+              (click)="sync()"
+              (keydown.enter)="sync()"
+              tabindex="0"
+              role="button"
+            >
+              <i class="bi bi-cloud-download"></i>
+            </li>
+          </ng-container>
+          <ng-template #notAuthenticated>
+            <li
+              tabindex="0"
+              role="button"
+              [class.isTouched]="isTouched"
+              (click)="openLoginModal()"
+              (keydown.enter)="openLoginModal()"
+            >
+              <i class="bi bi-person-add"></i>
+            </li>
+          </ng-template>
           <li
-            [class.isTouched]="isTouched"
-            (click)="sync()"
-            (keydown.enter)="sync()"
-            tabindex="0"
-            role="button"
-          >
-            <i class="bi bi-cloud-download"></i>
-          </li>
-          <li
-            tabindex="0"
+            tabindex="1"
             role="button"
             (click)="onArrowClick('left')"
             (keydown.enter)="onArrowClick('left')"
@@ -130,7 +155,7 @@ import { AuthService } from '../../services/auth.service';
             <i class="bi bi-arrow-left"></i>
           </li>
           <li
-            tabindex="0"
+            tabindex="2"
             role="button"
             (click)="onArrowClick('right')"
             (keydown.enter)="onArrowClick('right')"
@@ -140,17 +165,47 @@ import { AuthService } from '../../services/auth.service';
         </ul>
       </nav>
     </div>
+
+    <ng-template #modalTemplate>
+      <app-login />
+    </ng-template>
   `,
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent {
+export class HeaderComponent implements AfterViewInit {
   @Input() month: Date | undefined;
   @Output() arrowClick = new EventEmitter<string>();
 
-  isTouched = true;
+  @ViewChild('modalTemplate', { read: TemplateRef })
+  modalTemplate!: TemplateRef<unknown>;
+
+  templatePortal: TemplatePortal<unknown> | null = null;
+  overlayRef!: OverlayRef;
+
+  isTouched = true; // TODO: hook up to some global state
   hovered = false;
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly viewContainerRef: ViewContainerRef,
+    private readonly overlay: Overlay,
+    readonly authService: AuthService,
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.templatePortal = new TemplatePortal(this.modalTemplate, this.viewContainerRef);
+  }
+
+  openLoginModal() {
+    const config = new OverlayConfig({
+      hasBackdrop: true,
+      positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically(),
+    });
+    this.overlayRef = this.overlay.create(config);
+    this.overlayRef.attach(this.templatePortal);
+    this.overlayRef.backdropClick().subscribe(() => {
+      this.overlayRef.detach();
+    });
+  }
 
   sync() {
     this.authService.initiateGithubAuth();

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -13,15 +13,32 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   initiateGithubAuth() {
-    // Instead of making an HTTP request, redirect the browser
     window.location.href = environment.baseUrl + '/auth/github';
   }
 
-  // logout(): Observable<any> {
-  //   return this.http.post('/api/auth/logout', {}).pipe(
-  //     tap(() => {
-  //       this.isAuthenticatedSubject.next(false);
-  //     }),
-  //   );
-  // }
+  isAuth$(): Observable<boolean> {
+    return this.http
+      .get<{ authenticated: boolean }>(`${environment.baseUrl}/auth/isLoggedIn`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map(response => response.authenticated),
+        tap(isAuthenticated => {
+          this._isAuth.next(isAuthenticated);
+        }),
+        switchMap(() => this.isAuthenticated$),
+        catchError(() => {
+          this._isAuth.next(false);
+          return of(false);
+        }),
+      );
+  }
+
+  logout(): Observable<unknown> {
+    return this.http.post(`${environment.baseUrl}/auth/github/logout`, {}).pipe(
+      tap(() => {
+        this._isAuth.next(false);
+      }),
+    );
+  }
 }

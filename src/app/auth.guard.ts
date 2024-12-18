@@ -1,22 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { CanActivateFn, Router } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
 import { inject } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
-// TODO
-export const AuthGuard: CanActivateFn = (route, state) => {
-  const isAuth = true;
-  // const userService = inject(UserService);
+export const AuthGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot,
+): Observable<boolean | UrlTree> => {
+  const authService = inject(AuthService);
   const router = inject(Router);
-  if (isAuth) {
-    // return userService.fetchUser$().pipe(
-    //   map(user => user != null ? true: false),
-    //   catchError((err) => {
-    //     console.error(err);
-    //     router.navigate(['/error']);
-    //     return of(false);
-    //   })
-    // );
-    return true;
-  }
-  return false;
+  return authService.isAuth$().pipe(
+    tap(isAuth => {
+      console.log('isAuth', isAuth);
+    }),
+    map(isAuth => (isAuth ? true : router.parseUrl('/init'))),
+  );
 };
