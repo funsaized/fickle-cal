@@ -29,8 +29,4 @@ export class LoginComponent {
   loginWithGithub() {
     this.authService.initiateGithubAuth();
   }
-
-  alert() {
-    alert('Alternate options coming soon...');
-  }
 }
