@@ -22,7 +22,7 @@ import { LoginComponent } from '../login/login.component';
   template: `
     <div class="container">
       <div class="day">
-        <h1>{{ month | date: 'MMMM' }} 2024</h1>
+        <h1>{{ month | date: 'MMMM' }} {{ month | date: 'yyyy' }}</h1>
         <span class="icon-stack">
           <i
             *ngFor="let icon of ['a', 'b', 'c']; let i = index"
