@@ -18,12 +18,14 @@ export class AuthService {
   ) {}
 
   initiateGithubAuth() {
-    window.location.href = environment.baseUrl + '/auth/github';
+    window.location.href = environment.production
+      ? `${environment.baseUrl}/api/auth/github`
+      : `${environment.baseUrl}/auth/github`;
   }
 
   isAuth$(): Observable<boolean> {
     return this.http
-      .get<IsLoggedInResponse>(`${environment.baseUrl}/auth/isLoggedIn`, {
+      .get<IsLoggedInResponse>(`${environment.apiUrl}/auth/isLoggedIn`, {
         withCredentials: true, // TODO: interceptor
       })
       .pipe(
@@ -46,7 +48,7 @@ export class AuthService {
   }
 
   logout$(): Observable<unknown> {
-    return this.http.post(`${environment.baseUrl}/auth/logout`, {}, { withCredentials: true }).pipe(
+    return this.http.post(`${environment.apiUrl}/auth/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
         this._isAuth.next(false);
         this.userService.user = null;

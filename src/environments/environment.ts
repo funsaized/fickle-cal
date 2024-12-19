@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  baseUrl: '/api',
+  apiUrl: '/api',
+  baseUrl: 'https://todo.s11a.com',
 };
