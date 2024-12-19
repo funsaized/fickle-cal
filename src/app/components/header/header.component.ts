@@ -45,10 +45,10 @@ import { tap } from 'rxjs';
               (keydown.enter)="isUserMenuOpen = !isUserMenuOpen"
             >
               <i
-                [style.color]="isUserMenuOpen ? 'black' : 'white'"
                 class="bi bi-person"
                 cdkOverlayOrigin
                 #userTrigger="cdkOverlayOrigin"
+                style="color: black"
               ></i>
             </li>
             <li (click)="sync()" (keydown.enter)="sync()" tabindex="0" role="button">
@@ -72,8 +72,9 @@ import { tap } from 'rxjs';
               ]"
             >
               <div class="menu">
+                <span>SN</span>
+
                 <div class="header">
-                  <span>SN</span>
                   <p>
                     {{ userService.userFirstName$ | async }}
                     {{ userService.userLastName$ | async }}

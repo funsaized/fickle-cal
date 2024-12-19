@@ -1,3 +1,10 @@
+// TODO: global variables
+$primary-color: #add1dc;
+$text-color: #333;
+$border-color: #eee;
+$shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+// Layout
 .container {
   display: flex;
   justify-content: space-between;
@@ -5,12 +12,16 @@
   height: 100%;
 }
 
+// Typography
 h1 {
   font-size: 1.6rem;
+  font-weight: 600;
   text-wrap: nowrap;
   white-space: nowrap;
+  margin: 0;
 }
 
+// Day Section
 .day {
   * {
     display: inline;
@@ -24,12 +35,11 @@ h1 {
   }
 
   h1 {
-    font-weight: 600;
-    margin: 0;
     margin-right: 5px;
   }
 }
 
+// Navigation
 ul {
   list-style-type: none;
   padding: 0;
@@ -47,118 +57,111 @@ ul {
     background-color: #f0f0f0;
     position: relative;
     cursor: pointer;
+
     &:first-child {
-      background-color: #add1dc;
-      color: #fff;
+      background-color: $primary-color;
+      color: white;
+
       &::before {
         position: absolute;
         content: '';
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        border: solid 3px #add1dc;
+        inset: 0;
+        border: solid 3px $primary-color;
         border-radius: 50%;
+      }
+
+      i {
+        position: absolute;
+        top: 10%;
       }
     }
 
     &.isTouched:first-child::before {
       animation: ripple 2s linear infinite;
     }
-
-    &:first-child {
-      i {
-        position: absolute;
-        top: 10%;
-      }
-    }
-  }
-
-  i.bi-arrow-right,
-  i.bi-arrow-left {
-    height: 80%;
   }
 
   i {
     font-size: 1.5em;
+
+    &.bi-arrow-right,
+    &.bi-arrow-left {
+      height: 80%;
+    }
   }
 }
 
-a i {
-  color: #f5f3e8;
-}
-
-a {
-  text-decoration: none;
-}
-
+// User Menu
 .menu {
-  background-color: #add1dc;
+  background-color: white;
   width: 160px;
-  border-radius: 5px;
-  border: 1px solid black;
-  padding: 5px;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: $shadow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
 
-  .header {
+  span {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $primary-color;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    font-weight: 600;
+    color: white;
+    transition: transform 0.2s ease;
 
-    color: black;
-
-    span {
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      background-color: #add1dc;
-      border: 1px solid black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: 600;
-      &:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transform: translateY(-2px);
-      }
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow;
     }
+  }
+  .header {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid $border-color;
 
     p {
-      font-size: clamp(12px, 1rem, 18px);
+      font-size: clamp(0.5rem, 1rem, 2rem);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       width: 100%;
       margin: 0;
-      padding: 0 5px;
+      padding: 0 8px;
     }
-    margin-bottom: 10px;
   }
 
-  // TODO: make this a common style
   button {
+    width: 100%;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid black;
-    border-radius: 10px;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: none;
     cursor: pointer;
     font-weight: 500;
-    gap: 10px;
-    height: 50px;
-    width: 100%;
-    padding: 10px;
     transition: all 0.2s ease;
 
     i {
       font-size: 1.5rem;
-      flex-shrink: 0;
     }
 
     &:hover {
-      background-color: hsl(39, 100%, 97%);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: $primary-color;
+      color: white;
       transform: translateY(-2px);
+      box-shadow: $shadow;
     }
 
     &:active {
@@ -167,6 +170,16 @@ a {
   }
 }
 
+// Links
+a {
+  text-decoration: none;
+
+  i {
+    color: #f5f3e8;
+  }
+}
+
+// Animations
 @keyframes ripple {
   to {
     transform: scale(2);
@@ -174,6 +187,7 @@ a {
   }
 }
 
+// Media Queries
 @media (min-width: 900px) {
   h1 {
     font-size: 2rem;
