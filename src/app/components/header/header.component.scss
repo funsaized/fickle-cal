@@ -1,3 +1,10 @@
+// TODO: global variables
+$primary-color: #add1dc;
+$text-color: #333;
+$border-color: #eee;
+$shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+// Layout
 .container {
   display: flex;
   justify-content: space-between;
@@ -5,62 +12,34 @@
   height: 100%;
 }
 
+// Typography
 h1 {
   font-size: 1.6rem;
+  font-weight: 600;
   text-wrap: nowrap;
   white-space: nowrap;
+  margin: 0;
 }
 
-svg {
-  width: 1.8rem;
-  height: 1.8rem;
-}
-
-@media (min-width: 900px) {
-  h1 {
-    font-size: 2rem;
-  }
-
-  svg {
-    width: 3rem;
-    height: 3rem;
-    top: -10px;
-  }
-}
-
+// Day Section
 .day {
-  position: relative;
   * {
     display: inline;
+    vertical-align: middle;
+  }
+
+  .icon-stack {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 2px;
   }
 
   h1 {
-    font-weight: 600;
-    margin: 0;
-    margin-right: 10px;
-  }
-
-  svg {
-    position: absolute;
-    // top: -10px;
-    fill: #caa171; // TODO: color scheme vars
+    margin-right: 5px;
   }
 }
 
-@media (min-width: 900px) {
-  ul {
-    li {
-      width: 50px !important;
-      height: 50px !important;
-    }
-
-    i {
-      font-size: 3em !important;
-      width: 1em !important;
-    }
-  }
-}
-
+// Navigation
 ul {
   list-style-type: none;
   padding: 0;
@@ -78,51 +57,129 @@ ul {
     background-color: #f0f0f0;
     position: relative;
     cursor: pointer;
+
     &:first-child {
-      background-color: #add1dc;
-      color: #fff;
+      background-color: $primary-color;
+      color: white;
+
       &::before {
         position: absolute;
         content: '';
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        border: solid 3px #add1dc;
+        inset: 0;
+        border: solid 3px $primary-color;
         border-radius: 50%;
+      }
+
+      i {
+        position: absolute;
+        top: 10%;
       }
     }
 
     &.isTouched:first-child::before {
       animation: ripple 2s linear infinite;
     }
-
-    &:first-child {
-      i {
-        position: absolute;
-        top: 10%;
-      }
-    }
-  }
-
-  i.bi-arrow-right,
-  i.bi-arrow-left {
-    height: 80%;
   }
 
   i {
     font-size: 1.5em;
+
+    &.bi-arrow-right,
+    &.bi-arrow-left {
+      height: 80%;
+    }
   }
 }
 
-a i {
-  color: #f5f3e8;
+// User Menu
+.menu {
+  background-color: white;
+  width: 160px;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: $shadow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+
+  span {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: $primary-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    color: white;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow;
+    }
+  }
+  .header {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid $border-color;
+
+    p {
+      font-size: clamp(0.5rem, 1rem, 2rem);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      margin: 0;
+      padding: 0 8px;
+    }
+  }
+
+  button {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 1.5rem;
+    }
+
+    &:hover {
+      background-color: $primary-color;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: $shadow;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
 }
 
+// Links
 a {
   text-decoration: none;
+
+  i {
+    color: #f5f3e8;
+  }
 }
 
+// Animations
 @keyframes ripple {
   to {
     transform: scale(2);
@@ -130,6 +187,36 @@ a {
   }
 }
 
-footer {
-  text-align: center;
+// Media Queries
+@media (min-width: 900px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .day {
+    i {
+      font-size: 1.5em;
+    }
+
+    .icon-stack {
+      display: inline-flex;
+      flex-direction: row;
+    }
+
+    h1 {
+      margin-right: 10px;
+    }
+  }
+
+  ul {
+    li {
+      width: 50px !important;
+      height: 50px !important;
+    }
+
+    i {
+      font-size: 3em !important;
+      width: 1em !important;
+    }
+  }
 }
