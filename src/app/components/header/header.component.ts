@@ -9,11 +9,13 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Overlay, OverlayConfig, OverlayModule, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { LoginComponent } from '../login/login.component';
+import { UserService } from '../../services/user.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -69,7 +71,18 @@ import { LoginComponent } from '../login/login.component';
                 },
               ]"
             >
-              <div class="menu">Stuff goes here</div>
+              <div class="menu">
+                <div class="header">
+                  <span>SN</span>
+                  <p>
+                    {{ userService.userFirstName$ | async }}
+                    {{ userService.userLastName$ | async }}
+                  </p>
+                </div>
+                <button (click)="logout()" class="logout">
+                  <i class="bi bi-box-arrow-right"></i>Logout
+                </button>
+              </div>
             </ng-template>
           </ng-container>
 
@@ -130,6 +143,8 @@ export class HeaderComponent implements AfterViewInit {
     private readonly viewContainerRef: ViewContainerRef,
     private readonly overlay: Overlay,
     readonly authService: AuthService,
+    private readonly router: Router,
+    readonly userService: UserService,
   ) {}
 
   ngAfterViewInit(): void {
@@ -163,5 +178,12 @@ export class HeaderComponent implements AfterViewInit {
   onArrowClick(direction: string) {
     this.pagedCount += direction === 'left' ? -1 : 1;
     this.arrowClick.emit(direction);
+  }
+
+  logout() {
+    this.authService
+      .logout$()
+      .pipe(tap(() => this.router.navigate(['/init'])))
+      .subscribe();
   }
 }

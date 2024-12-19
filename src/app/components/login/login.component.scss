@@ -42,6 +42,7 @@
   grid-area: main;
   justify-content: center;
 
+  // TODO: make this a common style
   button {
     align-items: center;
     background-color: white;
@@ -51,9 +52,8 @@
     display: flex;
     font-weight: 500;
     gap: 10px;
-    height: 100%;
     margin-bottom: 10px;
-    max-height: 50px;
+    height: 50px;
     padding: 10px;
     transition: all 0.2s ease;
 

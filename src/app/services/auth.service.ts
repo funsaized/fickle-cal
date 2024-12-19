@@ -24,7 +24,7 @@ export class AuthService {
   isAuth$(): Observable<boolean> {
     return this.http
       .get<IsLoggedInResponse>(`${environment.baseUrl}/auth/isLoggedIn`, {
-        withCredentials: true,
+        withCredentials: true, // TODO: interceptor
       })
       .pipe(
         tap(response => {
@@ -45,10 +45,11 @@ export class AuthService {
       );
   }
 
-  logout(): Observable<unknown> {
-    return this.http.post(`${environment.baseUrl}/auth/github/logout`, {}).pipe(
+  logout$(): Observable<unknown> {
+    return this.http.post(`${environment.baseUrl}/auth/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
         this._isAuth.next(false);
+        this.userService.user = null;
       }),
     );
   }

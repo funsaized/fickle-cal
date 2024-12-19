@@ -94,9 +94,77 @@ a {
 
 .menu {
   background-color: #add1dc;
-  width: 220px;
+  width: 160px;
   border-radius: 5px;
   border: 1px solid black;
+  padding: 5px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    color: black;
+
+    span {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background-color: #add1dc;
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 600;
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+
+    p {
+      font-size: clamp(12px, 1rem, 18px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      margin: 0;
+      padding: 0 5px;
+    }
+    margin-bottom: 10px;
+  }
+
+  // TODO: make this a common style
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    gap: 10px;
+    height: 50px;
+    width: 100%;
+    padding: 10px;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: hsl(39, 100%, 97%);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
 }
 
 @keyframes ripple {
