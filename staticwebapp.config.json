@@ -1,5 +1,11 @@
 {
     "navigationFallback": {
         "rewrite": "/index.html"
-    }
+    },
+    "routes": [
+        {
+            "route": "/api/*",
+            "rewrite": "https://feined-server.s11a.com/:splat"
+        }
+    ]
 }
