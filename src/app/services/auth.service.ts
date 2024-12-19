@@ -18,9 +18,7 @@ export class AuthService {
   ) {}
 
   initiateGithubAuth() {
-    window.location.href = environment.production
-      ? `${environment.baseUrl}/api/auth/github`
-      : `${environment.baseUrl}/auth/github`;
+    window.location.href = `${environment.baseUrl}${environment.apiUrl}/auth/github`;
   }
 
   isAuth$(): Observable<boolean> {
