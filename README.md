@@ -5,7 +5,7 @@
 
 > A barebones, calendar-centric todo app
 
-### 🏠 [Homepage](https://todo.s11a.com/)
+### 🏠 [Homepage](https://todo.s11a.com/) [![Netlify Status](https://api.netlify.com/api/v1/badges/7221c3fe-992b-448e-ab3f-00124c3d8801/deploy-status)](https://app.netlify.com/sites/feined-todo/deploys)
 
 ![Todo Replication Demo](./output.gif)
 
@@ -24,7 +24,7 @@ npm run start
 ## Built with
 - [angular](https://github.com/angular/angular)
 - [rxdb](https://github.com/pubkey/rxdb)
-- [Azure Static Web Apps](https://learn.microsoft.com/en-us/azure/static-web-apps/overview)
+- [Netlify](https://www.netlify.com/)
 
 ## Author
 
