@@ -3,7 +3,7 @@ import { ErrorComponent } from './components';
 import { AuthGuard } from './auth.guard';
 import { HomeComponent } from './containers';
 import { CheckAuthGuard } from './check-auth-guard';
-import { HeroResolver } from './resolvers/user.resolver';
+import { UserResolver } from './resolvers/user.resolver';
 
 export const routes: Routes = [
   // TODO: login w/ oauth auth provider (github)
@@ -20,7 +20,7 @@ export const routes: Routes = [
     component: HomeComponent,
     canActivate: [AuthGuard],
     resolve: {
-      user: HeroResolver 
+      user: UserResolver 
     }
   },
 ];

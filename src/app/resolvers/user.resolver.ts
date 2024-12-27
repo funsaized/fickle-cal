@@ -6,7 +6,7 @@ import { User } from "../models";
 import { UserService } from "../services";
 
 @Injectable({ providedIn: 'root' })
-export class HeroResolver implements Resolve<User | null> {
+export class UserResolver implements Resolve<User | null> {
     constructor(private service: UserService) { }
     resolve(
         route: ActivatedRouteSnapshot,
