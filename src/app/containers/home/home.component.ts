@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EventService, WeekService } from '../../services';
+import { DbService, EventService, WeekService } from '../../services';
 import { CommonModule } from '@angular/common';
 import { CalendarComponent, HeaderComponent, ListComponent } from '../../components';
 import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
 import { formatISO, startOfDay } from 'date-fns';
 import { debounceTime, Subscription, tap } from 'rxjs';
 import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -63,6 +64,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     public readonly weekService: WeekService,
     readonly eventService: EventService,
+    private activatedRoute: ActivatedRoute,
+    private readonly dbService: DbService,
   ) {
     this.someDay0 = {
       date: SOME_DAY_0,
@@ -87,6 +90,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       dayName: 'SOMEDAY2',
       monthDigits: '00',
     };
+    console.warn('HomeComponent: constructor', activatedRoute);
   }
 
   ngOnInit(): void {
@@ -107,6 +111,15 @@ export class HomeComponent implements OnInit, OnDestroy {
           .subscribe(),
       );
     });
+
+    // Replication
+    this.activatedRoute.data.subscribe(async ({ user }) => {
+      // do something with your resolved data ...
+      if (user) {
+        console.log('User resolved, beginning replication...', user);
+        await this.dbService.initReplication();
+      }
+    })
   }
 
   ngOnDestroy(): void {
