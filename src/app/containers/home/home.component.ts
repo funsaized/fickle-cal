@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CalendarComponent, HeaderComponent, ListComponent } from '../../components';
 import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
 import { formatISO, startOfDay } from 'date-fns';
-import { debounceTime, Subscription, tap } from 'rxjs';
+import { debounceTime, filter, map, Subscription, tap } from 'rxjs';
 import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { ActivatedRoute } from '@angular/router';
 
@@ -113,10 +113,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     // Replication
-    this.activatedRoute.data.subscribe(async ({ user }) => {
-      // do something with your resolved data ...
+    this.activatedRoute.data.pipe(
+      map(data => data['user']),
+      filter(user => !!user),
+    ).subscribe( async (user) => {
       if (user) {
-        console.log('User resolved, beginning replication...', user);
+        console.log('User resolved, updating event ownership...', user);
+        await this.eventService.updateAllWithOwner(user.id);
+        console.log('Events updated with id', user.id);
+        console.log('Beginning replication...');
         await this.dbService.initReplication();
       }
     })

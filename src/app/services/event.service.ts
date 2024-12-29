@@ -3,7 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { RxDocument } from 'rxdb';
 import { formatISO, startOfDay } from 'date-fns';
 import { DbService, RxEventDocumentType } from './db.service';
-import { CalendarKeys, ReOrderEvent } from '../models';
+import { CalendarKeys, ReOrderEvent, SOME_DAY_0 } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +22,24 @@ export class EventService {
       },
       sort: [{ index: 'asc' }],
     }).$;
+  }
+
+  // TODO: error handling
+  // TODO: figure out bulkUpsert for efficiency
+  async updateAllWithOwner(id: string) {
+    const docs = await this.dbService.db.events.find({
+      selector: {
+        date: {
+          $gte: formatISO(startOfDay(SOME_DAY_0)),
+        },
+      },
+      sort: [{ index: 'asc' }],
+    }).exec();
+    const updates = docs.map((doc: RxDocument<RxEventDocumentType>) => {
+      return doc.incrementalPatch({ userId: id });
+    });
+
+    await Promise.all(updates);
   }
 
   async reorder(event: ReOrderEvent) {
