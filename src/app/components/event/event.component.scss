@@ -1,3 +1,5 @@
+@import 'variables';
+
 .input-root {
   position: relative;
   height: 40px;
@@ -25,7 +27,7 @@
 }
 
 .input-root.hover {
-  border-bottom: 1px solid #add1dc; // TODO: color scheme vars
+  border-bottom: 1px solid $tertiary;
 }
 
 // Input and Button shared styles

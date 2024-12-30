@@ -1,3 +1,5 @@
+@import 'variables';
+
 .day {
   .header {
     display: flex;
@@ -7,11 +9,11 @@
   }
 
   .header.isCurrent {
-    border-bottom: 2px solid blue;
-    color: #0000ff;
+    border-bottom: 2px solid $active;
+    color: $active;
 
     .day-name {
-      color: rgba(0, 0, 255, 0.6);
+      color: rgba($active, 0.6);
     }
   }
 
@@ -20,6 +22,6 @@
   }
 
   .day-name {
-    color: #caa171; // TODO: color scheme vars
+    color: $secondary;
   }
 }

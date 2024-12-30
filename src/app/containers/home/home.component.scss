@@ -1,3 +1,5 @@
+@import 'variables';
+
 .wrapper {
   display: grid;
   grid-template-columns: 1fr;
@@ -7,7 +9,7 @@
     'main';
   gap: 10px;
   padding: 0 20px;
-  color: #795e35; // TODO: color scheme vars
+  color: $primary;
 }
 
 header {

@@ -1,3 +1,5 @@
+@import 'variables';
+
 :host {
   &:hover {
     i {
@@ -14,5 +16,5 @@ i {
 }
 
 i.checked {
-  color: #f0dfa0; // TODO: color scheme vars
+  color: $secondary;
 }
