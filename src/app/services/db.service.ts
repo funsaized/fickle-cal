@@ -158,20 +158,7 @@ export async function initDatabase(injector: Injector) {
 })
 export class DbService {
   constructor(private http: HttpClient) {
-    // // emits each document that was received from the remote
-    // this.replicationState.received$.subscribe(doc => console.log('**** Rpl receieved ****', doc));
-    // // emits each document that was send to the remote
-    // this.replicationState.sent$.subscribe(doc => console.log(`**** Rpl sent ****`, doc));
-    // // emits all errors that happen when running the push- & pull-handlers.
-    // this.replicationState.error$.subscribe(error => console.error(`**** Rpl error ****`, error));
-    // // emits true when the replication was canceled, false when not.
-    // this.replicationState.canceled$.subscribe(bool =>
-    //   console.error(`**** Rpl canceled ${bool} ****`),
-    // );
-    // // emits true when a replication cycle is running, false when not.
-    // this.replicationState?.active$.subscribe(bool =>
-    //   console.log(`**** Rpl cycle running ${bool} ****`),
-    // );
+
   }
 
   async initReplication() {
@@ -228,6 +215,20 @@ export class DbService {
     // TODO: block clients that havent synced in X time
     // https://rxdb.info/replication.html#awaitinitialreplication-and-awaitinsync-should-not-be-used-to-block-the-application
     await replicationState.awaitInitialReplication();
+    // emits each document that was received from the remote
+    this.replicationState.received$.subscribe(doc => console.log('**** Rpl receieved ****', doc));
+    // emits each document that was send to the remote
+    this.replicationState.sent$.subscribe(doc => console.log(`**** Rpl sent ****`, doc));
+    // emits all errors that happen when running the push- & pull-handlers.
+    this.replicationState.error$.subscribe(error => console.error(`**** Rpl error ****`, error));
+    // emits true when the replication was canceled, false when not.
+    this.replicationState.canceled$.subscribe(bool =>
+      console.error(`**** Rpl canceled ${bool} ****`),
+    );
+    // emits true when a replication cycle is running, false when not.
+    this.replicationState?.active$.subscribe(bool =>
+      console.log(`**** Rpl cycle running ${bool} ****`),
+    );
   }
 
   get db() {

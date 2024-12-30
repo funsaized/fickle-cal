@@ -113,6 +113,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     // Replication
+    // FIXME: refactor for async best practices
     this.activatedRoute.data.pipe(
       map(data => data['user']),
       filter(user => !!user),

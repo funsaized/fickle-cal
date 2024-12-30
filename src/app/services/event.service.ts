@@ -24,8 +24,7 @@ export class EventService {
     }).$;
   }
 
-  // TODO: error handling
-  // TODO: figure out bulkUpsert for efficiency
+  // TODO: error handling & possible bulkUpsert
   async updateAllWithOwner(id: string) {
     const docs = await this.dbService.db.events.find({
       selector: {
