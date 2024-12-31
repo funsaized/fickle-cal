@@ -1,0 +1,65 @@
+@import 'variables';
+
+.content {
+  width: 100vw;
+  background-color: $tertiary;
+  padding: 20px;
+
+  .pre {
+    margin: 0;
+    margin-bottom: 40px;
+    white-space: pre-line;
+  }
+
+  h3, h4 {
+    margin: 0;
+  }
+
+  .faq {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+
+    h3 {
+      border-bottom: 1px solid black;
+    }
+
+    .question {
+      border-bottom: 1px solid black;
+      padding-bottom: 20px;
+
+      h4 {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-weight: normal;
+      }
+
+      i {
+        font-size: 1.4rem;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    .info {
+      margin-top: 20px;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .content {
+    width: 50vw;
+    padding: 40px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+
+    .pre {
+      font-size: 2rem;
+    }
+  }
+}

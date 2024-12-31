@@ -26,35 +26,8 @@ main {
   gap: 60px;
 }
 
-.under-construction {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  text-align: center;
-  background: #fafafa;
-  border-radius: 8px;
-  margin: 20px 0;
-
-  i {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
-    color: #f0ad4e;
-  }
-
-  p {
-    font-size: 1.2rem;
-    margin: 0 0 8px 0;
-    font-weight: 500;
-  }
-
-  small {
-    color: #666;
-  }
-}
-
 @media (min-width: 900px) {
+
   .someday {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
@@ -62,9 +35,5 @@ main {
 
   footer {
     text-align: left;
-  }
-
-  .under-construction {
-    margin: 20px 100px;
   }
 }
