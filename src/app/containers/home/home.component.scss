@@ -26,6 +26,19 @@ main {
   gap: 60px;
 }
 
+::ng-deep .cdk-overlay-pane {
+  animation: slide-up 0.4s ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @media (min-width: 900px) {
 
   .someday {
