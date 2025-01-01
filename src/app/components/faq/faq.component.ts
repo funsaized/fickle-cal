@@ -9,6 +9,9 @@ import { Component } from '@angular/core';
     <div class="content">
       <h1 class="pre">caf(Feined) Todo is a local first, calendar-centric planner.</h1>
       <div>Keep your data, run offline, and only sign in if you want to sync.</div>
+      <div style="margin-top:20px">🚧 This website is under active development 🚧</div>
+      <div class="cups"><i class="bi bi-cup"></i><i class="bi bi-cup-fill"></i></div>
+      
       <div class="faq">
         <h3>F.A.Q</h3>
         <div class="question" *ngFor="let question of questions; let i = index">
