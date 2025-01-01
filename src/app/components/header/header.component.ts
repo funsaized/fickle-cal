@@ -15,7 +15,7 @@ import { Overlay, OverlayConfig, OverlayModule, OverlayRef } from '@angular/cdk/
 import { TemplatePortal } from '@angular/cdk/portal';
 import { LoginComponent } from '../login/login.component';
 import { UserService } from '../../services/user.service';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { DbService } from '../../services';
 
 @Component({
@@ -186,7 +186,9 @@ export class HeaderComponent implements AfterViewInit {
   logout() {
     this.authService
       .logout$()
-      .pipe(tap(() => this.router.navigate(['/init'])))
+      .pipe(
+        switchMap(() => this.dbService.replicationState.cancel()),
+        tap(() => this.router.navigate(['/init'])))
       .subscribe();
   }
 }
