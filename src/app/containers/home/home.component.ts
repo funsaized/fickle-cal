@@ -1,11 +1,22 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EventService, WeekService } from '../../services';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
+import { DbService, EventService, WeekService } from '../../services';
 import { CommonModule } from '@angular/common';
-import { CalendarComponent, HeaderComponent, ListComponent } from '../../components';
+import { CalendarComponent, FaqComponent, HeaderComponent, ListComponent } from '../../components';
 import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
 import { formatISO, startOfDay } from 'date-fns';
-import { debounceTime, Subscription, tap } from 'rxjs';
+import { debounceTime, filter, map, Subscription, tap } from 'rxjs';
 import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
+import { ActivatedRoute } from '@angular/router';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +28,7 @@ import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
     HeaderComponent,
     CalendarComponent,
     ListComponent,
+    FaqComponent
   ],
   template: `
     <div class="wrapper">
@@ -48,10 +60,14 @@ import { CdkDrag, CdkDropListGroup } from '@angular/cdk/drag-drop';
         </div>
       </main>
     </div>
+
+    <ng-template #modalTemplate>
+      <app-faq/>
+    </ng-template>
   `,
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   loading = true;
   subscription = new Subscription();
 
@@ -60,9 +76,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   someDay1: ParsedDay;
   someDay2: ParsedDay;
 
+  @ViewChild('modalTemplate', { read: TemplateRef })
+  modalTemplate!: TemplateRef<unknown>;
+  templatePortal: TemplatePortal<unknown> | null = null;
+  overlayRef!: OverlayRef;
+
   constructor(
     public readonly weekService: WeekService,
     readonly eventService: EventService,
+    private readonly dbService: DbService,
+    private activatedRoute: ActivatedRoute,
+    private viewContainerRef: ViewContainerRef,
+    private overlay: Overlay,
   ) {
     this.someDay0 = {
       date: SOME_DAY_0,
@@ -87,6 +112,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       dayName: 'SOMEDAY2',
       monthDigits: '00',
     };
+    console.warn('HomeComponent: constructor', activatedRoute);
   }
 
   ngOnInit(): void {
@@ -107,10 +133,49 @@ export class HomeComponent implements OnInit, OnDestroy {
           .subscribe(),
       );
     });
+
+    // Replication
+    // FIXME: refactor for async best practices
+    this.activatedRoute.data
+      .pipe(
+        map(data => data['user']),
+        tap(user => {
+          if (!user) {
+            console.log('No user found, opening modal...');
+            setTimeout(() => this.openModal(), 1000);
+          }
+        }),
+        filter(user => !!user),
+      )
+      .subscribe(async user => {
+        if (user) {
+          console.log('User resolved, updating event ownership...', user);
+          await this.eventService.updateAllWithOwner(user.id);
+          console.log('Events updated with id', user.id);
+          console.log('Beginning replication...');
+          await this.dbService.initReplication();
+        }
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.templatePortal = new TemplatePortal(this.modalTemplate, this.viewContainerRef);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  openModal() {
+    const config = new OverlayConfig({
+      hasBackdrop: true,
+      positionStrategy: this.overlay.position().global().end().top('2%'),
+    });
+    this.overlayRef = this.overlay.create(config);
+    this.overlayRef.attach(this.templatePortal);
+    this.overlayRef.backdropClick().subscribe(() => {
+      this.overlayRef.detach();
+    });
   }
 
   handleArrowClick(direction: string) {

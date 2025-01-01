@@ -12,6 +12,10 @@ export class UserService {
     return this._user.asObservable();
   }
 
+  get userId (){
+    return this._user?.value?.id;
+  }
+
   set user(user: User | null) {
     this._user.next(user);
   }

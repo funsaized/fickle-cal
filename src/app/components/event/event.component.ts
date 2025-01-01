@@ -21,7 +21,7 @@ import { CheckBoxComponent } from '../checkbox/checkbox.component';
 import { EditEventComponent } from '../edit-event/edit-event.component';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { FormService } from '../../services';
+import { FormService, UserService } from '../../services';
 import { DbService, RxEventDocumentType } from '../../services/db.service';
 import { RxDocument } from 'rxdb';
 import { formatISO, parseISO, startOfDay, subDays } from 'date-fns';
@@ -88,6 +88,7 @@ export class EventComponent implements AfterViewInit {
   constructor(
     private readonly formService: FormService,
     private readonly dbService: DbService,
+    private readonly userService: UserService,
     private viewContainerRef: ViewContainerRef,
     private fb: FormBuilder,
     private overlay: Overlay,
@@ -151,6 +152,7 @@ export class EventComponent implements AfterViewInit {
         color: '',
         timestamp: new Date().getTime(),
         index: this.index,
+        userId: this.userService.userId || '',
       };
       this._event = await this.dbService.db.events.insert(toInsert);
       this.focused = false;
