@@ -41,6 +41,10 @@
         align-items: center;
         cursor: pointer;
         font-weight: normal;
+
+        &.active {
+          font-weight: bold;
+        }
       }
 
       i {
