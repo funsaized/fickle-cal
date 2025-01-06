@@ -19,46 +19,46 @@ import { environment } from '../../environments/environment';
 
 const EVENT_SCHEMA_LITERAL = {
   version: 0,
-  primaryKey: "id",
-  type: "object",
+  primaryKey: 'id',
+  type: 'object',
   properties: {
     id: {
-      type: "string",
+      type: 'string',
       maxLength: 100,
     },
     title: {
-      type: "string",
+      type: 'string',
     },
     date: {
-      type: "string",
-      format: "date-time",
+      type: 'string',
+      format: 'date-time',
       maxLength: 30,
     },
     completed: {
-      type: "boolean",
+      type: 'boolean',
     },
     notes: {
-      type: "string",
+      type: 'string',
     },
     color: {
-      type: "string",
+      type: 'string',
     },
     timestamp: {
-      type: "number",
+      type: 'number',
     },
     index: {
-      type: "number",
+      type: 'number',
     },
     userId: {
-      type: "string",
+      type: 'string',
       maxLength: 10,
     },
     _deleted: {
-      type: "boolean",
+      type: 'boolean',
     },
   },
-  required: ["id", "title", "date"],
-  indexes: ["date", ["userId", "date"]],
+  required: ['id', 'title', 'date'],
+  indexes: ['date', ['userId', 'date']],
 } as const;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -79,7 +79,7 @@ let DB_INSTANCE: RxEventsDatabase;
 let REPLICATION_STATE: RxReplicationState<unknown, any>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface RxEventMethods { }
+interface RxEventMethods {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type RxEventsCollection = RxCollection<RxEventDocumentType, RxEventMethods, {}, {}, unknown>;
@@ -157,9 +157,7 @@ export async function initDatabase(injector: Injector) {
   providedIn: 'root',
 })
 export class DbService {
-  constructor(private http: HttpClient) {
-
-  }
+  constructor(private http: HttpClient) {}
 
   async initReplication() {
     const replicationState = await replicateRxCollection({
@@ -169,7 +167,7 @@ export class DbService {
       push: {
         handler: async (changeRows): Promise<{ _deleted: boolean }[]> => {
           const rawResponse = await this.http
-            .post(`${environment.baseUrl}/events-rpl/0/push`, changeRows, {
+            .post(`${environment.baseUrl}/api/events-rpl/0/push`, changeRows, {
               withCredentials: true,
               headers: {
                 Accept: 'application/json',
@@ -194,10 +192,10 @@ export class DbService {
           const id = checkpointOrNull ? checkpointOrNull.id : '';
           const response = await this.http
             .get(
-              `${environment.baseUrl}/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`,
+              `${environment.baseUrl}/api/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`,
               {
                 withCredentials: true,
-              }
+              },
             )
             .toPromise();
           const data = response as any;
