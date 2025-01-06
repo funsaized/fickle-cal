@@ -1,10 +1,10 @@
 [build]
-  publish = "dist/feined-client/browser"
+  publish = "dist/fickle-client/browser"
   command = "npm run build"
 
 [[redirects]]
   from = "/api/*"
-  to = "https://feined-server.s11a.com/:splat"
+  to = "https://fickle-server.s11a.com/:splat"
   status = 200
   force = true
 

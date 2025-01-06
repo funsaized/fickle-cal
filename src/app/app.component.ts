@@ -10,7 +10,7 @@ import 'zone.js/plugins/zone-patch-rxjs';
 })
 // export class AppComponent implements OnInit {
 export class AppComponent {
-  title = 'feined-client';
+  title = 'fickle-client';
 
   // constructor(private readonly keycloak: KeycloakService) {}
 

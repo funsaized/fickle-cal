@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   imports: [CommonModule],
   template: `
     <div class="content">
-      <h1 class="pre">caf(Feined) Todo is a local first, calendar-centric planner.</h1>
+      <h1 class="pre">Fickle Cal is a local first, calendar-centric planner.</h1>
       <div>Keep your data & run offline. Only sign in if you want to sync.</div>
       <div style="margin-top:20px">🚧 This website is under active development 🚧</div>
       <div class="cups"><i class="bi bi-cup"></i><i class="bi bi-cup-fill"></i></div>
