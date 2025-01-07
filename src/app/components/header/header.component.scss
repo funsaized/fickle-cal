@@ -30,7 +30,9 @@ h1 {
   .icon-stack {
     display: inline-flex;
     flex-direction: row;
-    gap: 2px;
+    img {
+      width: 30px;
+    }
   }
 
   h1 {
@@ -58,7 +60,7 @@ ul {
     cursor: pointer;
 
     &:first-child {
-      background-color: $tertiary;
+      background-color: var(--green-3);
       color: white;
 
       &::before {

@@ -28,10 +28,10 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
     HeaderComponent,
     CalendarComponent,
     ListComponent,
-    FaqComponent
+    FaqComponent,
   ],
   template: `
-    <div class="wrapper">
+    <div class="wrapper light-theme">
       <header>
         <app-header
           [month]="(weekService.currentDays$ | async)?.[0]?.date"
@@ -62,7 +62,7 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
     </div>
 
     <ng-template #modalTemplate>
-      <app-faq/>
+      <app-faq />
     </ng-template>
   `,
   styleUrl: './home.component.scss',
