@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://fickle-server.s11a.com/:splat"
+  to = "https://feined-server.s11a.com/:splat"
   status = 200
   force = true
 
