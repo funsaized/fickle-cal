@@ -6,13 +6,13 @@ $note-active: #ffd383;
 $active: #0000ff;
 
 // https://www.radix-ui.com/colors/custom
-// Accent: 28511C ; Gray: 8B8
+// https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale
+// Custom pallet -> Accent: #28511C ; Gray: #8B8
 
 // Color scale
 :root,
 .light,
 .light-theme {
-  --background-color: #fff;
   /* Backgrounds */
   --green-1: #fafef9; // app background
   --green-2: #f4fcf2; // subtle background
@@ -55,7 +55,6 @@ $active: #0000ff;
     :root,
     .light,
     .light-theme {
-      --background-color: #fff;
       --green-1: oklch(99.2% 0.0069 139.2);
       --green-2: oklch(98.2% 0.016 139.2);
       --green-3: oklch(95.9% 0.0709 139.2);
@@ -92,7 +91,6 @@ $active: #0000ff;
 
 .dark,
 .dark-theme {
-  --background-color: #111111;
   --green-1: #0d130b;
   --green-2: #121b10;
   --green-3: #1a2b15;
@@ -163,7 +161,7 @@ $active: #0000ff;
   }
 }
 
-// Gray scale
+// Gray scale (functional vibes)
 :root,
 .light,
 .light-theme {

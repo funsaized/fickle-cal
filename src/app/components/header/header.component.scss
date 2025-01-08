@@ -58,16 +58,19 @@ ul {
     background-color: #f0f0f0;
     position: relative;
     cursor: pointer;
+    background-color: var(--green-3);
+    border: 1px solid var(--green-7);
+
+    &:hover {
+      background-color: var(--green-4);
+    }
 
     &:first-child {
-      background-color: var(--green-3);
-      color: white;
-
       &::before {
         position: absolute;
         content: '';
         inset: 0;
-        border: solid 3px $tertiary;
+        border: solid 3px var(--green-7);
         border-radius: 50%;
       }
 
