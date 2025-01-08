@@ -31,7 +31,7 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
     FaqComponent,
   ],
   template: `
-    <div class="wrapper light-theme">
+    <div class="wrapper">
       <header>
         <app-header
           [month]="(weekService.currentDays$ | async)?.[0]?.date"
