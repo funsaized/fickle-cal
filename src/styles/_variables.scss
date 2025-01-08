@@ -48,6 +48,8 @@ $active: #0000ff;
   --green-surface: #f1fbefcc;
   --green-indicator: #28511c;
   --green-track: #28511c;
+
+  --blue-active: #0090ff; // blue-9
 }
 
 @supports (color: color(display-p3 1 1 1)) {
@@ -121,6 +123,8 @@ $active: #0000ff;
   --green-surface: #13251080;
   --green-indicator: #93da80;
   --green-track: #93da80;
+
+  --blue-active: #0090ff; // blue-9
 }
 
 @supports (color: color(display-p3 1 1 1)) {

@@ -9,11 +9,11 @@
   }
 
   .header.isCurrent {
-    border-bottom: 2px solid $active;
-    color: $active;
+    border-bottom: 2px solid var(--blue-active);
+    color: var(--blue-active);
 
     .day-name {
-      color: rgba($active, 0.6);
+      color: var(--blue-active);
     }
   }
 
@@ -22,6 +22,6 @@
   }
 
   .day-name {
-    color: $secondary;
+    color: var(--green-11);
   }
 }

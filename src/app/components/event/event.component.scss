@@ -7,8 +7,8 @@
   justify-content: space-between;
   align-items: center;
 
-  &:focus-within {
-    background-color: #fff;
+  &:focus-within:has(input:focus, button:focus) {
+    background-color: var(--green-1);
   }
 }
 
@@ -27,7 +27,7 @@
 }
 
 .input-root.hover {
-  border-bottom: 1px solid $tertiary;
+  border-bottom: 1px solid var(--gray-a4);
 }
 
 // Input and Button shared styles
@@ -40,6 +40,7 @@ button.title {
 
 input {
   background-color: transparent;
+  color: var(--green-12);
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -51,10 +52,6 @@ input {
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0 8px;
-
-  &:disabled {
-    background-color: #fff;
-  }
 
   &:focus {
     outline: none;
