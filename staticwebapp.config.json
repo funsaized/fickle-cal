@@ -5,7 +5,7 @@
     "routes": [
         {
             "route": "/api/*",
-            "rewrite": "https://fickle-server.s11a.com/:splat"
+            "rewrite": "https://feined-server.s11a.com/:splat"
         }
     ]
 }
