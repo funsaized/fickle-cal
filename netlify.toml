@@ -1,5 +1,5 @@
 [build]
-  publish = "dist/feined-client/browser"
+  publish = "dist/fickle-client/browser"
   command = "npm run build"
 
 [[redirects]]

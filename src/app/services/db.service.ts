@@ -99,10 +99,10 @@ export async function _createDb(): Promise<RxEventsDatabase> {
     // });
   }
 
-  // await removeRxDatabase('feineddb', getRxStorageDexie());
+  // await removeRxDatabase('fickledb', getRxStorageDexie());
 
   const db = await createRxDatabase<RxEventsCollections>({
-    name: 'feineddb',
+    name: 'fickledb',
     storage: getRxStorageDexie(),
   });
   console.log('DatabaseService: created database');
@@ -162,7 +162,7 @@ export class DbService {
   async initReplication() {
     const replicationState = await replicateRxCollection({
       collection: DB_INSTANCE.events,
-      replicationIdentifier: 'feined-http-replication',
+      replicationIdentifier: 'fickle-http-replication',
       live: true,
       push: {
         handler: async (changeRows): Promise<{ _deleted: boolean }[]> => {

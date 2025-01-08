@@ -5,15 +5,15 @@
     display: flex;
     justify-content: space-between;
     padding-bottom: 14px;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid var(--green-8);
   }
 
   .header.isCurrent {
-    border-bottom: 2px solid $active;
-    color: $active;
+    border-bottom: 2px solid var(--blue-active);
+    color: var(--blue-active);
 
     .day-name {
-      color: rgba($active, 0.6);
+      color: var(--blue-active);
     }
   }
 
@@ -22,6 +22,6 @@
   }
 
   .day-name {
-    color: $secondary;
+    color: var(--green-11);
   }
 }

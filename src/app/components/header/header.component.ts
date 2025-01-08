@@ -27,13 +27,11 @@ import { DbService } from '../../services';
       <div class="day">
         <h1>{{ month | date: 'MMMM' }} {{ month | date: 'yyyy' }}</h1>
         <span class="icon-stack">
-          <i
+          <img
             *ngFor="let icon of ['a', 'b', 'c']; let i = index"
-            class="bi"
-            [class.bi-cup-hot-fill]="(i + this.pagedCount) % 2 === 0"
-            [class.bi-cup-hot]="(i + this.pagedCount) % 2 !== 0"
-          >
-          </i>
+            [src]="(i + pagedCount) % 2 === 0 ? 'pickle.svg' : 'pickle-inverted.svg'"
+            alt="pickle"
+          />
         </span>
       </div>
       <nav>
@@ -188,7 +186,8 @@ export class HeaderComponent implements AfterViewInit {
       .logout$()
       .pipe(
         switchMap(() => this.dbService.replicationState.cancel()),
-        tap(() => this.router.navigate(['/init'])))
+        tap(() => this.router.navigate(['/init'])),
+      )
       .subscribe();
   }
 }

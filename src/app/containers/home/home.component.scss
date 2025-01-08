@@ -9,7 +9,8 @@
     'main';
   gap: 10px;
   padding: 0 20px;
-  color: $primary;
+  background-color: var(--green-2);
+  color: var(--green-12);
 }
 
 header {
@@ -30,6 +31,10 @@ main {
   animation: slide-up 0.3s ease-out;
 }
 
+h2 {
+  color: var(--green-11);
+}
+
 @keyframes slide-up {
   from {
     transform: translateY(100%);
@@ -40,7 +45,6 @@ main {
 }
 
 @media (min-width: 900px) {
-
   .someday {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;

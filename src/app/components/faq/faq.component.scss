@@ -1,9 +1,9 @@
 @import 'variables';
 
 .content {
-  position: relative;
   width: 100vw;
-  background-color: $tertiary;
+  color: var(--green-12);
+  background-color: var(--green-3);
   padding: 20px;
 
   .pre {
@@ -12,21 +12,27 @@
     white-space: pre-line;
   }
 
-  .cups {
-    position: absolute;
-    right: 40px;
-    font-size: 4rem;
-  }
-
-  h3, h4 {
+  h3,
+  h4 {
     margin: 0;
   }
 
   .faq {
+    position: relative;
     margin-top: 40px;
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
+
+    .logos {
+      position: absolute;
+      right: 30px;
+      top: -20px;
+    }
+
+    img {
+      width: 30px;
+    }
 
     h3 {
       border-bottom: 1px solid black;

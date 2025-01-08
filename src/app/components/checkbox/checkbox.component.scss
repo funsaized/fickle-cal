@@ -13,8 +13,9 @@ i {
   width: 1em;
   height: 1em;
   visibility: hidden;
+  color: var(--green-12);
 }
 
 i.checked {
-  color: $secondary;
+  opacity: 0.3;
 }
