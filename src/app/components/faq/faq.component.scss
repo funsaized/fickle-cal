@@ -1,10 +1,12 @@
 @import 'variables';
 
 .content {
-  width: 100vw;
+  width: 100%;
+  max-height: 100vh;
   color: var(--green-12);
   background-color: var(--green-2);
   padding: 20px;
+  overflow-y: auto;
 
   .pre {
     margin: 0;
