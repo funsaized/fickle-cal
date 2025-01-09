@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-faq',
@@ -9,7 +9,10 @@ import { Component } from '@angular/core';
     <div class="content">
       <h1 class="pre">Fickle Cal is a local first, calendar-centric planner.</h1>
       <div>Keep your data & run offline. Only sign in if you want to sync.</div>
-      <div style="margin-top:20px">🚧 This website is under active development 🚧</div>
+      <div style="margin-top:20px">🚧 This website is under active development</div>
+      <div class="button-container">
+        <button class="close-button" (click)="close()">Get started!</button>
+      </div>
 
       <div class="faq">
         <h3>F.A.Q</h3>
@@ -39,6 +42,8 @@ import { Component } from '@angular/core';
   styleUrl: './faq.component.scss',
 })
 export class FaqComponent {
+  @Output() closeModal = new EventEmitter<void>();
+
   questions = [
     {
       title: 'What is this?',
@@ -61,6 +66,10 @@ export class FaqComponent {
       expanded: false,
     },
   ];
+
+  close() {
+    this.closeModal.emit();
+  }
 
   toggleInfo(index: number) {
     this.questions[index].expanded = !this.questions[index].expanded;

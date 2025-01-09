@@ -64,7 +64,7 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
     <ng-template #modalTemplate>
       <!-- FIXME: necessary b/c of portals... global theme -->
       <div class="light-theme">
-        <app-faq />
+        <app-faq (closeModal)="closeModal()" />
       </div>
     </ng-template>
   `,
@@ -179,6 +179,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.overlayRef.backdropClick().subscribe(() => {
       this.overlayRef.detach();
     });
+  }
+
+  closeModal() {
+    this.overlayRef.detach();
   }
 
   handleArrowClick(direction: string) {

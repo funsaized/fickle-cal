@@ -3,13 +3,45 @@
 .content {
   width: 100vw;
   color: var(--green-12);
-  background-color: var(--green-3);
+  background-color: var(--green-2);
   padding: 20px;
 
   .pre {
     margin: 0;
     margin-bottom: 40px;
     white-space: pre-line;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .close-button {
+    color: var(--green-12);
+    align-items: center;
+    background-color: var(--green-3);
+    border: 1px solid var(--green-7);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    font-weight: 500;
+    margin: 20px 0;
+    height: 50px;
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: var(--green-4);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      background-color: var(--green-5);
+    }
   }
 
   h3,
