@@ -173,9 +173,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const config = new OverlayConfig({
       hasBackdrop: true,
       positionStrategy: this.overlay.position().global().end().top('2%'),
-      scrollStrategy: this.overlay.scrollStrategies.block(),
     });
-    document.body.style.overflow = 'hidden'; // Prevent body scroll
     this.overlayRef = this.overlay.create(config);
     this.overlayRef.attach(this.templatePortal);
     this.overlayRef.backdropClick().subscribe(() => {
@@ -184,7 +182,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   closeModal() {
-    document.body.style.overflow = 'auto'; // Restore body scroll
     this.overlayRef.detach();
   }
 
