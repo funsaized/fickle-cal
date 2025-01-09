@@ -16,7 +16,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { LoginComponent } from '../login/login.component';
 import { UserService } from '../../services/user.service';
 import { switchMap, tap } from 'rxjs';
-import { DbService } from '../../services';
+import { DbService, ThemeService } from '../../services';
 
 @Component({
   selector: 'app-header',
@@ -113,6 +113,19 @@ import { DbService } from '../../services';
           >
             <i class="bi bi-arrow-right"></i>
           </li>
+          <li
+            tabindex="0"
+            role="button"
+            (click)="themeService.toggleTheme()"
+            (keydown.enter)="themeService.toggleTheme()"
+          >
+            <i
+              class="bi"
+              [class.bi-moon-stars]="(themeService.theme$ | async) === 'light'"
+              [class.bi-sun]="(themeService.theme$ | async) === 'dark'"
+            >
+            </i>
+          </li>
         </ul>
       </nav>
     </div>
@@ -145,6 +158,7 @@ export class HeaderComponent implements AfterViewInit {
     readonly authService: AuthService,
     private readonly router: Router,
     readonly userService: UserService,
+    readonly themeService: ThemeService,
     private readonly dbService: DbService,
   ) {}
 
