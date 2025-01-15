@@ -1,13 +1,12 @@
-import { CdkScrollable } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-faq',
   standalone: true,
-  imports: [CommonModule, CdkScrollable],
+  imports: [CommonModule],
   template: `
-    <div class="content" cdkScrollable>
+    <div class="content">
       <h1 class="pre">Fickle Cal is a local first, calendar-centric planner.</h1>
       <div>Keep your data & run offline. Only sign in if you want to sync.</div>
       <div style="margin-top:20px">🚧 This website is under active development</div>
