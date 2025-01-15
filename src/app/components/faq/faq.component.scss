@@ -102,6 +102,18 @@
       margin-top: 20px;
     }
   }
+
+  .surprise {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-top: 20px;
+
+    img {
+      width: 40px;
+      margin: 0 5px;
+    }
+  }
 }
 
 @media (min-width: 900px) {

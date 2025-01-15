@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  HostListener,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 
 @Component({
   selector: 'app-faq',
@@ -37,12 +45,31 @@ import { Component, Output, EventEmitter } from '@angular/core';
           <div class="info" *ngIf="question.expanded" [innerHTML]="question.info"></div>
         </div>
       </div>
+
+      <div #surprise class="surprise">
+        <img *ngFor="let _ of pickles" src="/pickle.svg" alt="pickle" />
+      </div>
     </div>
   `,
   styleUrl: './faq.component.scss',
 })
-export class FaqComponent {
+export class FaqComponent implements AfterViewInit {
   @Output() closeModal = new EventEmitter<void>();
+
+  pickles: number[] = [];
+  private readonly PICKLE_WIDTH = 40; // width of each pickle in px
+  private readonly PICKLE_MARGIN = 10; // optional margin between pickles
+
+  @HostListener('window:resize')
+  onResize() {
+    this.calculatePickles();
+  }
+
+  @ViewChild('surprise') surprise!: ElementRef;
+
+  ngAfterViewInit(): void {
+    this.calculatePickles();
+  }
 
   questions = [
     {
@@ -73,5 +100,11 @@ export class FaqComponent {
 
   toggleInfo(index: number) {
     this.questions[index].expanded = !this.questions[index].expanded;
+  }
+
+  private calculatePickles() {
+    const containerWidth = this.surprise.nativeElement.offsetWidth;
+    const picklesCount = Math.floor(containerWidth / (this.PICKLE_WIDTH + this.PICKLE_MARGIN));
+    this.pickles = Array(picklesCount).fill(0);
   }
 }
