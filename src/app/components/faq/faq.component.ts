@@ -65,6 +65,26 @@ export class FaqComponent {
       info: 'Login is used to sync your data across devices & browsers. Currently GitHub is the only supported login provider (more are on the roadmap).',
       expanded: false,
     },
+    {
+      title: 'What happens when I login?',
+      info: 'Login is used to sync your data across devices & browsers. Currently GitHub is the only supported login provider (more are on the roadmap).',
+      expanded: false,
+    },
+    {
+      title: 'What happens when I login?',
+      info: 'Login is used to sync your data across devices & browsers. Currently GitHub is the only supported login provider (more are on the roadmap).',
+      expanded: false,
+    },
+    {
+      title: 'What happens when I login?',
+      info: 'Login is used to sync your data across devices & browsers. Currently GitHub is the only supported login provider (more are on the roadmap).',
+      expanded: false,
+    },
+    {
+      title: 'What happens when I login?',
+      info: 'Login is used to sync your data across devices & browsers. Currently GitHub is the only supported login provider (more are on the roadmap).',
+      expanded: false,
+    },
   ];
 
   close() {
