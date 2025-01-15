@@ -173,7 +173,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const config = new OverlayConfig({
       hasBackdrop: true,
       positionStrategy: this.overlay.position().global().end().top('2%'),
-      scrollStrategy: this.overlay.scrollStrategies.block(),
     });
     this.overlayRef = this.overlay.create(config);
     this.overlayRef.attach(this.templatePortal);
