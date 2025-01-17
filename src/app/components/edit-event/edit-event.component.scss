@@ -1,100 +1,108 @@
 @import 'variables';
 
 form {
-    max-width: 512px;
-    height: auto;
-    background-color: $note;
-    border-radius: 20px;
-    padding: 20px;
+  max-width: 512px;
+  height: auto;
+  background-color: var(--green-3);
+  border-radius: 20px;
+  padding: 20px;
 }
 
-.header{
+.header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+
+  .actions {
+    margin-left: auto;
     display: flex;
-    justify-content: left;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 40px;
+    gap: 1rem;
+  }
 
-    .actions {
-        margin-left: auto;
-        display: flex;
-        gap: 1rem;
-    }
-
-    i {
-        cursor: pointer;
-    }
+  i {
+    cursor: pointer;
+    color: var(--gray-11);
+  }
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-textarea{
-    background-color: transparent;
-    border-style: none;
-    border-color: Transparent;
-    outline: none;
-    width: 100%;
-    overflow: hidden;
-    resize: none;
+textarea {
+  background-color: transparent;
+  border-style: none;
+  border-color: Transparent;
+  outline: none;
+  width: 100%;
+  overflow: hidden;
+  resize: none;
+  color: inherit;
 
-    &.notes {
-        font-size: 1rem;
-    }
+  &::placeholder {
+    color: var(--gray-11);
+  }
 
-    &.title {
-        border-bottom: 1px solid #000;
-        margin-bottom: 20px;
-        font-size: 2rem;
-    }
+  &.notes {
+    font-size: 1rem;
+  }
+
+  &.title {
+    border-bottom: 1px solid #000;
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
 }
-.menu{
-    border-radius: 12px;
-    outline: 1px solid;
-    padding: 12px;
-    display: flex;
-    gap: 10px;
+
+.menu {
+  border-radius: 12px;
+  outline: 1px solid;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
 }
 
 .color-picker {
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .settings {
-    padding: 0;
-    flex-direction: column;
-    gap: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: 0;
 
-    button {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 16px;
-        background-color: $note;
-        border: none;
-        gap: 20px;
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    color: inherit;
+    background-color: var(--green-3);
+    border: none;
+    gap: 20px;
 
-        &:first-child {
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
-            }
-        
-            &:last-child {
-                border-bottom-left-radius: 12px;
-                border-bottom-right-radius: 12px;
-            }
-
-        &:hover {
-            background-color: $note-active;
-        }
+    &:first-child {
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
     }
+
+    &:last-child {
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+
+    &:hover {
+      background-color: var(--green-4);
+    }
+  }
 }
 
 @media (min-width: 900px) {
-    form {
-        width: 512px;
-    }
+  form {
+    width: 512px;
+  }
 }
