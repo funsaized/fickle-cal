@@ -46,7 +46,9 @@ export class DayComponent implements OnInit, OnDestroy {
           debounceTime(100),
           tap(events => {
             const dateKey = this.dateKey;
-            console.log('Events loaded for day', dateKey, events);
+            console.log(
+              `#### DayComponent | RxDB refresh | ${events?.length} events loaded for day ${dateKey}`,
+            );
             this.eventService.setEventsMap(dateKey, events || []);
           }),
         )

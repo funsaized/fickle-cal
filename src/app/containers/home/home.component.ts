@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { DbService, EventService, WeekService } from '../../services';
+import { DbService, EventService, SessionStorageService, WeekService } from '../../services';
 import { CommonModule } from '@angular/common';
 import { CalendarComponent, FaqComponent, HeaderComponent, ListComponent } from '../../components';
 import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
@@ -90,6 +90,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly dbService: DbService,
     private activatedRoute: ActivatedRoute,
     private viewContainerRef: ViewContainerRef,
+    private sessionStorageService: SessionStorageService,
     private overlay: Overlay,
   ) {
     this.someDay0 = {
@@ -129,7 +130,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           .pipe(
             debounceTime(100),
             tap(events => {
-              console.log('Events loaded for day', dateKey, events);
+              console.log(
+                `#### HomeComponent | RxDB refresh | ${events?.length} events loaded for day ${dateKey}`,
+              );
               this.eventService.setEventsMap(dateKey, events || []);
             }),
           )
@@ -143,8 +146,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(
         map(data => data['user']),
         tap(user => {
-          if (!user) {
-            console.log('No user found, opening modal...');
+          if (!user && !this.sessionStorageService.getItem('modal-open')) {
+            console.log('#### HomeComponent | No user found, opening modal...');
             setTimeout(() => this.openModal(), 1000);
           }
         }),
@@ -152,10 +155,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe(async user => {
         if (user) {
-          console.log('User resolved, updating event ownership...', user);
+          console.log('#### HomeComponent | User resolved, updating event ownership...', user);
           await this.eventService.updateAllWithOwner(user.id);
-          console.log('Events updated with id', user.id);
-          console.log('Beginning replication...');
+          console.log(`#### HomeComponent | Events updated with id ${user.id}`);
+          console.log('#### HomeComponent | Beginning replication...');
           await this.dbService.initReplication();
         }
       });
@@ -170,6 +173,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openModal() {
+    // TODO: supress modal if user already clicked (some localStorage impls)
     const config = new OverlayConfig({
       hasBackdrop: true,
       positionStrategy: this.overlay.position().global().end().top('2%'),
@@ -178,12 +182,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.overlayRef = this.overlay.create(config);
     this.overlayRef.attach(this.templatePortal);
     this.overlayRef.backdropClick().subscribe(() => {
+      this._suppressModal();
       this.overlayRef.detach();
     });
   }
 
   closeModal() {
     this.overlayRef.detach();
+    this._suppressModal();
   }
 
   handleArrowClick(direction: string) {
@@ -196,5 +202,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   formatDateKey(date: Date): string {
     return formatISO(startOfDay(date));
+  }
+
+  _suppressModal() {
+    this.sessionStorageService.setItem('modal-open', 'false');
   }
 }

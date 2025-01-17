@@ -105,11 +105,11 @@ export async function _createDb(): Promise<RxEventsDatabase> {
     name: 'fickledb',
     storage: getRxStorageDexie(),
   });
-  console.log('DatabaseService: created database');
+  console.log('#### DbService | RxDB | created database');
 
   await db.addCollections(collectionSettings);
 
-  console.log('DatabaseService: create collections');
+  console.log('#### DbService | RxDB | create collections');
 
   // TODO: function get current week in helper, import here and WeekService
   const week = initWeek();
@@ -135,7 +135,7 @@ export async function _createDb(): Promise<RxEventsDatabase> {
         }) as RxEventDocumentType,
     ),
   );
-  console.log('DatabaseService: bulk insert');
+  console.log('#### DbService | RxDB | bulk insert');
 
   return db;
 }
@@ -214,18 +214,24 @@ export class DbService {
     // https://rxdb.info/replication.html#awaitinitialreplication-and-awaitinsync-should-not-be-used-to-block-the-application
     await replicationState.awaitInitialReplication();
     // emits each document that was received from the remote
-    this.replicationState.received$.subscribe(doc => console.log('**** Rpl receieved ****', doc));
+    this.replicationState.received$.subscribe(doc =>
+      console.log('#### DbService | RxDB | Rpl receieved ####', doc),
+    );
     // emits each document that was send to the remote
-    this.replicationState.sent$.subscribe(doc => console.log(`**** Rpl sent ****`, doc));
+    this.replicationState.sent$.subscribe(doc =>
+      console.log('#### DbService | RxDB | Rpl sent ####', doc),
+    );
     // emits all errors that happen when running the push- & pull-handlers.
-    this.replicationState.error$.subscribe(error => console.error(`**** Rpl error ****`, error));
+    this.replicationState.error$.subscribe(error =>
+      console.error(`#### DbService | RxDB | Rpl error ####`, error),
+    );
     // emits true when the replication was canceled, false when not.
     this.replicationState.canceled$.subscribe(bool =>
-      console.error(`**** Rpl canceled ${bool} ****`),
+      console.error(`#### DbService | RxDB | Rpl canceled ${bool} ####`),
     );
     // emits true when a replication cycle is running, false when not.
     this.replicationState?.active$.subscribe(bool =>
-      console.log(`**** Rpl cycle running ${bool} ****`),
+      console.log(`#### DbService | RxDB | Rpl cycle running ${bool} ####`),
     );
   }
 

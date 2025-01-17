@@ -40,7 +40,7 @@ export class AuthService {
         }),
         switchMap(() => this.isAuthenticated$),
         catchError(error => {
-          console.log('Error checking auth', error);
+          console.log('#### AuthService | Error checking auth', error);
           this._isAuth.next(false);
           return of(false);
         }),

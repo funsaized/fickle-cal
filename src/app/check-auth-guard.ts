@@ -19,7 +19,7 @@ export const CheckAuthGuard: CanActivateFn = (
   const router = inject(Router);
   return authService.isAuth$().pipe(
     tap(isAuth => {
-      console.log('isAuth', isAuth);
+      console.log('#### CheckAuthGuard | isAuth', isAuth);
     }),
     map(isAuth => (isAuth ? router.parseUrl('/home') : true)),
   );
