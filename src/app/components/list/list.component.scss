@@ -2,13 +2,14 @@
 
 .events-body {
   min-height: 160px;
-  background: repeating-linear-gradient(
+  background: linear-gradient(
     to bottom,
     var(--gray-3),
     var(--gray-3) 1px,
     transparent 1px,
     transparent 40px
   );
+  background-size: 100% 40px; // Height of row
 }
 
 // Make the span take full width to properly handle dragging

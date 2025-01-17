@@ -21,7 +21,6 @@ import { formatISO, startOfDay } from 'date-fns';
         [day]="_day"
         [list]="eventService.getEventsStream$(dateKey) | async"
         (reorder)="reorder($event)"
-        [large]="true"
       />
     </form>
   `,

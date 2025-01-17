@@ -32,7 +32,6 @@ import { RxDocument } from 'rxdb';
       [cdkDropListData]="{ date: _day.date, list: list }"
       class="list events-body"
       *ngIf="_day$ | async; let _day"
-      [style.min-height]="large ? '420px' : '160px'"
     >
       <ng-container *ngIf="list">
         <span cdkDrag [cdkDragData]="event" *ngFor="let event of list; let ind = index">
@@ -45,8 +44,6 @@ import { RxDocument } from 'rxdb';
   styleUrl: './list.component.scss',
 })
 export class ListComponent implements AfterViewInit, OnDestroy {
-  @Input() large = false;
-
   public _day$ = new BehaviorSubject<ParsedDay | null>(null);
   @Input()
   set day(day: ParsedDay) {
