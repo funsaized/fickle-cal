@@ -7,7 +7,13 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { DbService, EventService, SessionStorageService, WeekService } from '../../services';
+import {
+  DbService,
+  EventService,
+  SessionStorageService,
+  ThemeService,
+  WeekService,
+} from '../../services';
 import { CommonModule } from '@angular/common';
 import { CalendarComponent, FaqComponent, HeaderComponent, ListComponent } from '../../components';
 import { ParsedDay, ReOrderEvent, SOME_DAY_0, SOME_DAY_1, SOME_DAY_2 } from '../../models';
@@ -63,7 +69,7 @@ import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 
     <ng-template #modalTemplate>
       <!-- FIXME: necessary b/c of portals... global theme -->
-      <div class="light-theme">
+      <div [class]="themeService.theme$ | async">
         <app-faq (closeModal)="closeModal()" />
       </div>
     </ng-template>
@@ -92,6 +98,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private sessionStorageService: SessionStorageService,
     private overlay: Overlay,
+    public readonly themeService: ThemeService,
   ) {
     this.someDay0 = {
       date: SOME_DAY_0,

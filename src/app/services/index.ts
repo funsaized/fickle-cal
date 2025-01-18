@@ -5,6 +5,7 @@ import { WeekService } from './week.service';
 import { ThemeService } from './theme.service';
 import { UserService } from './user.service';
 import { SessionStorageService } from './session-storage.service';
+import { LocalStorageService } from './local-storage.service';
 
 export const services = [
   DbService,
@@ -14,6 +15,7 @@ export const services = [
   ThemeService,
   UserService,
   SessionStorageService,
+  LocalStorageService,
 ];
 
 export * from './db.service';
@@ -23,3 +25,4 @@ export * from './week.service';
 export * from './theme.service';
 export * from './user.service';
 export * from './session-storage.service';
+export * from './local-storage.service';
