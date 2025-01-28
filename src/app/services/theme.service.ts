@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { SessionStorageService } from './session-storage.service';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
