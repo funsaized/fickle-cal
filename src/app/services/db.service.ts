@@ -15,7 +15,7 @@ import { RxReplicationState, replicateRxCollection } from 'rxdb/plugins/replicat
 import { initWeek } from '../models';
 import { formatISO, startOfDay } from 'date-fns';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { SlnConfigService } from './sln-config.service';
 
 const EVENT_SCHEMA_LITERAL = {
   version: 0,
@@ -157,7 +157,10 @@ export async function initDatabase(injector: Injector) {
   providedIn: 'root',
 })
 export class DbService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private slnConfigService: SlnConfigService,
+  ) {}
 
   async initReplication() {
     const replicationState = await replicateRxCollection({
@@ -167,7 +170,7 @@ export class DbService {
       push: {
         handler: async (changeRows): Promise<{ _deleted: boolean }[]> => {
           const rawResponse = await this.http
-            .post(`${environment.baseUrl}/api/events-rpl/0/push`, changeRows, {
+            .post(`${this.slnConfigService.API_URL}/events-rpl/0/push`, changeRows, {
               withCredentials: true,
               headers: {
                 Accept: 'application/json',
@@ -192,7 +195,7 @@ export class DbService {
           const id = checkpointOrNull ? checkpointOrNull.id : '';
           const response = await this.http
             .get(
-              `${environment.baseUrl}/api/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`,
+              `${this.slnConfigService.API_URL}/events-rpl/0/pull?lwt=${updatedAt}&id=${id}&limit=${batchSize}`,
               {
                 withCredentials: true,
               },

@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, switchMap, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { UserService } from './user.service';
 import { IsLoggedInResponse } from '../models';
+import { SlnConfigService } from './sln-config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,17 +15,16 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private userService: UserService,
+    private slnConfigService: SlnConfigService,
   ) {}
 
   initiateGithubAuth() {
-    window.location.href = environment.production
-      ? `${environment.baseUrl}${environment.apiUrl}/auth/github`
-      : `${environment.baseUrl}/auth/github`;
+    window.location.href = this.slnConfigService.API_URL + '/auth/github';
   }
 
   isAuth$(): Observable<boolean> {
     return this.http
-      .get<IsLoggedInResponse>(`${environment.apiUrl}/auth/isLoggedIn`, {
+      .get<IsLoggedInResponse>(`${this.slnConfigService.API_URL}/auth/isLoggedIn`, {
         withCredentials: true, // TODO: interceptor
       })
       .pipe(
@@ -48,11 +47,13 @@ export class AuthService {
   }
 
   logout$(): Observable<unknown> {
-    return this.http.post(`${environment.apiUrl}/auth/logout`, {}, { withCredentials: true }).pipe(
-      tap(() => {
-        this._isAuth.next(false);
-        this.userService.user = null;
-      }),
-    );
+    return this.http
+      .post(`${this.slnConfigService.API_URL}/auth/logout`, {}, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          this._isAuth.next(false);
+          this.userService.user = null;
+        }),
+      );
   }
 }
