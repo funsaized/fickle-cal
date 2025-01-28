@@ -43,12 +43,7 @@ import { DbService, ThemeService } from '../../services';
               (click)="isUserMenuOpen = !isUserMenuOpen"
               (keydown.enter)="isUserMenuOpen = !isUserMenuOpen"
             >
-              <i
-                class="bi bi-person"
-                cdkOverlayOrigin
-                #userTrigger="cdkOverlayOrigin"
-                style="color: black"
-              ></i>
+              <i class="bi bi-person" cdkOverlayOrigin #userTrigger="cdkOverlayOrigin"></i>
             </li>
             <li (click)="sync()" (keydown.enter)="sync()" tabindex="0" role="button">
               <i class="bi bi-cloud-download"></i>

@@ -106,7 +106,7 @@ ul {
 
 // User Menu
 .menu {
-  background-color: white;
+  background-color: var(--green-2);
   width: 160px;
   border-radius: 8px;
   padding: 16px;
@@ -122,12 +122,13 @@ ul {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    // background-color: var(--green-3);
+    background-color: var(--green-3);
+    border: 1px solid var(--green-6);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 600;
-    color: white;
+    color: inherit;
     transition: transform 0.2s ease;
 
     &:hover {
@@ -160,8 +161,9 @@ ul {
     gap: 10px;
     padding: 10px;
     border-radius: 8px;
-    border: none;
-    background: none;
+    border: 1px solid var(--green-7);
+    color: inherit;
+    background-color: var(--green-3);
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -171,8 +173,7 @@ ul {
     }
 
     &:hover {
-      background-color: $tertiary;
-      color: white;
+      background-color: var(--green-4);
       transform: translateY(-2px);
       box-shadow: $shadow;
     }
