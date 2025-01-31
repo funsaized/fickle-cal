@@ -73,11 +73,6 @@ ul {
         border: solid 3px var(--green-7);
         border-radius: 50%;
       }
-
-      i {
-        position: absolute;
-        top: 10%;
-      }
     }
 
     &.isTouched:first-child::before {
