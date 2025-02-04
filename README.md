@@ -1,17 +1,25 @@
-# Fickle Cal Monorepo ☕
+# Fickle Cal ☕
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/4e3c5284-f734-48f2-991f-7bd83429ccbe/deploy-status)](https://app.netlify.com/sites/feined-todo/deploys)
 
 > A local first, barebones, calendar-centric todo app with a modern tech stack
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/4e3c5284-f734-48f2-991f-7bd83429ccbe/deploy-status)](https://app.netlify.com/sites/feined-todo/deploys)
+### 🏠 [Homepage](https://todo.s11a.com/)
+
+![Todo Replication Demo](./app/output.gif)
 
 ## 🏗️ Project Structure
 
 This monorepo contains the following packages:
 
-- `fickle-app/`: Angular-based frontend application
-- `feined-rxdb-server/`: Bun-powered Express backend server
+- `app/`: RxDB-powered Angular frontend application
+- `server/`: Bun-powered Express backend server
 
 ## 🚀 Quick Start
+
+```bash
+npm install:all && npm run start
+```
 
 ### Prerequisites
 

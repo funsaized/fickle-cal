@@ -7,10 +7,6 @@
 
 > A local first, barebones, calendar-centric todo app
 
-### 🏠 [Homepage](https://todo.s11a.com/)
-
-![Todo Replication Demo](./output.gif)
-
 ## Install
 
 ```sh
