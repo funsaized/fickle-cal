@@ -1,43 +1,84 @@
-<h1 align="center">Welcome to Fickle Cal ☕ 👋</h1>
-<p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-blue.svg?cacheSeconds=2592000" />
-</p>
+# Fickle Cal Monorepo ☕
+
+> A local first, barebones, calendar-centric todo app with a modern tech stack
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/4e3c5284-f734-48f2-991f-7bd83429ccbe/deploy-status)](https://app.netlify.com/sites/feined-todo/deploys)
 
-> A local first, barebones, calendar-centric todo app
+## 🏗️ Project Structure
 
-### 🏠 [Homepage](https://todo.s11a.com/)
+This monorepo contains the following packages:
 
-![Todo Replication Demo](./output.gif)
+- `fickle-app/`: Angular-based frontend application
+- `feined-rxdb-server/`: Bun-powered Express backend server
 
-## Install
+## 🚀 Quick Start
 
-```sh
-npm install
+### Prerequisites
+
+- Node.js (LTS version recommended)
+- Bun runtime
+- npm
+
+### Installation
+
+```bash
+# Install all dependencies for both client and server
+npm run install:all
 ```
 
-## Usage
+### Development
 
-```sh
-npm run start
+```bash
+# Start both client and server in development mode
+npm start
+
+# Start only the client
+npm run start:client
+
+# Start only the server
+npm run start:server
 ```
 
-## Built with
-- [angular](https://github.com/angular/angular)
-- [rxdb](https://github.com/pubkey/rxdb)
-- [Netlify](https://www.netlify.com/)
+### Building
 
-## Author
+```bash
+# Build both client and server
+npm run build
 
-👤 **Sai N. Nimmagadda**
+# Build only the client
+npm run build:client
+
+# Build only the server
+npm run build:server
+```
+
+## 🛠️ Tech Stack
+
+### Frontend (fickle-app)
+- Angular
+- RxDB
+- Modern UI/UX
+
+### Backend (feined-rxdb-server)
+- Bun runtime
+- Express.js
+- RxDB
+
+## 👤 Author
+
+**Sai N. Nimmagadda**
 
 * Website: https://s11a.com
 * Github: [@snimmagadda1](https://github.com/snimmagadda1)
 
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!
+
+## 📝 License
+
+This project is licensed under the terms specified in the LICENSE file.
+
 ## Show your support
 
-Give a ⭐️ if this project helped you!
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+Give a ⭐️ if this project helped you! 

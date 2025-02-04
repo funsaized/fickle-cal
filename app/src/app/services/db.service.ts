@@ -208,12 +208,11 @@ export class DbService {
           };
         },
       },
-      // TODO: pullstream
+      // pullstream not implemented b/c single user
     });
 
     REPLICATION_STATE = replicationState;
 
-    // TODO: block clients that havent synced in X time
     // https://rxdb.info/replication.html#awaitinitialreplication-and-awaitinsync-should-not-be-used-to-block-the-application
     await replicationState.awaitInitialReplication();
     // emits each document that was received from the remote

@@ -1,0 +1,40 @@
+{
+  "name": "rxdb-bun-server",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "build": "bun build src/index.ts --target bun --compile --outfile app"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/express-session": "^1.18.1",
+    "@types/morgan": "^1.9.9",
+    "@types/passport": "^1.0.17",
+    "@types/passport-github2": "^1.2.9"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "memorystore": "^1.6.7",
+    "morgan": "^1.10.0",
+    "nanoid": "^5.0.9",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "rxdb": "16.0.0-beta.10",
+    "rxjs": "^7.8.1",
+    "snn-rxdb-server": "^0.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0",
+    "zod": "^3.24.1"
+  }
+}

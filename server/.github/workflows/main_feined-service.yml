@@ -1,0 +1,47 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy Node.js app to Azure Web App - feined-service
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: "App" # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: "." # set this to the path to your web app project, defaults to the repository root
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Bun
+        uses: oven-sh/setup-bun@v1
+      - name: bun install, and start
+        run: |
+          bun install
+          bun run build
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_471311723D1143D9A8244F19A6F48196 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_851055B2F50B4952A5ED463D443F9FFE }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6E67790FC3A24E899C01DA7E35F469CC }}
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'feined-service'
+          slot-name: 'Production'
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

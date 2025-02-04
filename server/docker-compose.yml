@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  # Run the node application
+  bun-app:
+    container_name: bun-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - CORS=${CORS}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - GITHUB_CALLBACK_URL=${GITHUB_CALLBACK_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+    build:
+      context: ./
+    volumes:
+      - $PWD/src/data:/usr/src/app/src/data
+    ports:
+      - "8080:8080"
+
+  # Run the caddy server
+  caddy:
+    image: caddy/caddy:2.9-alpine
+    container_name: caddy-service
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
