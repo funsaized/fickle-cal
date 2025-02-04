@@ -50,7 +50,7 @@ testem.log
 typings/
 
 # Bun specific
-bun.lockb
+# bun.lockb
 
 # Temporary files
 *.log
