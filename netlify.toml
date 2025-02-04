@@ -1,4 +1,5 @@
 [build]
+  base = "app"
   publish = "dist/fickle-client/browser"
   command = "npm run build"
 
@@ -18,4 +19,4 @@
   [headers.values]
     Access-Control-Allow-Origin = "https://todo.s11a.com"
     Access-Control-Allow-Credentials = "true"
-    Access-Control-Expose-Headers = "Set-Cookie"
+    Access-Control-Expose-Headers = "Set-Cookie" 
