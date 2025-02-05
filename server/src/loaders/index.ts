@@ -1,3 +1,4 @@
+import type { Express } from "express";
 import rxdbLoader, { DB, _RX_SERVER } from "./rxdb";
 import passportGHLoader from "./passport-gh";
 import expressLoader from "./express";
@@ -45,4 +46,6 @@ export default async function () {
 
   // FIXME: remove rxserver
   await _RX_SERVER!.start();
+
+  return app;
 }
