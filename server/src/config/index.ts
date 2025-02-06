@@ -1,7 +1,10 @@
 import { z } from "zod";
+import logger from "../utils/logger";
+
+logger.info("Validating environment...");
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "production"]),
+  NODE_ENV: z.enum(["development", "production", "test"]),
   SESSION_SECRET: z.string(),
   GITHUB_CLIENT_ID: z.string(),
   GITHUB_CLIENT_SECRET: z.string(),
