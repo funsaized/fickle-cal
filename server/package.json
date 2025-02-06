@@ -5,8 +5,8 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "build": "bun build src/index.ts --target bun --compile --outfile app",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch"
   },
   "devDependencies": {
     "@types/bun": "latest",
