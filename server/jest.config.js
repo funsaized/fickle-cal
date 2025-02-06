@@ -9,7 +9,12 @@ process.env.FRONTEND_URL = "http://localhost:4200";
 export default {
   testEnvironment: "node",
   transform: {
-    "^.+.tsx?$": ["ts-jest", {}],
+    "^.+.tsx?$": [
+      "ts-jest",
+      {
+        useESM: true,
+      },
+    ],
   },
-  transformIgnorePatterns: ["node_modules"],
+  extensionsToTreatAsEsm: [".ts"],
 };

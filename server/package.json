@@ -5,7 +5,7 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "build": "bun build src/index.ts --target bun --compile --outfile app",
-    "test": "NODE_ENV=test jest",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "test:watch": "NODE_ENV=test jest --watch"
   },
   "devDependencies": {
@@ -38,6 +38,7 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "rxdb": "16.0.0-beta.10",
+    "rxdb-bun-server": ".",
     "rxjs": "^7.8.1",
     "snn-rxdb-server": "^0.0.0",
     "swagger-jsdoc": "^6.2.8",
