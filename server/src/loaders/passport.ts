@@ -10,9 +10,11 @@ export default async function (app: Express, db: RxEventsDatabase) {
   app.use(sessionMiddleware);
 
   passport.serializeUser((user: any, done) => {
+    console.error("A", user);
     done(null, user.id);
   });
   passport.deserializeUser(async (id: string, done) => {
+    console.error("B", id);
     try {
       const user = await db.users
         .findOne({

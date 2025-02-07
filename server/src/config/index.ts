@@ -36,7 +36,7 @@ export const config = {
   server: {
     port: 8080,
     nodeEnv: env.NODE_ENV,
-    isAuth: env.NODE_ENV === "production",
+    isAuth: env.NODE_ENV !== "development",
     cors: {
       origin: env.FRONTEND_URL,
       credentials: true,
