@@ -1,7 +1,7 @@
 import passport from "passport";
 
 // The reply from Github OAuth2
-const user = require("./gh-mock-profile");
+import user from "./gh-mock-profile";
 
 export default class MockGHStrategy extends passport.Strategy {
   _cb: any;
@@ -31,6 +31,5 @@ export default class MockGHStrategy extends passport.Strategy {
     this._cb(null, null, this._user, (err: any, user: any) => {
       this.success(user);
     });
-    this.success(user);
   }
 }

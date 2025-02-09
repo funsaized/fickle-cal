@@ -22,8 +22,7 @@ const strategyCallback =
     done: VerifyCallback
   ) => {
     try {
-      logger.info(JSON.stringify(profile));
-      logger.info(`\n Successfully authenticated for profileId: ${profile.id}`);
+      logger.info(`Successfully authenticated for profileId: ${profile.id}`);
       // Check if user exists
       const existingUser = await db.users
         .findOne({
@@ -58,9 +57,9 @@ const strategyCallback =
 
 const environmentStrategy = (db: RxEventsDatabase): passport.Strategy => {
   switch (process.env.NODE_ENV) {
-    case "development":
+    case "test":
       return new MockGHStrategy("github", strategyCallback(db));
     default:
-      return new MockGHStrategy("mockGithub", strategyCallback(db));
+      return new GitHubStrategy(config.auth.github, strategyCallback(db));
   }
 };

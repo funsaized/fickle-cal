@@ -1,9 +1,9 @@
-import { beforeAll, afterAll, expect, test, describe } from "bun:test";
-import request from "supertest";
+import { beforeAll, expect, test, describe } from "bun:test";
+import { agent } from "supertest";
 import type { Express } from "express";
 import { load } from "../loaders";
 import { _RX_SERVER } from "../loaders/rxdb";
-import { userService } from "../services";
+import type TestAgent from "supertest/lib/agent";
 
 let app: Express;
 
@@ -15,6 +15,33 @@ beforeAll(async () => {
   app = _RX_SERVER.serverApp;
 });
 
+const createAuthenticatedUser = async (): Promise<{
+  agent: TestAgent;
+  cookies: string[];
+}> => {
+  const authenticatedUser = agent(app);
+
+  // Go directly to the callback URL since we're using a mock strategy
+  const response = await authenticatedUser
+    .get("/auth/github/callback")
+    .expect(302); // Expect redirect
+
+  // Follow the redirect
+  const redirectUrl = response.headers.location;
+  if (!redirectUrl) {
+    throw new Error("No redirect URL provided");
+  }
+
+  // Verify we have a session cookie and log it
+  const cookieHeader = response.headers["set-cookie"];
+  const cookies = Array.isArray(cookieHeader) ? cookieHeader : [cookieHeader];
+  if (!cookies || cookies.length === 0) {
+    throw new Error("No session cookie set");
+  }
+
+  return { agent: authenticatedUser, cookies };
+};
+
 describe("User endpoints", () => {
   describe("POST /user", () => {
     test("should create a new user when authenticated", async () => {
@@ -24,11 +51,14 @@ describe("User endpoints", () => {
         githubId: "test-github-id",
       };
 
-      const response = await request(app)
+      // Get authenticated agent and cookies
+      const { agent, cookies } = await createAuthenticatedUser();
+
+      // Make the authenticated request with cookies
+      const response = await agent
         .post("/user")
         .send(mockUser)
-        // TODO: Add proper authentication token/session
-        .set("Authorization", "test-auth-token")
+        .set("Cookie", cookies)
         .expect("Content-Type", /json/)
         .expect(200);
 
