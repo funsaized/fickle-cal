@@ -33,7 +33,6 @@ const createAuthenticatedAgent = async (
 
 // Suite level isolation
 beforeAll(async () => {
-  // Initialize the full application using the loader
   await load();
   app = _RX_SERVER.serverApp;
   authenticatedAgent = await createAuthenticatedAgent(app);
@@ -64,11 +63,6 @@ describe("User endpoints", () => {
         .expect("Content-Type", /json/)
         .expect(200);
 
-      // Log response headers for debugging
-      logger.info(
-        `Response headers: ${JSON.stringify(response.request.cookies)}`
-      );
-
       expect(response.body).toMatchObject({
         email: mockUser.email,
         name: mockUser.name,
@@ -77,7 +71,7 @@ describe("User endpoints", () => {
       expect(response.body.id).toBeDefined();
       expect(response.body._deleted).toBe(false);
 
-      // Verify the user exists in the UserService
+      // Verify the user exists in the store
       const createdUser = userService.getUser(response.body.id);
       expect(createdUser).toBeDefined();
       expect(createdUser).toMatchObject({
@@ -99,19 +93,15 @@ describe("User endpoints", () => {
       await request(app).post("/user").send(mockUser).expect(401);
     });
 
-    // test("should return 400 for invalid user data", async () => {
-    //   const invalidUser = {
-    //     name: "Test User",
-    //     githubId: "test-github-id",
-    //     // missing required email field
-    //   };
+    test("should return 400 for invalid user data", async () => {
+      const invalidUser = {
+        name: "Test User",
+        githubId: "test-github-id",
+        // missing required email field
+      };
 
-    //   await authenticatedAgent
-    //     .post("/user")
-    //     .send(invalidUser)
-    //     .set("Authorization", "test-auth-token")
-    //     .expect(400);
-    // });
+      await authenticatedAgent.post("/user").send(invalidUser).expect(400);
+    });
   });
 
   describe("GET /user/:userId", () => {

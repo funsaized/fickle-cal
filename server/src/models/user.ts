@@ -4,6 +4,7 @@ import {
   toTypedRxJsonSchema,
   type ExtractDocumentTypeFromTypedRxJsonSchema,
 } from "rxdb";
+import { z } from "zod";
 
 // Domain model interface
 export interface User {
@@ -16,6 +17,12 @@ export interface User {
 
 // Request DTO
 export type UserRequest = Omit<User, "id" | "_deleted">;
+
+export const UserSchema = z.object({
+  email: z.string(),
+  name: z.string(),
+  githubId: z.string(),
+});
 
 // RxDB Schema
 export const USER_SCHEMA_LITERAL = {
