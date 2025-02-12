@@ -13,7 +13,6 @@ import { config } from "../config";
 // exported for ease of testing
 export const load = async () => {
   logger.info(`config loaded... ${config.server.nodeEnv}`);
-  logger.info(JSON.stringify(config));
 
   await datastoreLoader();
   logger.info("datastore loaded...");
