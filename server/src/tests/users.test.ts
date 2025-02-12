@@ -93,11 +93,21 @@ describe("User endpoints", () => {
       await request(app).post("/user").send(mockUser).expect(401);
     });
 
-    test("should return 400 for invalid user data", async () => {
+    test("should return 400 for missing user data", async () => {
       const invalidUser = {
         name: "Test User",
         githubId: "test-github-id",
         // missing required email field
+      };
+
+      await authenticatedAgent.post("/user").send(invalidUser).expect(400);
+    });
+
+    test("should return 400 for invalid user email", async () => {
+      const invalidUser = {
+        name: "Test User",
+        githubId: "test-github-id",
+        email: "nodomaindummy.com",
       };
 
       await authenticatedAgent.post("/user").send(invalidUser).expect(400);

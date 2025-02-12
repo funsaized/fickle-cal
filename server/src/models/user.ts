@@ -19,7 +19,7 @@ export interface User {
 export type UserRequest = Omit<User, "id" | "_deleted">;
 
 export const UserSchema = z.object({
-  email: z.string(),
+  email: z.string().email(),
   name: z.string(),
   githubId: z.string(),
 });
