@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserSchema, type User, type UserRequest } from "../models";
+import { CreateUser, type User, type UserRequest } from "../models";
 import logger from "../utils/logger";
 import { userService } from "../services";
 import { isAuth } from "../middleware/session";
@@ -37,7 +37,7 @@ const router = Router();
 router.post("/", isAuth, (req, res) => {
   try {
     const userRequest: UserRequest = req.body;
-    UserSchema.parse(userRequest);
+    CreateUser.parse(userRequest);
 
     // todo: validate user
     const user = userService.createUser(userRequest);

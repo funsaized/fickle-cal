@@ -18,7 +18,7 @@ export interface User {
 // Request DTO
 export type UserRequest = Omit<User, "id" | "_deleted">;
 
-export const UserSchema = z.object({
+export const CreateUser = z.object({
   email: z.string().email(),
   name: z.string(),
   githubId: z.string(),
