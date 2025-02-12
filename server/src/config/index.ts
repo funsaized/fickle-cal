@@ -51,7 +51,16 @@ export const config = {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        domain: env.NODE_ENV === "production" ? ".s11a.com" : "localhost",
+        domain: (() => {
+          switch (env.NODE_ENV) {
+            case "development":
+              return "localhost";
+            case "test":
+              return undefined;
+            default:
+              return ".s11a.com";
+          }
+        })(),
         secure: env.NODE_ENV === "production",
         sameSite: (env.NODE_ENV === "production" ? "strict" : "lax") as
           | "strict"
