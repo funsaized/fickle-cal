@@ -1,7 +1,10 @@
 import { z } from "zod";
+import logger from "../utils/logger";
+
+logger.info("Validating environment...");
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "production"]),
+  NODE_ENV: z.enum(["development", "production", "test"]),
   SESSION_SECRET: z.string(),
   GITHUB_CLIENT_ID: z.string(),
   GITHUB_CLIENT_SECRET: z.string(),
@@ -33,7 +36,7 @@ export const config = {
   server: {
     port: 8080,
     nodeEnv: env.NODE_ENV,
-    isAuth: env.NODE_ENV === "production",
+    isAuth: env.NODE_ENV !== "development",
     cors: {
       origin: env.FRONTEND_URL,
       credentials: true,
@@ -48,7 +51,16 @@ export const config = {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        domain: env.NODE_ENV === "production" ? ".s11a.com" : "localhost",
+        domain: (() => {
+          switch (env.NODE_ENV) {
+            case "development":
+              return "localhost";
+            case "test":
+              return undefined;
+            default:
+              return ".s11a.com";
+          }
+        })(),
         secure: env.NODE_ENV === "production",
         sameSite: (env.NODE_ENV === "production" ? "strict" : "lax") as
           | "strict"

@@ -44,8 +44,20 @@ const collectionSettings = {
 
 export let DB: RxEventsDatabase | null = null;
 
-// FIXME: hack
+// exported to expose express instance
 export let _RX_SERVER: any = null;
+
+// Add a cleanup function
+export async function cleanup() {
+  if (_RX_SERVER) {
+    await _RX_SERVER.close();
+    _RX_SERVER = null;
+  }
+  if (DB) {
+    await DB.remove();
+    DB = null;
+  }
+}
 
 type GithubAuthData = {
   id: string | null;
@@ -113,7 +125,7 @@ async function createDb(): Promise<Express> {
 async function setupServer(db: RxEventsDatabase, store: Store) {
   const hostname =
     process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
-  logger.info("Initializing rx-server with hostname: ", hostname);
+  logger.info(`Initializing rx-server with hostname: ${hostname}`);
   const rxServer = await createRxServer({
     database: db as unknown as RxDatabase,
     port: 8080,
@@ -138,7 +150,7 @@ async function setupServer(db: RxEventsDatabase, store: Store) {
         logger.error("Error in rxDb authHandler", error);
         throw error;
       }
-      logger.info("AuthHandler - returning userId", id);
+      logger.info(`AuthHandler - returning userId ${id}`);
       return {
         data: {
           id,

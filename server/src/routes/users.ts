@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { type User, type UserRequest } from "../models";
+import { CreateUser, type User, type UserRequest } from "../models";
 import logger from "../utils/logger";
 import { userService } from "../services";
 import { isAuth } from "../middleware/session";
+import { ZodError } from "zod";
 
 const router = Router();
 
@@ -35,21 +36,22 @@ const router = Router();
  */
 router.post("/", isAuth, (req, res) => {
   try {
-    /*
-    const isValid = validators.user(req.body);
-    if (!isValud) {
-    return res.status(400).json({ error: "bad request" });
-    
-    const user = doINSERT HERE
-
-    */
     const userRequest: UserRequest = req.body;
+    CreateUser.parse(userRequest);
 
     // todo: validate user
     const user = userService.createUser(userRequest);
 
     res.status(200).json(user);
   } catch (error) {
+    if (error instanceof ZodError) {
+      logger.info("Validation error:", error.errors);
+      res.status(400).json({
+        error: "Invalid request data",
+        details: error.errors,
+      });
+      return;
+    }
     logger.error("Error during create user", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -107,11 +109,14 @@ router.get("/:userId", isAuth, (req, res) => {
  *       required:
  *         - email
  *         - name
+ *         - githubId
  *       properties:
  *         email:
  *           type: string
  *           format: email
  *         name:
+ *           type: string
+ *         githubId:
  *           type: string
  *     User:
  *       type: object
@@ -123,11 +128,9 @@ router.get("/:userId", isAuth, (req, res) => {
  *           format: email
  *         name:
  *           type: string
- *         createdAt:
+ *         githubId:
  *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
+ *         _deleted:
+ *           type: boolean
  */
 export default router;
