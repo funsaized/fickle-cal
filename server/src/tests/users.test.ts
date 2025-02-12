@@ -1,12 +1,4 @@
-import {
-  beforeAll,
-  expect,
-  test,
-  describe,
-  afterAll,
-  beforeEach,
-  afterEach,
-} from "bun:test";
+import { beforeAll, expect, test, describe, afterAll } from "bun:test";
 import request from "supertest";
 import type { Express } from "express";
 import type { Response } from "superagent";
@@ -145,8 +137,8 @@ describe("User endpoints", () => {
       });
     });
 
-    // test("should return 404 when user not found", async () => {
-    //   await authenticatedAgent.get("/user/nonexistent-id").expect(404);
-    // });
+    test("should return 404 when user not found", async () => {
+      await authenticatedAgent.get("/user/nonexistent-id").expect(404);
+    });
   });
 });
