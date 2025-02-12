@@ -3,7 +3,7 @@ import request from "supertest";
 import type { Express } from "express";
 import type { Response } from "superagent";
 import { load } from "../loaders";
-import { _RX_SERVER } from "../loaders/rxdb";
+import { _RX_SERVER, cleanup } from "../loaders/rxdb";
 import type { Agent } from "supertest";
 import logger from "../utils/logger";
 import { userService } from "../services";
@@ -38,13 +38,8 @@ beforeAll(async () => {
   authenticatedAgent = await createAuthenticatedAgent(app);
 });
 
-afterAll(() => {
-  if (_RX_SERVER) {
-    _RX_SERVER.close();
-  }
-  logger.info(
-    `After test the size of users is ${userService.getAllUsers().length}`
-  );
+afterAll(async () => {
+  await cleanup();
 });
 
 describe("User endpoints", () => {

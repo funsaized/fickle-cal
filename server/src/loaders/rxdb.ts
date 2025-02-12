@@ -47,6 +47,18 @@ export let DB: RxEventsDatabase | null = null;
 // exported to expose express instance
 export let _RX_SERVER: any = null;
 
+// Add a cleanup function
+export async function cleanup() {
+  if (_RX_SERVER) {
+    await _RX_SERVER.close();
+    _RX_SERVER = null;
+  }
+  if (DB) {
+    await DB.remove();
+    DB = null;
+  }
+}
+
 type GithubAuthData = {
   id: string | null;
 };
