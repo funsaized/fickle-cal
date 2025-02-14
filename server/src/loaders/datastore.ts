@@ -107,6 +107,6 @@ const loadEvents = async () => {
   logger.info("***** BEGINNING STREAMING EVENTS FROM FILE *****");
   const events = await loadJsonlEvents();
   logger.info(
-    `***** ENDING STREAMING EVENTS FROM FILE. Loaded ${events?.length} users *****`
+    `***** ENDING STREAMING EVENTS FROM FILE. Loaded ${events?.length} events *****`
   );
 };
